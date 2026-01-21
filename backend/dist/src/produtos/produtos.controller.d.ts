@@ -58,9 +58,9 @@ export declare class ProdutosController {
             tipo: import("@prisma/client").$Enums.TipoMovimentacao;
             quantidade: number;
             veiculoId: string | null;
-            motivo: string | null;
             produtoId: string;
             depositoId: string;
+            motivo: string | null;
             usuarioId: string;
         })[];
         estoques: ({
