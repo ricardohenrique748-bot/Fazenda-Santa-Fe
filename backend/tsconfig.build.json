@@ -6,7 +6,8 @@
     "dist",
     "**/*spec.ts",
     "check-db.ts",
-    "scripts"
+    "scripts",
+    "prisma"
   ],
   "compilerOptions": {
     "rootDir": "src"
