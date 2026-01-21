@@ -1,0 +1,554 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Empresa {
+  id                String                 @id @default(uuid())
+  cnpj              String                 @unique
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  bairro            String?
+  cep               String?
+  cidade            String?
+  complemento       String?
+  email             String?
+  estado            String?
+  inscricaoEstadual String?
+  logradouro        String?
+  nomeFantasia      String?
+  numero            String?
+  razaoSocial       String
+  site              String?
+  telefone          String?
+  depositos         Deposito[]
+  fazendas          Fazenda[]
+  fornecedores      Fornecedor[]
+  funcionarios      Funcionario[]
+  lancamentos       LancamentoFinanceiro[]
+  usuarios          Usuario[]
+  veiculos          Veiculo[]
+  unidades          UnidadeNegocio[]
+  gruposEquipamento GrupoEquipamento[]
+  produtos          Produto[]
+  grupoProdutos     GrupoProduto[]
+  fabricantes       Fabricante[]
+  planoContas       PlanoContas[]
+  clientes          Cliente[]
+  pedidosVenda      PedidoVenda[]
+}
+
+model Usuario {
+  id            String                @id @default(uuid())
+  nome          String
+  email         String                @unique
+  senha         String
+  empresaId     String
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  ativo         Boolean               @default(true)
+  cargo         String?
+  role          Role                  @default(OPERADOR)
+  movimentacoes EstoqueMovimentacao[]
+  empresa       Empresa               @relation(fields: [empresaId], references: [id])
+}
+
+model Funcionario {
+  id           String             @id @default(uuid())
+  nome         String
+  cpf          String             @unique
+  email        String?
+  telefone     String?
+  cargo        String
+  dataAdmissao DateTime
+  salario      Float?
+  ativo        Boolean            @default(true)
+  empresaId    String
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  apontamentos Apontamento[]
+  entregasEPI  EntregaEPI[]
+  exames       ExameOcupacional[]
+  empresa      Empresa            @relation(fields: [empresaId], references: [id])
+}
+
+model Fazenda {
+  id            String                 @id @default(uuid())
+  nome          String
+  empresaId     String
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  areaProdutiva Float?
+  areaTotal     Float?
+  cidade        String?
+  codigo        String?
+  estado        String?
+  apontamentos  Apontamento[]
+  empresa       Empresa                @relation(fields: [empresaId], references: [id])
+  planejamentos PlanejamentoAgricola[]
+  localizacoes  Localizacao[]
+}
+
+model Apontamento {
+  id            String          @id @default(uuid())
+  data          DateTime
+  quantidade    Float
+  descricao     String?
+  tipo          TipoApontamento @default(HORA_NORMAL)
+  funcionarioId String
+  fazendaId     String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  fazenda       Fazenda?        @relation(fields: [fazendaId], references: [id])
+  funcionario   Funcionario     @relation(fields: [funcionarioId], references: [id])
+}
+
+model Veiculo {
+  id             String            @id @default(uuid())
+  nome           String
+  placa          String?           @unique
+  numeroFrota    String?           @unique
+  tipo           TipoVeiculo
+  marca          String?
+  modelo         String?
+  ano            Int?
+  horimetroAtual Float             @default(0)
+  odometroAtual  Float             @default(0)
+  status         StatusVeiculo     @default(ATIVO)
+  empresaId      String
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  manutencoes    Manutencao[]
+  grupoId        String?
+  grupo          GrupoEquipamento? @relation(fields: [grupoId], references: [id])
+  empresa        Empresa           @relation(fields: [empresaId], references: [id])
+}
+
+model Manutencao {
+  id             String   @id @default(uuid())
+  data           DateTime
+  tipo           String
+  descricao      String
+  horimetroNoAto Float?
+  odometroNoAto  Float?
+  custoTotal     Float    @default(0)
+  veiculoId      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  veiculo        Veiculo  @relation(fields: [veiculoId], references: [id])
+}
+
+model Deposito {
+  id            String                @id @default(uuid())
+  nome          String
+  localizacao   String?
+  empresaId     String
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  empresa       Empresa               @relation(fields: [empresaId], references: [id])
+  movimentacoes EstoqueMovimentacao[]
+  estoques      EstoqueSaldo[]
+}
+
+model Produto {
+  id                String                @id @default(uuid())
+  nome              String
+  codigo            String?               @unique
+  unidadeMedida     String
+  categoria         String?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  movimentacoes     EstoqueMovimentacao[]
+  estoques          EstoqueSaldo[]
+  itensPedido       ItemPedido[]
+  itensPlanejamento ItemPlanejamento[]
+  empresaId         String
+  empresa           Empresa               @relation(fields: [empresaId], references: [id])
+  grupoId           String?
+  grupo             GrupoProduto?         @relation(fields: [grupoId], references: [id])
+  fabricanteId      String?
+  fabricante        Fabricante?           @relation(fields: [fabricanteId], references: [id])
+  itemPedidoVendas  ItemPedidoVenda[]
+}
+
+model GrupoProduto {
+  id        String    @id @default(uuid())
+  nome      String
+  descricao String?
+  empresaId String
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+  produtos  Produto[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Fabricante {
+  id        String    @id @default(uuid())
+  nome      String
+  empresaId String
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+  produtos  Produto[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model EstoqueSaldo {
+  id         String   @id @default(uuid())
+  produtoId  String
+  depositoId String
+  quantidade Float    @default(0)
+  deposito   Deposito @relation(fields: [depositoId], references: [id])
+  produto    Produto  @relation(fields: [produtoId], references: [id])
+
+  @@unique([produtoId, depositoId])
+}
+
+model EstoqueMovimentacao {
+  id         String           @id @default(uuid())
+  data       DateTime         @default(now())
+  tipo       TipoMovimentacao
+  quantidade Float
+  motivo     String?
+  produtoId  String
+  depositoId String
+  veiculoId  String?
+  usuarioId  String
+  createdAt  DateTime         @default(now())
+  deposito   Deposito         @relation(fields: [depositoId], references: [id])
+  produto    Produto          @relation(fields: [produtoId], references: [id])
+  usuario    Usuario          @relation(fields: [usuarioId], references: [id])
+}
+
+model PlanoContas {
+  id          String                 @id @default(uuid())
+  codigo      String?
+  descricao   String
+  tipo        TipoLancamento
+  empresaId   String
+  empresa     Empresa                @relation(fields: [empresaId], references: [id])
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  lancamentos LancamentoFinanceiro[]
+
+  @@unique([codigo, empresaId])
+}
+
+model LancamentoFinanceiro {
+  id             String           @id @default(uuid())
+  descricao      String
+  valor          Float
+  dataVencimento DateTime
+  dataPagamento  DateTime?
+  status         StatusFinanceiro @default(PENDENTE)
+  tipo           TipoLancamento
+  planoContasId  String
+  empresaId      String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  empresa        Empresa          @relation(fields: [empresaId], references: [id])
+  planoContas    PlanoContas      @relation(fields: [planoContasId], references: [id])
+}
+
+model Safra {
+  id            String                 @id @default(uuid())
+  nome          String
+  dataInicio    DateTime
+  dataFim       DateTime
+  ativo         Boolean                @default(true)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  planejamentos PlanejamentoAgricola[]
+}
+
+model PlanejamentoAgricola {
+  id                   String               @id @default(uuid())
+  fazendaId            String
+  talhaoId             String?
+  safraId              String
+  culturaId            String?
+  areaHectares         Float
+  metaProdutividade    Float?
+  unidadeProdutividade String?
+  custoEstimadoTotal   Float?
+  custoPorHa           Float?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  atividades           AtividadePlanejada[]
+  itens                ItemPlanejamento[]
+  fazenda              Fazenda              @relation(fields: [fazendaId], references: [id])
+  talhao               Localizacao?         @relation(fields: [talhaoId], references: [id])
+  safra                Safra                @relation(fields: [safraId], references: [id])
+  cultura              Cultura?             @relation(fields: [culturaId], references: [id])
+}
+
+model ItemPlanejamento {
+  id              String               @id @default(uuid())
+  planejamentoId  String
+  produtoId       String
+  doseHa          Float
+  quantidadeTotal Float
+  createdAt       DateTime             @default(now())
+  planejamento    PlanejamentoAgricola @relation(fields: [planejamentoId], references: [id])
+  produto         Produto              @relation(fields: [produtoId], references: [id])
+}
+
+model AtividadePlanejada {
+  id             String               @id @default(uuid())
+  planejamentoId String
+  descricao      String
+  dataPrevista   DateTime
+  status         String               @default("PLANEJADO")
+  etapa          EtapaAgricola?
+  createdAt      DateTime             @default(now())
+  planejamento   PlanejamentoAgricola @relation(fields: [planejamentoId], references: [id])
+}
+
+model Fornecedor {
+  id          String         @id @default(uuid())
+  razaoSocial String
+  cnpj        String         @unique
+  email       String?
+  telefone    String?
+  empresaId   String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  empresa     Empresa        @relation(fields: [empresaId], references: [id])
+  pedidos     PedidoCompra[]
+}
+
+model PedidoCompra {
+  id           String       @id @default(uuid())
+  fornecedorId String
+  dataPedido   DateTime     @default(now())
+  valorTotal   Float        @default(0)
+  status       String       @default("ABERTO")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  itens        ItemPedido[]
+  fornecedor   Fornecedor   @relation(fields: [fornecedorId], references: [id])
+}
+
+model ItemPedido {
+  id            String       @id @default(uuid())
+  pedidoId      String
+  produtoId     String
+  quantidade    Float
+  valorUnitario Float
+  subtotal      Float
+  createdAt     DateTime     @default(now())
+  pedido        PedidoCompra @relation(fields: [pedidoId], references: [id])
+  produto       Produto      @relation(fields: [produtoId], references: [id])
+}
+
+model ContratoComercial {
+  id              String   @id @default(uuid())
+  cliente         String? // Legacy field, discourage use
+  clienteId       String?
+  clienteRel      Cliente? @relation(fields: [clienteId], references: [id])
+  cultura         String
+  safra           String
+  quantidadeTotal Float
+  valorPorUnidade Float
+  dataVencimento  DateTime
+  status          String   @default("ATIVO")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Cliente {
+  id                String              @id @default(uuid())
+  razaoSocial       String
+  nomeFantasia      String?
+  cpfCnpj           String              @unique
+  inscricaoEstadual String?
+  email             String?
+  telefone          String?
+  endereco          String?
+  cidade            String?
+  estado            String?
+  ativo             Boolean             @default(true)
+  empresaId         String
+  empresa           Empresa             @relation(fields: [empresaId], references: [id])
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  pedidos           PedidoVenda[]
+  contratos         ContratoComercial[]
+}
+
+model PedidoVenda {
+  id          String            @id @default(uuid())
+  numero      Int               @default(autoincrement())
+  clienteId   String
+  dataPedido  DateTime          @default(now())
+  status      String            @default("ABERTO")
+  valorTotal  Float             @default(0)
+  observacoes String?
+  empresaId   String
+  empresa     Empresa           @relation(fields: [empresaId], references: [id])
+  cliente     Cliente           @relation(fields: [clienteId], references: [id])
+  itens       ItemPedidoVenda[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model ItemPedidoVenda {
+  id            String      @id @default(uuid())
+  pedidoVendaId String
+  produtoId     String
+  quantidade    Float
+  valorUnitario Float
+  subtotal      Float
+  pedidoVenda   PedidoVenda @relation(fields: [pedidoVendaId], references: [id])
+  produto       Produto     @relation(fields: [produtoId], references: [id])
+}
+
+model EPI {
+  id           String       @id @default(uuid())
+  nome         String
+  ca           String?
+  validadeDias Int?
+  ativo        Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  entregas     EntregaEPI[]
+}
+
+model EntregaEPI {
+  id            String      @id @default(uuid())
+  funcionarioId String
+  epiId         String
+  dataEntrega   DateTime
+  quantidade    Int         @default(1)
+  observacao    String?
+  createdAt     DateTime    @default(now())
+  epi           EPI         @relation(fields: [epiId], references: [id])
+  funcionario   Funcionario @relation(fields: [funcionarioId], references: [id])
+}
+
+model ExameOcupacional {
+  id             String      @id @default(uuid())
+  funcionarioId  String
+  tipo           String
+  dataRealizacao DateTime
+  dataVencimento DateTime
+  resultado      String      @default("APTO")
+  medico         String?
+  crm            String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  funcionario    Funcionario @relation(fields: [funcionarioId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  GERENTE
+  OPERADOR
+}
+
+enum TipoApontamento {
+  HORA_NORMAL
+  HORA_EXTRA
+  PRODUCAO
+  FALTA
+}
+
+enum TipoVeiculo {
+  TRATOR
+  COLHEITADEIRA
+  CAMINHAO
+  UTILITARIO
+  IMPLEMENTO
+}
+
+enum StatusVeiculo {
+  ATIVO
+  MANUTENCAO
+  INATIVO
+}
+
+enum TipoMovimentacao {
+  ENTRADA
+  SAIDA
+  AJUSTE
+}
+
+enum StatusFinanceiro {
+  PENDENTE
+  PAGO
+  CANCELADO
+}
+
+enum TipoLancamento {
+  PAGAR
+  RECEBER
+}
+
+model UnidadeNegocio {
+  id        String   @id @default(uuid())
+  nome      String
+  codigo    String?
+  empresaId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  empresa   Empresa  @relation(fields: [empresaId], references: [id])
+}
+
+model Localizacao {
+  id            String                 @id @default(uuid())
+  nome          String
+  descricao     String?
+  fazendaId     String
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  fazenda       Fazenda                @relation(fields: [fazendaId], references: [id])
+  planejamentos PlanejamentoAgricola[]
+}
+
+model Municipio {
+  id         String   @id @default(uuid())
+  nome       String
+  estado     String
+  codigoIbge String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Cultura {
+  id            String                 @id @default(uuid())
+  nome          String
+  variedade     String?
+  cicloDias     Int?
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  planejamentos PlanejamentoAgricola[]
+}
+
+model Atividade {
+  id        String   @id @default(uuid())
+  nome      String
+  descricao String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GrupoEquipamento {
+  id        String    @id @default(uuid())
+  nome      String
+  descricao String?
+  empresaId String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  veiculos  Veiculo[]
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+}
+
+enum EtapaAgricola {
+  PREPARO_SOLO
+  PLANTIO
+  TRATOS_CULTURAIS
+  COLHEITA
+}

@@ -1,0 +1,7 @@
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+src/pages/cadastros/LocalizacoesListPage.tsx(45,27): error TS6133: 'value' is declared but its value is never read.
+src/pages/cadastros/UnidadesNegocioListPage.tsx(45,27): error TS6133: 'value' is declared but its value is never read.
+src/pages/compras/ContratosListPage.tsx(6,41): error TS6133: 'ContractIcon' is declared but its value is never read.

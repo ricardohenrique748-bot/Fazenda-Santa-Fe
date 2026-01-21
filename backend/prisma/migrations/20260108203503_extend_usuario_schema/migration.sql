@@ -1,0 +1,7 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'GERENTE', 'OPERADOR');
+
+-- AlterTable
+ALTER TABLE "Usuario" ADD COLUMN     "ativo" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "cargo" TEXT,
+ADD COLUMN     "role" "Role" NOT NULL DEFAULT 'OPERADOR';

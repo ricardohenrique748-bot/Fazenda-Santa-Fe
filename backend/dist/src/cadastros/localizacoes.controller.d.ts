@@ -1,0 +1,71 @@
+import { LocalizacoesService } from './localizacoes.service';
+export declare class LocalizacoesController {
+    private readonly service;
+    constructor(service: LocalizacoesService);
+    create(data: any): import("@prisma/client").Prisma.Prisma__LocalizacaoClient<{
+        id: string;
+        nome: string;
+        createdAt: Date;
+        updatedAt: Date;
+        descricao: string | null;
+        fazendaId: string;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+    findAll(): import("@prisma/client").Prisma.PrismaPromise<({
+        fazenda: {
+            id: string;
+            nome: string;
+            empresaId: string;
+            createdAt: Date;
+            updatedAt: Date;
+            cidade: string | null;
+            estado: string | null;
+            areaProdutiva: number | null;
+            areaTotal: number | null;
+            codigo: string | null;
+        };
+    } & {
+        id: string;
+        nome: string;
+        createdAt: Date;
+        updatedAt: Date;
+        descricao: string | null;
+        fazendaId: string;
+    })[]>;
+    findOne(id: string): import("@prisma/client").Prisma.Prisma__LocalizacaoClient<({
+        fazenda: {
+            id: string;
+            nome: string;
+            empresaId: string;
+            createdAt: Date;
+            updatedAt: Date;
+            cidade: string | null;
+            estado: string | null;
+            areaProdutiva: number | null;
+            areaTotal: number | null;
+            codigo: string | null;
+        };
+    } & {
+        id: string;
+        nome: string;
+        createdAt: Date;
+        updatedAt: Date;
+        descricao: string | null;
+        fazendaId: string;
+    }) | null, null, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+    update(id: string, data: any): import("@prisma/client").Prisma.Prisma__LocalizacaoClient<{
+        id: string;
+        nome: string;
+        createdAt: Date;
+        updatedAt: Date;
+        descricao: string | null;
+        fazendaId: string;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+    remove(id: string): import("@prisma/client").Prisma.Prisma__LocalizacaoClient<{
+        id: string;
+        nome: string;
+        createdAt: Date;
+        updatedAt: Date;
+        descricao: string | null;
+        fazendaId: string;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+}

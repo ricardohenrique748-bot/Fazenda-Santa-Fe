@@ -1,0 +1,86 @@
+import { ClientesService } from './clientes.service';
+import { Prisma } from '@prisma/client';
+export declare class ClientesController {
+    private readonly clientesService;
+    constructor(clientesService: ClientesService);
+    create(data: Prisma.ClienteCreateInput, req: any): Promise<{
+        id: string;
+        email: string | null;
+        empresaId: string;
+        createdAt: Date;
+        updatedAt: Date;
+        ativo: boolean;
+        cidade: string | null;
+        estado: string | null;
+        inscricaoEstadual: string | null;
+        nomeFantasia: string | null;
+        razaoSocial: string;
+        telefone: string | null;
+        cpfCnpj: string;
+        endereco: string | null;
+    }>;
+    findAll(req: any): Promise<{
+        id: string;
+        email: string | null;
+        empresaId: string;
+        createdAt: Date;
+        updatedAt: Date;
+        ativo: boolean;
+        cidade: string | null;
+        estado: string | null;
+        inscricaoEstadual: string | null;
+        nomeFantasia: string | null;
+        razaoSocial: string;
+        telefone: string | null;
+        cpfCnpj: string;
+        endereco: string | null;
+    }[]>;
+    findOne(id: string): Promise<{
+        id: string;
+        email: string | null;
+        empresaId: string;
+        createdAt: Date;
+        updatedAt: Date;
+        ativo: boolean;
+        cidade: string | null;
+        estado: string | null;
+        inscricaoEstadual: string | null;
+        nomeFantasia: string | null;
+        razaoSocial: string;
+        telefone: string | null;
+        cpfCnpj: string;
+        endereco: string | null;
+    } | null>;
+    update(id: string, data: Prisma.ClienteUpdateInput): Promise<{
+        id: string;
+        email: string | null;
+        empresaId: string;
+        createdAt: Date;
+        updatedAt: Date;
+        ativo: boolean;
+        cidade: string | null;
+        estado: string | null;
+        inscricaoEstadual: string | null;
+        nomeFantasia: string | null;
+        razaoSocial: string;
+        telefone: string | null;
+        cpfCnpj: string;
+        endereco: string | null;
+    }>;
+    remove(id: string): Promise<{
+        id: string;
+        email: string | null;
+        empresaId: string;
+        createdAt: Date;
+        updatedAt: Date;
+        ativo: boolean;
+        cidade: string | null;
+        estado: string | null;
+        inscricaoEstadual: string | null;
+        nomeFantasia: string | null;
+        razaoSocial: string;
+        telefone: string | null;
+        cpfCnpj: string;
+        endereco: string | null;
+    }>;
+}
