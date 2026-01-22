@@ -131,7 +131,19 @@ export default function EmpresaFormPage() {
                                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>Dados Básicos</Typography>
                             </Box>
 
-                            <TextField label="Código" {...register('codigo')} />
+                            <TextField
+                                label="Código"
+                                {...register('codigo')}
+                                disabled
+                                slotProps={{
+                                    input: {
+                                        placeholder: isEditing ? '' : 'Gerado Automáticamente'
+                                    },
+                                    inputLabel: {
+                                        shrink: true
+                                    }
+                                }}
+                            />
                             <TextField
                                 label="Razão Social"
                                 required
