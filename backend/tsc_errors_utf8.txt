@@ -1,0 +1,7 @@
+﻿src/users/users.module.ts(1,10): error TS2300: Duplicate identifier 'Module'.
+src/users/users.module.ts(2,10): error TS2300: Duplicate identifier 'UsersService'.
+src/users/users.module.ts(3,10): error TS2300: Duplicate identifier 'PrismaModule'.
+src/users/users.module.ts(5,10): error TS2300: Duplicate identifier 'Module'.
+src/users/users.module.ts(6,10): error TS2300: Duplicate identifier 'UsersService'.
+src/users/users.module.ts(8,10): error TS2300: Duplicate identifier 'PrismaModule'.
+

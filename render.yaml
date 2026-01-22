@@ -1,3 +1,4 @@
+# Force redeploy with pinned prisma 6.2.1 and clean dist
 services:
   - type: web
     name: malut-backend

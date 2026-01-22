@@ -1,0 +1,274 @@
+﻿node.exe : [96msrc/s
+eguranca/seguranca.se
+rvice.ts[0m:[93m3[
+0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2724: [0m'"@prisma
+/client"' has no 
+exported member 
+named 'Epi'. Did you 
+mean 'EPI'?
+No linha:1 
+caractere:1
++ & "C:\Program Files
+\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: ([96msr   
+ c/segura...you m    
+ean 'EPI'?:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+
+[7m3[0m import { 
+Epi, EntregaEpi, 
+ExameOcupacional } 
+from 
+'@prisma/client';
+[7m [0m [91m      
+   ~~~[0m
+[96msrc/seguranca/se
+guranca.service.ts[0
+m:[93m3[0m:[93m15
+[0m - 
+[91merror[0m[90m 
+TS2724: [0m'"@prisma
+/client"' has no 
+exported member 
+named 'EntregaEpi'. 
+Did you mean 
+'EntregaEPI'?
+
+[7m3[0m import { 
+Epi, EntregaEpi, 
+ExameOcupacional } 
+from 
+'@prisma/client';
+[7m [0m [91m      
+        
+~~~~~~~~~~[0m
+[96msrc/seguranca/se
+guranca.service.ts[0
+m:[93m11[0m:[93m28
+[0m - 
+[91merror[0m[90m 
+TS2551: [0mProperty 
+'epi' does not exist 
+on type 
+'PrismaService'. Did 
+you mean 'ePI'?
+
+[7m11[0m         
+return this.prisma.ep
+i.create({ data });
+[7m  [0m [91m     
+                     
+ ~~~[0m
+
+  [96mnode_modules/.
+prisma/client/index.d
+.ts[0m:[93m570[0m:
+[93m7[0m
+    [7m570[0m   
+get ePI(): Prisma.EPI
+Delegate<ExtArgs, 
+ClientOptions>;
+    [7m   [0m 
+[96m      ~~~[0m
+    'ePI' is 
+declared here.
+[96msrc/seguranca/se
+guranca.service.ts[0
+m:[93m15[0m:[93m28
+[0m - 
+[91merror[0m[90m 
+TS2551: [0mProperty 
+'epi' does not exist 
+on type 
+'PrismaService'. Did 
+you mean 'ePI'?
+
+[7m15[0m         
+return this.prisma.ep
+i.findMany({
+[7m  [0m [91m     
+                     
+ ~~~[0m
+
+  [96mnode_modules/.
+prisma/client/index.d
+.ts[0m:[93m570[0m:
+[93m7[0m
+    [7m570[0m   
+get ePI(): Prisma.EPI
+Delegate<ExtArgs, 
+ClientOptions>;
+    [7m   [0m 
+[96m      ~~~[0m
+    'ePI' is 
+declared here.
+[96msrc/seguranca/se
+guranca.service.ts[0
+m:[93m22[0m:[93m28
+[0m - 
+[91merror[0m[90m 
+TS2551: [0mProperty 
+'entregaEpi' does 
+not exist on type 
+'PrismaService'. Did 
+you mean 
+'entregaEPI'?
+
+[7m22[0m         
+return this.prisma.en
+tregaEpi.create({
+[7m  [0m [91m     
+                     
+ ~~~~~~~~~~[0m
+
+  [96mnode_modules/.
+prisma/client/index.d
+.ts[0m:[93m580[0m:
+[93m7[0m
+    [7m580[0m   
+get entregaEPI(): Pri
+sma.EntregaEPIDelegat
+e<ExtArgs, 
+ClientOptions>;
+    [7m   [0m 
+[96m      
+~~~~~~~~~~[0m
+    'entregaEPI' is 
+declared here.
+[96msrc/seguranca/se
+guranca.service.ts[0
+m:[93m31[0m:[93m28
+[0m - 
+[91merror[0m[90m 
+TS2551: [0mProperty 
+'entregaEpi' does 
+not exist on type 
+'PrismaService'. Did 
+you mean 
+'entregaEPI'?
+
+[7m31[0m         
+return this.prisma.en
+tregaEpi.findMany({
+[7m  [0m [91m     
+                     
+ ~~~~~~~~~~[0m
+
+  [96mnode_modules/.
+prisma/client/index.d
+.ts[0m:[93m580[0m:
+[93m7[0m
+    [7m580[0m   
+get entregaEPI(): Pri
+sma.EntregaEPIDelegat
+e<ExtArgs, 
+ClientOptions>;
+    [7m   [0m 
+[96m      
+~~~~~~~~~~[0m
+    'entregaEPI' is 
+declared here.
+[96msrc/users/users.
+module.ts[0m:[93m1
+[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2300: 
+[0mDuplicate 
+identifier 'Module'.
+
+[7m1[0m import { 
+Module } from 
+'@nestjs/common';
+[7m [0m [91m      
+   ~~~~~~[0m
+[96msrc/users/users.
+module.ts[0m:[93m2
+[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2300: 
+[0mDuplicate 
+identifier 
+'UsersService'.
+
+[7m2[0m import { 
+UsersService } from 
+'./users.service';
+[7m [0m [91m      
+   ~~~~~~~~~~~~[0m
+[96msrc/users/users.
+module.ts[0m:[93m3
+[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2300: 
+[0mDuplicate 
+identifier 
+'PrismaModule'.
+
+[7m3[0m import { 
+PrismaModule } from '
+../prisma/prisma.modu
+le';
+[7m [0m [91m      
+   ~~~~~~~~~~~~[0m
+[96msrc/users/users.
+module.ts[0m:[93m5
+[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2300: 
+[0mDuplicate 
+identifier 'Module'.
+
+[7m5[0m import { 
+Module } from 
+'@nestjs/common';
+[7m [0m [91m      
+   ~~~~~~[0m
+[96msrc/users/users.
+module.ts[0m:[93m6
+[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2300: 
+[0mDuplicate 
+identifier 
+'UsersService'.
+
+[7m6[0m import { 
+UsersService } from 
+'./users.service';
+[7m [0m [91m      
+   ~~~~~~~~~~~~[0m
+[96msrc/users/users.
+module.ts[0m:[93m8
+[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2300: 
+[0mDuplicate 
+identifier 
+'PrismaModule'.
+
+[7m8[0m import { 
+PrismaModule } from '
+../prisma/prisma.modu
+le';
+[7m [0m [91m      
+   ~~~~~~~~~~~~[0m
+
+Found 12 error(s).
+
+
