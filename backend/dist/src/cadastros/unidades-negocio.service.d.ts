@@ -16,7 +16,10 @@ export declare class UnidadesNegocioService {
             email: string | null;
             createdAt: Date;
             updatedAt: Date;
-            cnpj: string;
+            ativo: boolean;
+            cnpj: string | null;
+            cpf: string | null;
+            codigo: string | null;
             bairro: string | null;
             cep: string | null;
             cidade: string | null;
@@ -29,6 +32,25 @@ export declare class UnidadesNegocioService {
             razaoSocial: string;
             site: string | null;
             telefone: string | null;
+            ignorarCaixaFinanceiro: boolean;
+            ignorarEstoque: boolean;
+            cfop: string | null;
+            inscricaoMunicipal: string | null;
+            cei: string | null;
+            cnaeFiscal: string | null;
+            correspondenciaLogradouro: string | null;
+            correspondenciaNumero: string | null;
+            correspondenciaBairro: string | null;
+            correspondenciaEstado: string | null;
+            correspondenciaCidade: string | null;
+            correspondenciaCep: string | null;
+            lotacaoTributaria: string | null;
+            codigoFpas: string | null;
+            codigoGps: string | null;
+            outrasEntidades: string | null;
+            codigoFap: string | null;
+            codigoSimples: string | null;
+            aliquotaRat: number | null;
         };
     } & {
         id: string;

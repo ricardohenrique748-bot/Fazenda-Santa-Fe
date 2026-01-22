@@ -31,9 +31,11 @@ export const authService = {
 };
 
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
+    (response: any) => response,
+    (error: any) => {
+        // Don't auto-logout if we are already on the login page or if the error is from the login endpoint
+        const isLoginRequest = error.config?.url?.includes('/auth/login');
+        if (error.response?.status === 401 && !isLoginRequest) {
             authService.logout();
         }
         return Promise.reject(error);

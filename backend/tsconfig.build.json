@@ -10,6 +10,6 @@
     "prisma"
   ],
   "compilerOptions": {
-    "rootDir": "src"
+    "rootDir": "."
   }
 }

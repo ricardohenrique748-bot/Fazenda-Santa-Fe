@@ -17,8 +17,8 @@ export declare class FuncionariosService {
         updatedAt: Date;
         ativo: boolean;
         cargo: string;
-        telefone: string | null;
         cpf: string;
+        telefone: string | null;
         dataAdmissao: Date;
         salario: number | null;
     })[]>;

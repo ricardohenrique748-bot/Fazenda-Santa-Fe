@@ -9,9 +9,9 @@ export declare class EstoqueController {
         tipo: import("@prisma/client").$Enums.TipoMovimentacao;
         quantidade: number;
         veiculoId: string | null;
+        motivo: string | null;
         produtoId: string;
         depositoId: string;
-        motivo: string | null;
         usuarioId: string;
     }>;
     transferir(data: any, req: any): Promise<any>;
@@ -34,19 +34,19 @@ export declare class EstoqueController {
         tipo: import("@prisma/client").$Enums.TipoMovimentacao;
         quantidade: number;
         veiculoId: string | null;
+        motivo: string | null;
         produtoId: string;
         depositoId: string;
-        motivo: string | null;
         usuarioId: string;
     })[]>;
     getSaldos(req: any): Promise<({
         deposito: {
+            localizacao: string | null;
             id: string;
             nome: string;
             empresaId: string;
             createdAt: Date;
             updatedAt: Date;
-            localizacao: string | null;
         };
         produto: {
             id: string;

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import type { SyntheticEvent } from 'react';
+import type { SyntheticEvent, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, Divider, MenuItem } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { empresasService } from '../../services/empresasService';
+import type { Fazenda } from '../../services/fazendasService';
 
 const empresaSchema = z.object({
     codigo: z.string().optional(),
@@ -59,11 +60,20 @@ const empresaSchema = z.object({
 
 type EmpresaFormInputs = z.infer<typeof empresaSchema>;
 
+const SectionTitle = ({ children }: { children: ReactNode }) => (
+    <Box sx={{ mb: 1, borderBottom: '1px solid #e0e0e0', pb: 0.5 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+            {children}
+        </Typography>
+    </Box>
+);
+
 export default function EmpresaFormPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const isEditing = !!id && id !== 'novo';
     const [tabValue, setTabValue] = useState(0);
+    const [fazendas, setFazendas] = useState<Fazenda[]>([]);
 
     const { register, control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<EmpresaFormInputs>({
         resolver: zodResolver(empresaSchema),
@@ -79,20 +89,27 @@ export default function EmpresaFormPage() {
     };
 
     useEffect(() => {
-        if (isEditing) {
+        const loadEmpresa = async (empresaId: string) => {
+            try {
+                const data = await empresasService.getById(empresaId);
+                if (data.fazendas) {
+                    setFazendas(data.fazendas);
+                }
+                // Ensure boolean fields are boolean
+                reset({
+                    ...data,
+                    ativo: data.ativo ?? true, // Default to true if null/undefined
+                });
+            } catch (error) {
+                console.error('Erro ao carregar empresa', error);
+                alert('Erro ao carregar dados da empresa');
+            }
+        };
+
+        if (isEditing && id) {
             loadEmpresa(id);
         }
-    }, [id]);
-
-    const loadEmpresa = async (empresaId: string) => {
-        try {
-            const data = await empresasService.getById(empresaId);
-            reset(data);
-        } catch (error) {
-            console.error('Erro ao carregar empresa', error);
-            alert('Erro ao carregar dados da empresa');
-        }
-    };
+    }, [id, isEditing, reset]);
 
     const onSubmit: SubmitHandler<EmpresaFormInputs> = async (data) => {
         try {
@@ -108,175 +125,239 @@ export default function EmpresaFormPage() {
         }
     };
 
+
+
     return (
         <Box>
-            <Typography variant="h4" sx={{ mb: 3 }}>
-                {isEditing ? 'Editar Empresa' : 'Nova Empresa'}
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
+                {isEditing ? 'Cadastro de Empresa' : 'Nova Empresa'}
             </Typography>
-            <Paper sx={{ p: 4 }}>
+
+            <Paper sx={{ p: 2 }}>
                 <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-                        <Tabs value={tabValue} onChange={handleTabChange} aria-label="cadastro tabs">
-                            <Tab label="Cadastro Básico" />
-                            <Tab label="Dados Fiscais / E-social" />
-                        </Tabs>
-                    </Box>
+                    <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
+                        <Tab label="Cadastro Básico" />
+                        <Tab label="E-social" />
+                    </Tabs>
 
-                    {/* TAB 0 - DADOS BASICOS */}
+                    {/* TAB 0 - CADASTRO BÁSICO */}
                     <div role="tabpanel" hidden={tabValue !== 0}>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'repeat(12, 1fr)' }, gap: 2 }}>
 
-                            {/* Dados Básicos */}
+                            {/* ROW 1: DADOS BÁSICOS (Left 8) + DEFINIÇÕES (Right 4) */}
+                            <Box sx={{ gridColumn: { xs: '1 / -1', lg: 'span 8' }, display: 'grid', gap: 2 }}>
+                                <Paper variant="outlined" sx={{ p: 2 }}>
+                                    <SectionTitle>Dados Básicos</SectionTitle>
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 4fr', gap: 2, mb: 2 }}>
+                                        <TextField
+                                            label="Código"
+                                            {...register('codigo')}
+                                            disabled
+                                            size="small"
+                                            slotProps={{ input: { placeholder: 'Auto' }, inputLabel: { shrink: true } }}
+                                        />
+                                        <TextField
+                                            label="Nome (Razão Social)"
+                                            required
+                                            size="small"
+                                            error={!!errors.razaoSocial}
+                                            helperText={errors.razaoSocial?.message}
+                                            {...register('razaoSocial')}
+                                        />
+                                    </Box>
+                                    <Box sx={{ mb: 2 }}>
+                                        <TextField label="Fantasia" fullWidth size="small" {...register('nomeFantasia')} />
+                                    </Box>
+
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '4fr 1fr', gap: 2, mb: 2 }}>
+                                        <TextField label="Endereço" size="small" {...register('logradouro')} />
+                                        <TextField label="Nº" size="small" {...register('numero')} />
+                                    </Box>
+
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 2, mb: 2 }}>
+                                        <TextField label="Telefone" size="small" {...register('telefone')} />
+                                        <TextField label="E-mail" size="small" fullWidth {...register('email')} />
+                                    </Box>
+
+                                    <Box sx={{ mb: 2 }}>
+                                        <TextField label="Bairro" size="small" fullWidth {...register('bairro')} />
+                                    </Box>
+
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 2 }}>
+                                        <TextField label="UF" size="small" {...register('estado')} />
+                                        <TextField label="Município" size="small" {...register('cidade')} />
+                                        <TextField label="CEP" size="small" {...register('cep')} />
+                                    </Box>
+                                </Paper>
+                            </Box>
+
+                            <Box sx={{ gridColumn: { xs: '1 / -1', lg: 'span 4' } }}>
+                                <Paper variant="outlined" sx={{ p: 2, height: '100%' }}>
+                                    <SectionTitle>Definições para Empresa</SectionTitle>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                            <Controller
+                                                name="ativo"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Checkbox
+                                                                checked={!field.value}
+                                                                onChange={(e) => field.onChange(!e.target.checked)}
+                                                            />
+                                                        }
+                                                        label="Inativar"
+                                                    />
+                                                )}
+                                            />
+                                        </Box>
+                                        <Controller
+                                            name="ignorarCaixaFinanceiro"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <FormControlLabel
+                                                    control={<Checkbox {...field} checked={field.value} />}
+                                                    label="Ignorar Empresa para Caixa Financeiro"
+                                                />
+                                            )}
+                                        />
+                                        <Controller
+                                            name="ignorarEstoque"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <FormControlLabel
+                                                    control={<Checkbox {...field} checked={field.value} />}
+                                                    label="Ignorar Empresa para Estoque"
+                                                />
+                                            )}
+                                        />
+                                        <Box sx={{ mt: 2 }}>
+                                            <TextField label="CFOP" size="small" fullWidth {...register('cfop')} />
+                                        </Box>
+                                    </Box>
+                                </Paper>
+                            </Box>
+
+                            {/* ROW 2: CONTROLE + CORRESPONDENCIA (Left 6) | FAZENDAS (Right 6) */}
+                            <Box sx={{ gridColumn: { xs: '1 / -1', lg: 'span 6' }, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                {/* Controle de Empresa */}
+                                <Paper variant="outlined" sx={{ p: 2 }}>
+                                    <SectionTitle>Controle de Empresa</SectionTitle>
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                                        <TextField label="CNPJ" size="small" {...register('cnpj')} />
+                                        <TextField label="CPF" size="small" {...register('cpf')} />
+                                        <TextField label="Inscrição Estadual" size="small" {...register('inscricaoEstadual')} />
+                                        <TextField label="Inscrição Municipal" size="small" {...register('inscricaoMunicipal')} />
+                                        <TextField label="CEI" size="small" {...register('cei')} />
+                                        <TextField label="CNAE Fiscal" size="small" {...register('cnaeFiscal')} />
+                                    </Box>
+                                </Paper>
+
+                                {/* Correspondência */}
+                                <Paper variant="outlined" sx={{ p: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Checkbox size="small" /> {/* Placeholder for "Copiar Endereço" or similar logic if needed */}
+                                        <SectionTitle>Correspondência / Cobrança</SectionTitle>
+                                    </Box>
+
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '4fr 1fr', gap: 2, mb: 2 }}>
+                                        <TextField label="Endereço" size="small" {...register('correspondenciaLogradouro')} />
+                                        <TextField label="Nº" size="small" {...register('correspondenciaNumero')} />
+                                    </Box>
+                                    <Box sx={{ mb: 2 }}>
+                                        <TextField label="Bairro" size="small" fullWidth {...register('correspondenciaBairro')} />
+                                    </Box>
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 2 }}>
+                                        <TextField label="UF" size="small" {...register('correspondenciaEstado')} />
+                                        <TextField label="Município" size="small" {...register('correspondenciaCidade')} />
+                                        <TextField label="CEP" size="small" {...register('correspondenciaCep')} />
+                                    </Box>
+                                </Paper>
+                            </Box>
+
+                            <Box sx={{ gridColumn: { xs: '1 / -1', lg: 'span 6' } }}>
+                                <Paper variant="outlined" sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                                        <SectionTitle>Fazendas da Empresa</SectionTitle>
+                                        <Button variant="outlined" size="small" onClick={() => navigate('/cadastros/fazendas')}>
+                                            Fazenda
+                                        </Button>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, border: '1px solid #eee', p: 1, overflowY: 'auto', minHeight: '200px' }}>
+                                        {fazendas.length === 0 ? (
+                                            <Typography variant="body2" color="text.secondary" sx={{ p: 1 }}>
+                                                Nenhuma fazenda cadastrada.
+                                            </Typography>
+                                        ) : (
+                                            fazendas.map((fazenda) => (
+                                                <Box key={fazenda.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                                                    <Checkbox size="small" checked disabled />
+                                                    <Typography variant="body2">{fazenda.nome}</Typography>
+                                                </Box>
+                                            ))
+                                        )}
+                                    </Box>
+                                </Paper>
+                            </Box>
+
+                            {/* ROW 3: FISCAL (Full width) */}
                             <Box sx={{ gridColumn: '1 / -1' }}>
-                                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>Dados Básicos</Typography>
+                                <Paper variant="outlined" sx={{ p: 2 }}>
+                                    <SectionTitle>FISCAL / SEFIP</SectionTitle>
+                                    <Box sx={{ mt: 2, display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2 }}>
+                                        <TextField label="Lotação Tributária" size="small" {...register('lotacaoTributaria')} sx={{ gridColumn: '1 / -1' }} />
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <TextField label="Cód FPAS" size="small" {...register('codigoFpas')} />
+                                            <TextField label="Cód GPS" size="small" {...register('codigoGps')} />
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <TextField label="Outras Ent." size="small" {...register('outrasEntidades')} />
+                                            <TextField label="Cód FAP" size="small" {...register('codigoFap')} />
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                                            <TextField
+                                                label="Alíquota RAT"
+                                                size="small"
+                                                type="number"
+                                                inputProps={{ step: "0.1" }}
+                                                sx={{ width: '100px' }}
+                                                {...register('aliquotaRat')}
+                                            />
+                                        </Box>
+
+                                        <TextField
+                                            label="Código SIMPLES"
+                                            select
+                                            size="small"
+                                            defaultValue=""
+                                            inputProps={register('codigoSimples')}
+                                            sx={{ gridColumn: { md: 'span 2' } }}
+                                        >
+                                            <MenuItem value="">Selecione</MenuItem>
+                                            <MenuItem value="1">1 - Não Optante</MenuItem>
+                                            <MenuItem value="2">2 - Optante (Até 1.2M)</MenuItem>
+                                            <MenuItem value="3">3 - Optante (&gt; 1.2M)</MenuItem>
+                                        </TextField>
+                                    </Box>
+                                </Paper>
                             </Box>
 
-                            <TextField
-                                label="Código"
-                                {...register('codigo')}
-                                disabled
-                                slotProps={{
-                                    input: {
-                                        placeholder: isEditing ? '' : 'Gerado Automáticamente'
-                                    },
-                                    inputLabel: {
-                                        shrink: true
-                                    }
-                                }}
-                            />
-                            <TextField
-                                label="Razão Social"
-                                required
-                                error={!!errors.razaoSocial}
-                                helperText={errors.razaoSocial?.message}
-                                {...register('razaoSocial')}
-                            />
-
-                            <TextField label="Nome Fantasia" {...register('nomeFantasia')} sx={{ gridColumn: '1 / -1' }} />
-
-                            {/* Checkboxes */}
-                            <Box sx={{ gridColumn: '1 / -1', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                                <Controller
-                                    name="ativo"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <FormControlLabel
-                                            control={<Checkbox {...field} checked={field.value} />}
-                                            label="Ativo"
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="ignorarCaixaFinanceiro"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <FormControlLabel
-                                            control={<Checkbox {...field} checked={field.value} />}
-                                            label="Ignorar Empresa para Caixa Financeiro"
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="ignorarEstoque"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <FormControlLabel
-                                            control={<Checkbox {...field} checked={field.value} />}
-                                            label="Ignorar Empresa para Estoque"
-                                        />
-                                    )}
-                                />
-                            </Box>
-
-                            <TextField label="CFOP" {...register('cfop')} />
-
-                            {/* Endereço */}
-                            <Box sx={{ gridColumn: '1 / -1', mt: 1 }}>
-                                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>Endereço</Typography>
-                                <Divider />
-                            </Box>
-
-                            <TextField label="CEP" {...register('cep')} />
-                            <TextField label="Logradouro" {...register('logradouro')} sx={{ gridColumn: { md: 'span 2' } }} />
-                            <TextField label="Número" {...register('numero')} />
-                            <TextField label="Bairro" {...register('bairro')} />
-                            <TextField label="Cidade" {...register('cidade')} />
-                            <TextField label="Estado" {...register('estado')} />
-                            <TextField label="Complemento" {...register('complemento')} />
-
-                            {/* Contato */}
-                            <Box sx={{ gridColumn: '1 / -1', mt: 1 }}>
-                                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>Contato</Typography>
-                                <Divider />
-                            </Box>
-
-                            <TextField label="Telefone" {...register('telefone')} />
-                            <TextField label="Email" error={!!errors.email} helperText={errors.email?.message} {...register('email')} />
-                        </Box>
-
-                        {/* Controle de Empresa */}
-                        <Box sx={{ mt: 4 }}>
-                            <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>Controle de Empresa</Typography>
-                            <Divider sx={{ mb: 2 }} />
-                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                                <TextField label="CNPJ" {...register('cnpj')} />
-                                <TextField label="CPF" {...register('cpf')} />
-                                <TextField label="Inscrição Estadual" {...register('inscricaoEstadual')} />
-                                <TextField label="Inscrição Municipal" {...register('inscricaoMunicipal')} />
-                                <TextField label="CEI" {...register('cei')} />
-                                <TextField label="CNAE Fiscal" {...register('cnaeFiscal')} />
-                            </Box>
-                        </Box>
-
-                        {/* Correspondencia */}
-                        <Box sx={{ mt: 4 }}>
-                            <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>Correspondência / Cobrança</Typography>
-                            <Divider sx={{ mb: 2 }} />
-                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                                <TextField label="CEP" {...register('correspondenciaCep')} />
-                                <TextField label="Logradouro" {...register('correspondenciaLogradouro')} sx={{ gridColumn: { md: 'span 2' } }} />
-                                <TextField label="Número" {...register('correspondenciaNumero')} />
-                                <TextField label="Bairro" {...register('correspondenciaBairro')} />
-                                <TextField label="Cidade" {...register('correspondenciaCidade')} />
-                                <TextField label="Estado" {...register('correspondenciaEstado')} />
-                            </Box>
                         </Box>
                     </div>
 
-                    {/* TAB 1 - DADOS FISCAIS */}
+                    {/* TAB 1 - E-SOCIAL (Placeholder) */}
                     <div role="tabpanel" hidden={tabValue !== 1}>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                            <Box sx={{ gridColumn: '1 / -1' }}>
-                                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>FISCAL / SEFIP</Typography>
-                                <Divider />
-                            </Box>
-
-                            <TextField label="Lotação Tributária" {...register('lotacaoTributaria')} sx={{ gridColumn: '1 / -1' }} />
-                            <TextField label="Código FPAS" {...register('codigoFpas')} />
-                            <TextField label="Código GPS" {...register('codigoGps')} />
-                            <TextField label="Outras Entidades" {...register('outrasEntidades')} />
-                            <TextField label="Código FAP" {...register('codigoFap')} />
-
-                            <TextField label="Código SIMPLES" select defaultValue="" inputProps={register('codigoSimples')}>
-                                <MenuItem value="">Selecione</MenuItem>
-                                <MenuItem value="1">1 - Não Optante</MenuItem>
-                                <MenuItem value="2">2 - Optante</MenuItem>
-                            </TextField>
-
-                            <TextField
-                                label="Aliquota RAT"
-                                type="number"
-                                inputProps={{ step: "0.1" }}
-                                {...register('aliquotaRat')}
-                            />
+                        <Box sx={{ p: 4, textAlign: 'center' }}>
+                            <Typography color="text.secondary">Configurações do E-social (Em breve)</Typography>
                         </Box>
                     </div>
 
-                    <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-                        <Button variant="outlined" size="large" onClick={() => navigate('/cadastros/empresas')}>
+                    <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end', borderTop: 1, borderColor: 'divider', pt: 2 }}>
+                        <Button variant="outlined" onClick={() => navigate('/cadastros/empresas')}>
                             Cancelar
                         </Button>
-                        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+                        <Button type="submit" variant="contained" disabled={isSubmitting}>
                             Gravar
                         </Button>
                     </Box>

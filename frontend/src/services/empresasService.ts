@@ -16,7 +16,11 @@ export interface Empresa {
     telefone?: string;
     email?: string;
     site?: string;
+    ativo?: boolean;
+    fazendas?: Fazenda[];
 }
+
+import type { Fazenda } from './fazendasService';
 
 export const empresasService = {
     getAll: async () => {

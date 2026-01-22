@@ -22,19 +22,19 @@ export declare class EstoqueService {
         tipo: import("@prisma/client").$Enums.TipoMovimentacao;
         quantidade: number;
         veiculoId: string | null;
+        motivo: string | null;
         produtoId: string;
         depositoId: string;
-        motivo: string | null;
         usuarioId: string;
     })[]>;
     getSaldos(empresaId: string): Promise<({
         deposito: {
+            localizacao: string | null;
             id: string;
             nome: string;
             empresaId: string;
             createdAt: Date;
             updatedAt: Date;
-            localizacao: string | null;
         };
         produto: {
             id: string;

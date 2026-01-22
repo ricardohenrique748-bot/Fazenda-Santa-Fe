@@ -31,7 +31,10 @@ export class EmpresasService {
     }
 
     async findOne(id: string) {
-        return this.prisma.empresa.findUnique({ where: { id } });
+        return this.prisma.empresa.findUnique({
+            where: { id },
+            include: { fazendas: true }
+        });
     }
 
     async update(id: string, data: Prisma.EmpresaUpdateInput) {

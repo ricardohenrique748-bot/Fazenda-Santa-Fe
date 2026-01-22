@@ -12,8 +12,8 @@ export declare class FuncionariosController {
         updatedAt: Date;
         ativo: boolean;
         cargo: string;
-        telefone: string | null;
         cpf: string;
+        telefone: string | null;
         dataAdmissao: Date;
         salario: number | null;
     }>;
@@ -30,8 +30,8 @@ export declare class FuncionariosController {
         updatedAt: Date;
         ativo: boolean;
         cargo: string;
-        telefone: string | null;
         cpf: string;
+        telefone: string | null;
         dataAdmissao: Date;
         salario: number | null;
     })[]>;
@@ -44,8 +44,8 @@ export declare class FuncionariosController {
         updatedAt: Date;
         ativo: boolean;
         cargo: string;
-        telefone: string | null;
         cpf: string;
+        telefone: string | null;
         dataAdmissao: Date;
         salario: number | null;
     } | null>;
@@ -58,8 +58,8 @@ export declare class FuncionariosController {
         updatedAt: Date;
         ativo: boolean;
         cargo: string;
-        telefone: string | null;
         cpf: string;
+        telefone: string | null;
         dataAdmissao: Date;
         salario: number | null;
     }>;
@@ -72,8 +72,8 @@ export declare class FuncionariosController {
         updatedAt: Date;
         ativo: boolean;
         cargo: string;
-        telefone: string | null;
         cpf: string;
+        telefone: string | null;
         dataAdmissao: Date;
         salario: number | null;
     }>;

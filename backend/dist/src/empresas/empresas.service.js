@@ -18,13 +18,30 @@ let EmpresasService = class EmpresasService {
         this.prisma = prisma;
     }
     async create(data) {
+        if (!data.codigo) {
+            const lastEmpresa = await this.prisma.empresa.findFirst({
+                orderBy: { codigo: 'desc' },
+                select: { codigo: true }
+            });
+            let nextCode = 1;
+            if (lastEmpresa && lastEmpresa.codigo) {
+                const lastCodeInt = parseInt(lastEmpresa.codigo);
+                if (!isNaN(lastCodeInt)) {
+                    nextCode = lastCodeInt + 1;
+                }
+            }
+            data.codigo = nextCode.toString();
+        }
         return this.prisma.empresa.create({ data });
     }
     async findAll() {
         return this.prisma.empresa.findMany();
     }
     async findOne(id) {
-        return this.prisma.empresa.findUnique({ where: { id } });
+        return this.prisma.empresa.findUnique({
+            where: { id },
+            include: { fazendas: true }
+        });
     }
     async update(id, data) {
         return this.prisma.empresa.update({

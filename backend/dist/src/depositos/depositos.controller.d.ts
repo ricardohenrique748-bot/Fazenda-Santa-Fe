@@ -4,24 +4,24 @@ export declare class DepositosController {
     private readonly depositosService;
     constructor(depositosService: DepositosService);
     create(data: Prisma.DepositoCreateInput, req: any): Promise<{
+        localizacao: string | null;
         id: string;
         nome: string;
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
-        localizacao: string | null;
     }>;
     findAll(req: any): Promise<({
         empresa: {
             razaoSocial: string;
         };
     } & {
+        localizacao: string | null;
         id: string;
         nome: string;
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
-        localizacao: string | null;
     })[]>;
     findOne(id: string, req: any): Promise<{
         empresa: {
@@ -29,7 +29,10 @@ export declare class DepositosController {
             email: string | null;
             createdAt: Date;
             updatedAt: Date;
-            cnpj: string;
+            ativo: boolean;
+            cnpj: string | null;
+            cpf: string | null;
+            codigo: string | null;
             bairro: string | null;
             cep: string | null;
             cidade: string | null;
@@ -42,6 +45,25 @@ export declare class DepositosController {
             razaoSocial: string;
             site: string | null;
             telefone: string | null;
+            ignorarCaixaFinanceiro: boolean;
+            ignorarEstoque: boolean;
+            cfop: string | null;
+            inscricaoMunicipal: string | null;
+            cei: string | null;
+            cnaeFiscal: string | null;
+            correspondenciaLogradouro: string | null;
+            correspondenciaNumero: string | null;
+            correspondenciaBairro: string | null;
+            correspondenciaEstado: string | null;
+            correspondenciaCidade: string | null;
+            correspondenciaCep: string | null;
+            lotacaoTributaria: string | null;
+            codigoFpas: string | null;
+            codigoGps: string | null;
+            outrasEntidades: string | null;
+            codigoFap: string | null;
+            codigoSimples: string | null;
+            aliquotaRat: number | null;
         };
         estoques: ({
             produto: {
@@ -63,27 +85,27 @@ export declare class DepositosController {
             depositoId: string;
         })[];
     } & {
+        localizacao: string | null;
         id: string;
         nome: string;
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
-        localizacao: string | null;
     }>;
     update(id: string, data: Prisma.DepositoUpdateInput, req: any): Promise<{
+        localizacao: string | null;
         id: string;
         nome: string;
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
-        localizacao: string | null;
     }>;
     remove(id: string, req: any): Promise<{
+        localizacao: string | null;
         id: string;
         nome: string;
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
-        localizacao: string | null;
     }>;
 }

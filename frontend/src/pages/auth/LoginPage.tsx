@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logo from '../../assets/logo.png';
 import { useForm } from 'react-hook-form';
-import { Box, Button, TextField, Typography, Paper, Container, Alert } from '@mui/material';
+import { Box, Button, TextField, Paper, Container, Alert } from '@mui/material';
 import { authService } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -32,7 +32,10 @@ export default function LoginPage() {
             } else if (err.response?.status === 401) {
                 setError('E-mail ou senha incorretos.');
             } else {
-                setError('Ocorreu um erro inesperado. Tente novamente mais tarde.');
+                // Showing more details for debugging
+                const status = err.response?.status;
+                const msg = err.response?.data?.message || 'Erro desconhecido';
+                setError(`Ocorreu um erro inesperado (${status}): ${msg}`);
             }
         }
     };
@@ -101,7 +104,7 @@ export default function LoginPage() {
                             size="large"
                             sx={{ mt: 4, mb: 2, height: 50, fontSize: '1.1rem' }}
                         >
-                            Acessar Sistema
+                            Entrar (v1.1)
                         </Button>
                     </Box>
                 </Paper>

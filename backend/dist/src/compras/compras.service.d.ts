@@ -94,12 +94,12 @@ export declare class ComprasService {
         fornecedorId: string;
     })[]>;
     createContrato(data: any): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         safra: string;
         cliente: string | null;
         cultura: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
         dataVencimento: Date;
         status: string;
         clienteId: string | null;
@@ -107,12 +107,12 @@ export declare class ComprasService {
         valorPorUnidade: number;
     }>;
     getContratos(empresaId: string): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         safra: string;
         cliente: string | null;
         cultura: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
         dataVencimento: Date;
         status: string;
         clienteId: string | null;

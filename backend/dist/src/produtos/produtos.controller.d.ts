@@ -44,12 +44,12 @@ export declare class ProdutosController {
                 nome: string;
             };
             deposito: {
+                localizacao: string | null;
                 id: string;
                 nome: string;
                 empresaId: string;
                 createdAt: Date;
                 updatedAt: Date;
-                localizacao: string | null;
             };
         } & {
             id: string;
@@ -58,19 +58,19 @@ export declare class ProdutosController {
             tipo: import("@prisma/client").$Enums.TipoMovimentacao;
             quantidade: number;
             veiculoId: string | null;
+            motivo: string | null;
             produtoId: string;
             depositoId: string;
-            motivo: string | null;
             usuarioId: string;
         })[];
         estoques: ({
             deposito: {
+                localizacao: string | null;
                 id: string;
                 nome: string;
                 empresaId: string;
                 createdAt: Date;
                 updatedAt: Date;
-                localizacao: string | null;
             };
         } & {
             id: string;

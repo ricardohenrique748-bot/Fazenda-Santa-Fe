@@ -94,12 +94,12 @@ export declare class ComprasController {
         fornecedorId: string;
     }>;
     getContratos(req: any): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         safra: string;
         cliente: string | null;
         cultura: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
         dataVencimento: Date;
         status: string;
         clienteId: string | null;
@@ -107,12 +107,12 @@ export declare class ComprasController {
         valorPorUnidade: number;
     }[]>;
     createContrato(data: any, req: any): Promise<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         safra: string;
         cliente: string | null;
         cultura: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
         dataVencimento: Date;
         status: string;
         clienteId: string | null;

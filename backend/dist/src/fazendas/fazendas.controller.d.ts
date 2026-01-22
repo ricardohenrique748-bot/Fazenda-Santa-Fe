@@ -9,11 +9,11 @@ export declare class FazendasController {
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
+        codigo: string | null;
         cidade: string | null;
         estado: string | null;
         areaProdutiva: number | null;
         areaTotal: number | null;
-        codigo: string | null;
     }>;
     findAll(): Promise<({
         empresa: {
@@ -26,11 +26,11 @@ export declare class FazendasController {
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
+        codigo: string | null;
         cidade: string | null;
         estado: string | null;
         areaProdutiva: number | null;
         areaTotal: number | null;
-        codigo: string | null;
     })[]>;
     findOne(id: string): Promise<({
         empresa: {
@@ -38,7 +38,10 @@ export declare class FazendasController {
             email: string | null;
             createdAt: Date;
             updatedAt: Date;
-            cnpj: string;
+            ativo: boolean;
+            cnpj: string | null;
+            cpf: string | null;
+            codigo: string | null;
             bairro: string | null;
             cep: string | null;
             cidade: string | null;
@@ -51,6 +54,25 @@ export declare class FazendasController {
             razaoSocial: string;
             site: string | null;
             telefone: string | null;
+            ignorarCaixaFinanceiro: boolean;
+            ignorarEstoque: boolean;
+            cfop: string | null;
+            inscricaoMunicipal: string | null;
+            cei: string | null;
+            cnaeFiscal: string | null;
+            correspondenciaLogradouro: string | null;
+            correspondenciaNumero: string | null;
+            correspondenciaBairro: string | null;
+            correspondenciaEstado: string | null;
+            correspondenciaCidade: string | null;
+            correspondenciaCep: string | null;
+            lotacaoTributaria: string | null;
+            codigoFpas: string | null;
+            codigoGps: string | null;
+            outrasEntidades: string | null;
+            codigoFap: string | null;
+            codigoSimples: string | null;
+            aliquotaRat: number | null;
         };
     } & {
         id: string;
@@ -58,11 +80,11 @@ export declare class FazendasController {
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
+        codigo: string | null;
         cidade: string | null;
         estado: string | null;
         areaProdutiva: number | null;
         areaTotal: number | null;
-        codigo: string | null;
     }) | null>;
     update(id: string, updateFazendaDto: Prisma.FazendaUpdateInput): Promise<{
         id: string;
@@ -70,11 +92,11 @@ export declare class FazendasController {
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
+        codigo: string | null;
         cidade: string | null;
         estado: string | null;
         areaProdutiva: number | null;
         areaTotal: number | null;
-        codigo: string | null;
     }>;
     remove(id: string): Promise<{
         id: string;
@@ -82,10 +104,10 @@ export declare class FazendasController {
         empresaId: string;
         createdAt: Date;
         updatedAt: Date;
+        codigo: string | null;
         cidade: string | null;
         estado: string | null;
         areaProdutiva: number | null;
         areaTotal: number | null;
-        codigo: string | null;
     }>;
 }

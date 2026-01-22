@@ -17,11 +17,11 @@ export declare class LocalizacoesService {
             empresaId: string;
             createdAt: Date;
             updatedAt: Date;
+            codigo: string | null;
             cidade: string | null;
             estado: string | null;
             areaProdutiva: number | null;
             areaTotal: number | null;
-            codigo: string | null;
         };
     } & {
         id: string;
@@ -38,11 +38,11 @@ export declare class LocalizacoesService {
             empresaId: string;
             createdAt: Date;
             updatedAt: Date;
+            codigo: string | null;
             cidade: string | null;
             estado: string | null;
             areaProdutiva: number | null;
             areaTotal: number | null;
-            codigo: string | null;
         };
     } & {
         id: string;
