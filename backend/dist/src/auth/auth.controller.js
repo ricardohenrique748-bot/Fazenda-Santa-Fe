@@ -22,7 +22,14 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     async login(req) {
-        return this.authService.login(req.user);
+        try {
+            console.log('AuthController.login called');
+            return await this.authService.login(req.user);
+        }
+        catch (error) {
+            console.error('AuthController.login error:', error);
+            throw error;
+        }
     }
     async register(registerDto) {
         return this.authService.register(registerDto);

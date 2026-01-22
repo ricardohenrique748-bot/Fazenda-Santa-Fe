@@ -21,11 +21,20 @@ let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)
         this.authService = authService;
     }
     async validate(email, pass) {
-        const user = await this.authService.validateUser(email, pass);
-        if (!user) {
-            throw new common_1.UnauthorizedException();
+        console.log('LocalStrategy.validate called with:', email, pass);
+        try {
+            const user = await this.authService.validateUser(email, pass);
+            console.log('validateUser result:', user);
+            if (!user) {
+                console.log('User not found or password invalid');
+                throw new common_1.UnauthorizedException();
+            }
+            return user;
         }
-        return user;
+        catch (error) {
+            console.error('LocalStrategy error:', error);
+            throw error;
+        }
     }
 };
 exports.LocalStrategy = LocalStrategy;
