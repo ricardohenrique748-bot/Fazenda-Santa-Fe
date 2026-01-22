@@ -9,7 +9,9 @@ datasource db {
 
 model Empresa {
   id                String                 @id @default(uuid())
-  cnpj              String                 @unique
+  cnpj              String?                @unique // Made optional because CPF might be used
+  cpf               String?                @unique // Added CPF
+  codigo            String?                // Added Código
   createdAt         DateTime               @default(now())
   updatedAt         DateTime               @updatedAt
   bairro            String?
@@ -25,6 +27,37 @@ model Empresa {
   razaoSocial       String
   site              String?
   telefone          String?
+  
+  // New flags
+  ativo                   Boolean @default(true) // Replaces "Inativar" (inverted logic usually better, or keep inativar?)
+  // User asked for "Inativar" checkbox. Usually `ativo` @default(true) is better practice, but UI says "Inativar".
+  // I will stick to common practice `ativo` default true, and UI will match `!ativo`.
+  ignorarCaixaFinanceiro  Boolean @default(false)
+  ignorarEstoque          Boolean @default(false)
+  cfop                    String?
+  
+  // Controle
+  inscricaoMunicipal      String?
+  cei                     String?
+  cnaeFiscal              String?
+  
+  // Correspondencia
+  correspondenciaLogradouro String?
+  correspondenciaNumero     String?
+  correspondenciaBairro     String?
+  correspondenciaEstado     String?
+  correspondenciaCidade     String?
+  correspondenciaCep        String?
+  
+  // Fiscal / SEFIP
+  lotacaoTributaria       String?
+  codigoFpas              String?
+  codigoGps               String?
+  outrasEntidades         String?
+  codigoFap               String?
+  codigoSimples           String?
+  aliquotaRat             Float?
+
   depositos         Deposito[]
   fazendas          Fazenda[]
   fornecedores      Fornecedor[]
