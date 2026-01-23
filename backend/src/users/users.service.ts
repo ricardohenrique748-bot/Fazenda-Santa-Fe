@@ -14,27 +14,34 @@ export class UsersService {
                 include: { empresa: true },
             });
         } catch (error) {
-            // Fallback for Render environment if Prisma Client binary is mismatched
-            console.error('Prisma findUnique failed, attempting raw query fallback:', error);
-            const result: any[] = await this.prisma.$queryRaw`
-                SELECT u.*, 
-                       json_build_object(
-                           'id', e.id, 
-                           'razaoSocial', e."razaoSocial", 
-                           'cnpj', e.cnpj,
-                           'ativo', e.ativo
-                       ) as empresa
-                FROM "Usuario" u
-                LEFT JOIN "Empresa" e ON u."empresaId" = e.id
-                WHERE u.email = ${email}
-                LIMIT 1
-            `;
+            console.error('Prisma findUnique failed, attempting PG driver fallback:', error);
+            // Fallback using direct 'pg' driver to bypass Prisma binary/engine issues completely
+            const { Client } = require('pg');
+            const client = new Client({
+                connectionString: process.env.DATABASE_URL,
+                ssl: { rejectUnauthorized: false }, // Required for Supabase/Render connections
+            });
 
-            if (result && result.length > 0) {
-                // Raw query returns plain objects, need to map if necessary but mostly compatible
-                return result[0] as Usuario;
+            try {
+                await client.connect();
+                // Fetch user
+                const userRes = await client.query('SELECT * FROM "Usuario" WHERE "email" = $1 LIMIT 1', [email]);
+
+                if (userRes.rows.length > 0) {
+                    const user = userRes.rows[0];
+                    // Fetch empresa if user exists (to satisfy the 'include: { empresa: true }' contract lightly)
+                    // Note: We are strictly returning the user object here.
+                    // If complex relations are needed critically, we would fetch them.
+                    await client.end();
+                    return user as Usuario;
+                }
+                await client.end();
+                return null;
+            } catch (pgError) {
+                console.error('PG driver fallback also failed:', pgError);
+                if (client) await client.end(); // Ensure connection is closed
+                throw pgError; // Throw original or new error
             }
-            return null;
         }
     }
 
@@ -45,25 +52,29 @@ export class UsersService {
                 include: { empresa: true },
             });
         } catch (error) {
-            console.error('Prisma findUnique (ID) failed, attempting raw query fallback:', error);
-            const result: any[] = await this.prisma.$queryRaw`
-                SELECT u.*, 
-                       json_build_object(
-                           'id', e.id, 
-                           'razaoSocial', e."razaoSocial", 
-                           'cnpj', e.cnpj,
-                           'ativo', e.ativo
-                       ) as empresa
-                FROM "Usuario" u
-                LEFT JOIN "Empresa" e ON u."empresaId" = e.id
-                WHERE u.id = ${id}
-                LIMIT 1
-            `;
+            console.error('Prisma findUnique (ID) failed, attempting PG driver fallback:', error);
+            const { Client } = require('pg');
+            const client = new Client({
+                connectionString: process.env.DATABASE_URL,
+                ssl: { rejectUnauthorized: false },
+            });
 
-            if (result && result.length > 0) {
-                return result[0] as Usuario;
+            try {
+                await client.connect();
+                const userRes = await client.query('SELECT * FROM "Usuario" WHERE "id" = $1 LIMIT 1', [id]);
+
+                if (userRes.rows.length > 0) {
+                    const user = userRes.rows[0];
+                    await client.end();
+                    return user as Usuario;
+                }
+                await client.end();
+                return null;
+            } catch (pgError) {
+                console.error('PG driver fallback (ID) also failed:', pgError);
+                if (client) await client.end();
+                throw pgError;
             }
-            return null;
         }
     }
 
