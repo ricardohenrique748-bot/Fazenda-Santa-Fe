@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Query, UseGuards, Request, Delete } from '@nestjs/common';
 import { FinanceiroService } from './financeiro.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 import { Prisma } from '@prisma/client';
 
 @UseGuards(JwtAuthGuard)

@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { RelatoriosService } from './relatorios.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 
 @Controller('relatorios')
 @UseGuards(JwtAuthGuard)

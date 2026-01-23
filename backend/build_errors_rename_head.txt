@@ -1,0 +1,200 @@
+﻿
+> backend@0.0.1 build
+> nest build
+
+node.exe : [96msrc/apontame
+ntos/apontamentos.controller
+.ts[0m:[93m4[0m:[93m30[
+0m - [91merror[0m[90m 
+TS2307: [0mCannot find 
+module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+No linha:1 caractere:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: ([96m  
+  src/aponta...e declarat   
+ ions.:String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+
+[7m4[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/comercial/clientes/
+clientes.controller.ts[0m:
+[93m4[0m:[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../../auth/jwt-auth.guard' 
+or its corresponding type 
+declarations.
+
+[7m4[0m import { 
+JwtAuthGuard } from 
+'../../auth/jwt-auth.guard';
+[7m [0m [91m             
+                ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+[96msrc/comercial/pedidos/p
+edidos-venda.controller.ts[
+0m:[93m3[0m:[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../../auth/jwt-auth.guard' 
+or its corresponding type 
+declarations.
+
+[7m3[0m import { 
+JwtAuthGuard } from 
+'../../auth/jwt-auth.guard';
+[7m [0m [91m             
+                ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+[96msrc/compras/compras.con
+troller.ts[0m:[93m3[0m:[
+93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m3[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/depositos/depositos
+.controller.ts[0m:[93m4[0
+m:[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m4[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/empresas/empresas.c
+ontroller.ts[0m:[93m4[0m:
+[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m4[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/estoque/estoque.con
+troller.ts[0m:[93m3[0m:[
+93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m3[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/fabricantes/fabrica
+ntes.controller.ts[0m:[93m
+3[0m:[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m3[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/fazendas/fazendas.c
+ontroller.ts[0m:[93m4[0m:
+[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m4[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/financeiro/financei
+ro.controller.ts[0m:[93m3
+[0m:[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m3[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/funcionarios/funcio
+narios.controller.ts[0m:[9
+3m4[0m:[93m30[0m - 
+[91merror[0m[90m TS2307: 
+[0mCannot find module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m4[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             
+                
+~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/grupos-equipamento/
+grupos-equipamento.controlle
+r.ts[0m:[93m4[0m:[93m30
+[0m - [91merror[0m[90m 
+TS2307: [0mCannot find 
+module 
+'../auth/jwt-auth.guard' or 
+its corresponding type 
+declarations.
+
+[7m4[0m import { 
+JwtAuthGuard } from 
+'../auth/jwt-auth.guard';
+[7m [0m [91m             

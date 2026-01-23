@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { RelatoriosMecanizacaoService } from './relatorios-mecanizacao.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('relatorios/mecanizacao')
