@@ -4,7 +4,9 @@ import { useForm, Controller } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { useFieldArray } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { empresasService } from '../../services/empresasService';
 import type { Fazenda } from '../../services/fazendasService';
@@ -56,6 +58,15 @@ const empresaSchema = z.object({
     codigoFap: z.string().optional(),
     codigoSimples: z.string().optional(),
     aliquotaRat: z.coerce.number().optional(),
+
+    // Socios
+    socios: z.array(z.object({
+        nome: z.string().min(1, 'Nome é obrigatório'),
+        cpf: z.string().optional(),
+        cnpj: z.string().optional(),
+        percentual: z.coerce.number().optional(),
+        principal: z.boolean().default(false),
+    })).optional(),
 });
 
 type EmpresaFormInputs = z.infer<typeof empresaSchema>;
@@ -71,18 +82,42 @@ const SectionTitle = ({ children }: { children: ReactNode }) => (
 export default function EmpresaFormPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    console.log('EmpresaFormPage rendered'); // Force HMR update
     const isEditing = !!id && id !== 'novo';
     const [tabValue, setTabValue] = useState(0);
     const [fazendas, setFazendas] = useState<Fazenda[]>([]);
 
-    const { register, control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<EmpresaFormInputs>({
+    const { register, control, handleSubmit, reset, formState: { errors, isSubmitting }, watch } = useForm<EmpresaFormInputs>({
         resolver: zodResolver(empresaSchema),
         defaultValues: {
             ativo: true,
             ignorarCaixaFinanceiro: false,
             ignorarEstoque: false,
+            socios: []
         }
     });
+
+    const { fields: sociosFields, append: appendSocio, remove: removeSocio } = useFieldArray({
+        control,
+        name: "socios"
+    });
+
+    // Modal state for Socio
+    const [openSocioModal, setOpenSocioModal] = useState(false);
+    const [newSocio, setNewSocio] = useState({ nome: '', cpf: '', cnpj: '', percentual: '', principal: false });
+
+    const handleAddSocio = () => {
+        if (!newSocio.nome) {
+            alert('Nome é obrigatório');
+            return;
+        }
+        appendSocio({
+            ...newSocio,
+            percentual: Number(newSocio.percentual) || 0
+        });
+        setNewSocio({ nome: '', cpf: '', cnpj: '', percentual: '', principal: false });
+        setOpenSocioModal(false);
+    };
 
     const handleTabChange = (event: SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -137,6 +172,7 @@ export default function EmpresaFormPage() {
                 <Box component="form" onSubmit={handleSubmit(onSubmit)}>
                     <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
                         <Tab label="Cadastro Básico" />
+                        <Tab label="Sócios IR" />
                         <Tab label="E-social" />
                     </Tabs>
 
@@ -346,8 +382,110 @@ export default function EmpresaFormPage() {
                         </Box>
                     </div>
 
-                    {/* TAB 1 - E-SOCIAL (Placeholder) */}
+                    {/* TAB 1 - SOCIOS IR */}
                     <div role="tabpanel" hidden={tabValue !== 1}>
+                        <Box sx={{ p: 2 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="h6">Sócios Imposto de Renda</Typography>
+                                <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpenSocioModal(true)}>
+                                    Adicionar Sócio
+                                </Button>
+                            </Box>
+
+                            <TableContainer component={Paper} variant="outlined">
+                                <Table size="small">
+                                    <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+                                        <TableRow>
+                                            <TableCell>Nome</TableCell>
+                                            <TableCell>CPF</TableCell>
+                                            <TableCell>CNPJ</TableCell>
+                                            <TableCell>Percentual (%)</TableCell>
+                                            <TableCell align="center">Principal</TableCell>
+                                            <TableCell align="center">Ações</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {sociosFields.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
+                                                    Nenhum sócio cadastrado.
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            sociosFields.map((field, index) => (
+                                                <TableRow key={field.id}>
+                                                    <TableCell>{field.nome}</TableCell>
+                                                    <TableCell>{field.cpf}</TableCell>
+                                                    <TableCell>{field.cnpj}</TableCell>
+                                                    <TableCell>{field.percentual}</TableCell>
+                                                    <TableCell align="center">
+                                                        <Checkbox checked={field.principal} disabled size="small" />
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <IconButton size="small" color="error" onClick={() => removeSocio(index)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+
+                        {/* Dialog for Adding Socio */}
+                        <Dialog open={openSocioModal} onClose={() => setOpenSocioModal(false)} maxWidth="sm" fullWidth>
+                            <DialogTitle>Inclusão de Sócios IR</DialogTitle>
+                            <DialogContent>
+                                <Box sx={{ display: 'grid', gap: 2, mt: 1 }}>
+                                    <TextField
+                                        label="Nome"
+                                        fullWidth
+                                        value={newSocio.nome}
+                                        onChange={(e) => setNewSocio({ ...newSocio, nome: e.target.value })}
+                                        autoFocus
+                                    />
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                                        <TextField
+                                            label="CPF"
+                                            value={newSocio.cpf}
+                                            onChange={(e) => setNewSocio({ ...newSocio, cpf: e.target.value })}
+                                        />
+                                        <TextField
+                                            label="CNPJ"
+                                            value={newSocio.cnpj}
+                                            onChange={(e) => setNewSocio({ ...newSocio, cnpj: e.target.value })}
+                                        />
+                                    </Box>
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, alignItems: 'center' }}>
+                                        <TextField
+                                            label="Percentual (%)"
+                                            type="number"
+                                            value={newSocio.percentual}
+                                            onChange={(e) => setNewSocio({ ...newSocio, percentual: e.target.value })}
+                                        />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={newSocio.principal}
+                                                    onChange={(e) => setNewSocio({ ...newSocio, principal: e.target.checked })}
+                                                />
+                                            }
+                                            label="Sócio Principal"
+                                        />
+                                    </Box>
+                                </Box>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => setOpenSocioModal(false)}>Cancelar</Button>
+                                <Button onClick={handleAddSocio} variant="contained">Gravar</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+
+                    {/* TAB 2 - E-SOCIAL (Placeholder) */}
+                    <div role="tabpanel" hidden={tabValue !== 2}>
                         <Box sx={{ p: 4, textAlign: 'center' }}>
                             <Typography color="text.secondary">Configurações do E-social (Em breve)</Typography>
                         </Box>

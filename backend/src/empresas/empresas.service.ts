@@ -6,9 +6,11 @@ import { Prisma } from '@prisma/client';
 export class EmpresasService {
     constructor(private prisma: PrismaService) { }
 
-    async create(data: Prisma.EmpresaCreateInput) {
+    async create(data: any) {
+        const { socios, ...rest } = data;
+
         // Auto-generate code if not provided
-        if (!data.codigo) {
+        if (!rest.codigo) {
             const lastEmpresa = await this.prisma.empresa.findFirst({
                 orderBy: { codigo: 'desc' },
                 select: { codigo: true }
@@ -21,9 +23,17 @@ export class EmpresasService {
                     nextCode = lastCodeInt + 1;
                 }
             }
-            data.codigo = nextCode.toString(); // Simple numeric code for now
+            rest.codigo = nextCode.toString();
         }
-        return this.prisma.empresa.create({ data });
+
+        return this.prisma.empresa.create({
+            data: {
+                ...rest,
+                socios: socios ? {
+                    create: socios
+                } : undefined
+            }
+        });
     }
 
     async findAll() {
@@ -33,14 +43,28 @@ export class EmpresasService {
     async findOne(id: string) {
         return this.prisma.empresa.findUnique({
             where: { id },
-            include: { fazendas: true }
+            include: { fazendas: true, socios: true }
         });
     }
 
-    async update(id: string, data: Prisma.EmpresaUpdateInput) {
+    async update(id: string, data: any) {
+        const { socios, ...rest } = data;
+
         return this.prisma.empresa.update({
             where: { id },
-            data,
+            data: {
+                ...rest,
+                socios: socios ? {
+                    deleteMany: {},
+                    create: socios.map((s: any) => ({
+                        nome: s.nome,
+                        cpf: s.cpf,
+                        cnpj: s.cnpj,
+                        percentual: typeof s.percentual === 'string' ? parseFloat(s.percentual) : s.percentual,
+                        principal: s.principal
+                    }))
+                } : undefined
+            },
         });
     }
 
