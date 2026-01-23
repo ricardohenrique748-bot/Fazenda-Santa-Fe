@@ -104,7 +104,16 @@ export default function LoginPage() {
                             size="large"
                             sx={{ mt: 4, mb: 2, height: 50, fontSize: '1.1rem' }}
                         >
-                            Entrar (v1.1)
+                            Entrar
+                        </Button>
+                        <Button
+                            fullWidth
+                            color="primary"
+                            size="small"
+                            onClick={() => alert('Funcionalidade em desenvolvimento')}
+                            sx={{ textTransform: 'none', fontWeight: 500 }}
+                        >
+                            Esqueceu sua senha?
                         </Button>
                     </Box>
                 </Paper>
