@@ -33,4 +33,22 @@ export class AuthController {
             cnpj: '00.000.000/0001-00'
         });
     }
+
+    @Post('debug-login')
+    async debugLogin(@Body() body: any) {
+        try {
+            console.log('Debug login for:', body.email);
+            const user = await this.authService.validateUser(body.email, body.senha);
+            if (!user) {
+                return { status: 'error', message: 'User not found or password incorrect' };
+            }
+            return { status: 'success', user, token: await this.authService.login(user) };
+        } catch (error: any) {
+            return {
+                status: 'error',
+                message: error.message,
+                stack: error.stack
+            };
+        }
+    }
 }
