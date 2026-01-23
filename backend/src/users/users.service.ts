@@ -39,11 +39,32 @@ export class UsersService {
     }
 
     async findOneById(id: string): Promise<Usuario | null> {
-        return this.prisma.usuario.findUnique({
-            where: { id },
-            // Password should generally be excluded in a real app interceptor, but keeping simple for now
-            include: { empresa: true },
-        });
+        try {
+            return await this.prisma.usuario.findUnique({
+                where: { id },
+                include: { empresa: true },
+            });
+        } catch (error) {
+            console.error('Prisma findUnique (ID) failed, attempting raw query fallback:', error);
+            const result: any[] = await this.prisma.$queryRaw`
+                SELECT u.*, 
+                       json_build_object(
+                           'id', e.id, 
+                           'razaoSocial', e."razaoSocial", 
+                           'cnpj', e.cnpj,
+                           'ativo', e.ativo
+                       ) as empresa
+                FROM "Usuario" u
+                LEFT JOIN "Empresa" e ON u."empresaId" = e.id
+                WHERE u.id = ${id}
+                LIMIT 1
+            `;
+
+            if (result && result.length > 0) {
+                return result[0] as Usuario;
+            }
+            return null;
+        }
     }
 
     async findAll() {
