@@ -4,8 +4,8 @@ import { EstoqueController } from './estoque.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [EstoqueController],
-    providers: [EstoqueService],
+  imports: [PrismaModule],
+  controllers: [EstoqueController],
+  providers: [EstoqueService],
 })
-export class EstoqueModule { }
+export class EstoqueModule {}

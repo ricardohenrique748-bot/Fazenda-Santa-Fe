@@ -4,9 +4,9 @@ import { GruposEquipamentoController } from './grupos-equipamento.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [GruposEquipamentoController],
-    providers: [GruposEquipamentoService],
-    exports: [GruposEquipamentoService]
+  imports: [PrismaModule],
+  controllers: [GruposEquipamentoController],
+  providers: [GruposEquipamentoService],
+  exports: [GruposEquipamentoService],
 })
-export class GruposEquipamentoModule { }
+export class GruposEquipamentoModule {}

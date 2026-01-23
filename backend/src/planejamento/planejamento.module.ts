@@ -5,9 +5,9 @@ import { PlanejamentoController } from './planejamento.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [PlanejamentoController],
-    providers: [PlanejamentoService, SafrasService],
-    exports: [PlanejamentoService, SafrasService],
+  imports: [PrismaModule],
+  controllers: [PlanejamentoController],
+  providers: [PlanejamentoService, SafrasService],
+  exports: [PlanejamentoService, SafrasService],
 })
-export class PlanejamentoModule { }
+export class PlanejamentoModule {}

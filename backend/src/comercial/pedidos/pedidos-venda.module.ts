@@ -4,9 +4,9 @@ import { PedidosVendaController } from './pedidos-venda.controller';
 import { PrismaModule } from '../../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [PedidosVendaController],
-    providers: [PedidosVendaService],
-    exports: [PedidosVendaService],
+  imports: [PrismaModule],
+  controllers: [PedidosVendaController],
+  providers: [PedidosVendaService],
+  exports: [PedidosVendaService],
 })
-export class PedidosVendaModule { }
+export class PedidosVendaModule {}

@@ -6,8 +6,8 @@ import { RelatoriosMecanizacaoController } from './relatorios-mecanizacao.contro
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    providers: [RelatoriosService, RelatoriosMecanizacaoService],
-    controllers: [RelatoriosController, RelatoriosMecanizacaoController],
+  imports: [PrismaModule],
+  providers: [RelatoriosService, RelatoriosMecanizacaoService],
+  controllers: [RelatoriosController, RelatoriosMecanizacaoController],
 })
-export class RelatoriosModule { }
+export class RelatoriosModule {}

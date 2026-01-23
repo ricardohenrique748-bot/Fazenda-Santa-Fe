@@ -11,4 +11,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [MunicipiosModule, CulturasModule, PrismaModule],
   exports: [LocalizacoesService],
 })
-export class LocalizacoesModule { }
+export class LocalizacoesModule {}

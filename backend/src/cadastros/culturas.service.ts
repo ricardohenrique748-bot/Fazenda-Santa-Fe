@@ -3,25 +3,25 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CulturasService {
-    constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-    create(data: any) {
-        return this.prisma.cultura.create({ data });
-    }
+  create(data: any) {
+    return this.prisma.cultura.create({ data });
+  }
 
-    findAll() {
-        return this.prisma.cultura.findMany();
-    }
+  findAll() {
+    return this.prisma.cultura.findMany();
+  }
 
-    findOne(id: string) {
-        return this.prisma.cultura.findUnique({ where: { id } });
-    }
+  findOne(id: string) {
+    return this.prisma.cultura.findUnique({ where: { id } });
+  }
 
-    update(id: string, data: any) {
-        return this.prisma.cultura.update({ where: { id }, data });
-    }
+  update(id: string, data: any) {
+    return this.prisma.cultura.update({ where: { id }, data });
+  }
 
-    remove(id: string) {
-        return this.prisma.cultura.delete({ where: { id } });
-    }
+  remove(id: string) {
+    return this.prisma.cultura.delete({ where: { id } });
+  }
 }

@@ -4,8 +4,8 @@ import { ApontamentosController } from './apontamentos.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [ApontamentosController],
-    providers: [ApontamentosService],
+  imports: [PrismaModule],
+  controllers: [ApontamentosController],
+  providers: [ApontamentosService],
 })
-export class ApontamentosModule { }
+export class ApontamentosModule {}

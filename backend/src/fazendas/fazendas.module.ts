@@ -4,8 +4,8 @@ import { FazendasController } from './fazendas.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [FazendasController],
-    providers: [FazendasService],
+  imports: [PrismaModule],
+  controllers: [FazendasController],
+  providers: [FazendasService],
 })
-export class FazendasModule { }
+export class FazendasModule {}

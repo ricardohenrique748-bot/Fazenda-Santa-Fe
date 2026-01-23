@@ -10,4 +10,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [LocalizacoesModule, PrismaModule],
   exports: [UnidadesNegocioService],
 })
-export class UnidadesNegocioModule { }
+export class UnidadesNegocioModule {}

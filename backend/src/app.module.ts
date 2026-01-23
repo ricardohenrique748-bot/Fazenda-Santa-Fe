@@ -65,4 +65,4 @@ import { PedidosVendaModule } from './comercial/pedidos/pedidos-venda.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

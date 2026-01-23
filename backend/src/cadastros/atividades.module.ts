@@ -9,4 +9,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   exports: [AtividadesService],
 })
-export class AtividadesModule { }
+export class AtividadesModule {}

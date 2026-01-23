@@ -5,23 +5,23 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-    constructor(private authService: AuthService) {
-        super({ usernameField: 'email', passwordField: 'senha' });
-    }
+  constructor(private authService: AuthService) {
+    super({ usernameField: 'email', passwordField: 'senha' });
+  }
 
-    async validate(email: string, pass: string): Promise<any> {
-        console.log('LocalStrategy.validate called with:', email, pass);
-        try {
-            const user = await this.authService.validateUser(email, pass);
-            console.log('validateUser result:', user);
-            if (!user) {
-                console.log('User not found or password invalid');
-                throw new UnauthorizedException();
-            }
-            return user;
-        } catch (error) {
-            console.error('LocalStrategy error:', error);
-            throw error;
-        }
+  async validate(email: string, pass: string): Promise<any> {
+    console.log('LocalStrategy.validate called with:', email, pass);
+    try {
+      const user = await this.authService.validateUser(email, pass);
+      console.log('validateUser result:', user);
+      if (!user) {
+        console.log('User not found or password invalid');
+        throw new UnauthorizedException();
+      }
+      return user;
+    } catch (error) {
+      console.error('LocalStrategy error:', error);
+      throw error;
     }
+  }
 }

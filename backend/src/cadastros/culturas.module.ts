@@ -10,4 +10,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [AtividadesModule, PrismaModule],
   exports: [CulturasService],
 })
-export class CulturasModule { }
+export class CulturasModule {}

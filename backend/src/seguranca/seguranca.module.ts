@@ -4,8 +4,8 @@ import { SegurancaController } from './seguranca.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    providers: [SegurancaService],
-    controllers: [SegurancaController],
+  imports: [PrismaModule],
+  providers: [SegurancaService],
+  controllers: [SegurancaController],
 })
-export class SegurancaModule { }
+export class SegurancaModule {}

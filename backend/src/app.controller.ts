@@ -6,8 +6,8 @@ import { PrismaService } from './prisma/prisma.service';
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly prisma: PrismaService
-  ) { }
+    private readonly prisma: PrismaService,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -24,7 +24,7 @@ export class AppController {
         status: 'error',
         database: 'disconnected',
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       };
     }
   }

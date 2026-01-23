@@ -12,16 +12,15 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strict": false,
-    "rootDir": "src"
+    "strict": false
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "test/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "prisma",
-    "test"
+    "prisma"
   ]
 }

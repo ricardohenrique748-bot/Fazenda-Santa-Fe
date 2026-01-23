@@ -4,9 +4,9 @@ import { MunicipiosService } from './municipios.service';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    controllers: [MunicipiosController],
-    providers: [MunicipiosService],
-    imports: [PrismaModule],
-    exports: [MunicipiosService],
+  controllers: [MunicipiosController],
+  providers: [MunicipiosService],
+  imports: [PrismaModule],
+  exports: [MunicipiosService],
 })
-export class MunicipiosModule { }
+export class MunicipiosModule {}

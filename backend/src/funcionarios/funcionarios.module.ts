@@ -4,8 +4,8 @@ import { FuncionariosController } from './funcionarios.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [FuncionariosController],
-    providers: [FuncionariosService],
+  imports: [PrismaModule],
+  controllers: [FuncionariosController],
+  providers: [FuncionariosService],
 })
-export class FuncionariosModule { }
+export class FuncionariosModule {}

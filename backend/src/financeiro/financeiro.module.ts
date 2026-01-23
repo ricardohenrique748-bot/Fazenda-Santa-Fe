@@ -4,8 +4,8 @@ import { FinanceiroController } from './financeiro.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [FinanceiroController],
-    providers: [FinanceiroService],
+  imports: [PrismaModule],
+  controllers: [FinanceiroController],
+  providers: [FinanceiroService],
 })
-export class FinanceiroModule { }
+export class FinanceiroModule {}
