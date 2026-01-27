@@ -566,13 +566,18 @@ model Municipio {
 }
 
 model Cultura {
-  id            String                 @id @default(uuid())
-  nome          String
-  variedade     String?
-  cicloDias     Int?
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
-  planejamentos PlanejamentoAgricola[]
+  id                String                 @id @default(uuid())
+  nome              String
+  variedade         String?
+  cicloDias         Int?
+  multicultura      Boolean                @default(false)
+  unidadeCaptacao   String?
+  unidadeSaida      String?
+  controlaPlantio   Boolean                @default(false)
+  exigirEspacamento Boolean                @default(false)
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  planejamentos     PlanejamentoAgricola[]
 }
 
 model Atividade {

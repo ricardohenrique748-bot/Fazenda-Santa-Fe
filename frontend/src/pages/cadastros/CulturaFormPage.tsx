@@ -1,16 +1,33 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Box, Button, TextField, Typography, Paper } from '@mui/material';
+import {
+    Box,
+    Button,
+    TextField,
+    Typography,
+    Paper,
+    FormControlLabel,
+    Checkbox,
+    MenuItem,
+    Grid
+} from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { culturasService } from '../../services/culturasService';
+
+const UNITS = ['GRA', 'KG', 'LTS', 'PES', 'SC', 'TON', 'UN'] as const;
 
 const schema = z.object({
     nome: z.string().min(3, 'Nome é obrigatório'),
     variedade: z.string().optional(),
     cicloDias: z.number().optional(),
+    multicultura: z.boolean().optional(),
+    unidadeCaptacao: z.string().optional(),
+    unidadeSaida: z.string().optional(),
+    controlaPlantio: z.boolean().optional(),
+    exigirEspacamento: z.boolean().optional(),
 });
 
 type FormInputs = z.infer<typeof schema>;
@@ -20,8 +37,13 @@ export default function CulturaFormPage() {
     const navigate = useNavigate();
     const isEditing = !!id && id !== 'novo';
 
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormInputs>({
+    const { register, handleSubmit, reset, control, formState: { errors, isSubmitting } } = useForm<FormInputs>({
         resolver: zodResolver(schema),
+        defaultValues: {
+            multicultura: false,
+            controlaPlantio: false,
+            exigirEspacamento: false
+        }
     });
 
     useEffect(() => {
@@ -34,7 +56,13 @@ export default function CulturaFormPage() {
         try {
             if (id) {
                 const data = await culturasService.getById(id);
-                reset(data);
+                // Ensure default values for booleans if undefined
+                reset({
+                    ...data,
+                    multicultura: data.multicultura ?? false,
+                    controlaPlantio: data.controlaPlantio ?? false,
+                    exigirEspacamento: data.exigirEspacamento ?? false
+                });
             }
         } catch (error) {
             console.error('Erro ao carregar dados', error);
@@ -62,30 +90,116 @@ export default function CulturaFormPage() {
             </Typography>
             <Paper sx={{ p: 4, maxWidth: 800 }}>
                 <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
 
-                        <TextField
-                            fullWidth
-                            label="Nome"
-                            error={!!errors.nome}
-                            helperText={errors.nome?.message}
-                            {...register('nome')}
-                        />
+                    {/* Header: Nome and Multicultura */}
+                    <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
+                        <Grid xs={12} sm={8}>
+                            <TextField
+                                fullWidth
+                                label="Nome"
+                                error={!!errors.nome}
+                                helperText={errors.nome?.message}
+                                {...register('nome')}
+                            />
+                        </Grid>
+                        <Grid xs={12} sm={4}>
+                            <Controller
+                                name="multicultura"
+                                control={control}
+                                render={({ field }) => (
+                                    <FormControlLabel
+                                        control={<Checkbox {...field} checked={!!field.value} />}
+                                        label="Multicultura"
+                                    />
+                                )}
+                            />
+                        </Grid>
+                    </Grid>
 
-                        <TextField
-                            fullWidth
-                            label="Variedade"
-                            {...register('variedade')}
-                        />
+                    {/* Group Box: Configurações de Unidade e Plantio */}
+                    <Paper variant="outlined" sx={{ p: 2, mb: 3, bgcolor: '#f8f9fa' }}>
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontWeight: 'bold' }}>
+                            Configurações
+                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid xs={12} sm={6}>
+                                <TextField
+                                    select
+                                    fullWidth
+                                    label="UN. Captação"
+                                    {...register('unidadeCaptacao')}
+                                    defaultValue=""
+                                >
+                                    <MenuItem value=""><em>Selecione</em></MenuItem>
+                                    {UNITS.map((unit) => (
+                                        <MenuItem key={unit} value={unit}>
+                                            {unit}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                            <Grid xs={12} sm={6}>
+                                <TextField
+                                    select
+                                    fullWidth
+                                    label="UN. Saída"
+                                    {...register('unidadeSaida')}
+                                    defaultValue=""
+                                >
+                                    <MenuItem value=""><em>Selecione</em></MenuItem>
+                                    {UNITS.map((unit) => (
+                                        <MenuItem key={unit} value={unit}>
+                                            {unit}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
 
-                        <TextField
-                            fullWidth
-                            label="Ciclo (Dias)"
-                            type="number"
-                            {...register('cicloDias', { valueAsNumber: true })}
-                        />
+                            <Grid xs={12} sm={6}>
+                                <Controller
+                                    name="controlaPlantio"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <FormControlLabel
+                                            control={<Checkbox {...field} checked={!!field.value} />}
+                                            label="Controla Plantio"
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid xs={12} sm={6}>
+                                <Controller
+                                    name="exigirEspacamento"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <FormControlLabel
+                                            control={<Checkbox {...field} checked={!!field.value} />}
+                                            label="Exigir Espaçamento"
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Paper>
 
-                    </Box>
+                    {/* Original Fields: Variedade and Ciclo */}
+                    <Grid container spacing={2}>
+                        <Grid xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Variedade"
+                                {...register('variedade')}
+                            />
+                        </Grid>
+                        <Grid xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Ciclo (Dias)"
+                                type="number"
+                                {...register('cicloDias', { valueAsNumber: true })}
+                            />
+                        </Grid>
+                    </Grid>
 
                     <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
                         <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>

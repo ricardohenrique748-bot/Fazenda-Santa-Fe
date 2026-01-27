@@ -5,6 +5,11 @@ export interface Cultura {
     nome: string;
     variedade?: string;
     cicloDias?: number;
+    multicultura?: boolean;
+    unidadeCaptacao?: string;
+    unidadeSaida?: string;
+    controlaPlantio?: boolean;
+    exigirEspacamento?: boolean;
 }
 
 export const culturasService = {
