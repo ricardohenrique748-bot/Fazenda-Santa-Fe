@@ -10,11 +10,20 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-  ) {}
+  ) { }
 
   async validateUser(email: string, pass: string): Promise<any> {
+    console.log(`DEBUG: Validating user email="${email}" pass="${pass}"`);
     const user = await this.usersService.findOne(email);
-    if (user && (await bcrypt.compare(pass, user.senha))) {
+    if (!user) {
+      console.log(`DEBUG: User not found for email="${email}"`);
+      return null;
+    }
+    console.log(`DEBUG: User found: ${user.email}, comparing password...`);
+    const isMatch = await bcrypt.compare(pass, user.senha);
+    console.log(`DEBUG: Password match result: ${isMatch}`);
+
+    if (user && isMatch) {
       const { senha, ...result } = user;
       return result;
     }
