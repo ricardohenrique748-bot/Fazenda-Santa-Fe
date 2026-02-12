@@ -41,6 +41,31 @@ async function main() {
     })
 
     console.log('Seed: SUCESSO! Usuário Ricardo Luz (ADMIN) está pronto para login.')
+
+    // 3. Criar ou Atualizar Usuário Ruan Junior
+    const emailRuan = 'ruan.junior@eunaman.com.br';
+    const passwordRuan = '123456';
+    const saltRuan = await bcrypt.genSalt(10);
+    const hashedPasswordRuan = await bcrypt.hash(passwordRuan, saltRuan);
+
+    await prisma.usuario.upsert({
+        where: { email: emailRuan },
+        update: {
+            senha: hashedPasswordRuan,
+            role: 'OPERADOR', // Assuming OPERADOR for Ruan
+            ativo: true
+        },
+        create: {
+            nome: 'Ruan Junior',
+            email: emailRuan,
+            senha: hashedPasswordRuan,
+            role: 'OPERADOR',
+            empresaId: empresa.id,
+            ativo: true
+        }
+    });
+
+    console.log(`Seed: SUCESSO! Usuário Ruan Junior (${emailRuan}) está pronto para login.`);
 }
 
 main()
