@@ -14,7 +14,7 @@ import type { Fazenda } from '../../services/fazendasService';
 const empresaSchema = z.object({
     codigo: z.string().optional(),
     ativo: z.boolean().optional(),
-    razaoSocial: z.string().min(3, 'Razão Social é obrigatória'),
+    razaoSocial: z.string().optional(),
     nomeFantasia: z.string().optional(),
     cnpj: z.string().optional(),
     cpf: z.string().optional(),
@@ -194,7 +194,6 @@ export default function EmpresaFormPage() {
                                         />
                                         <TextField
                                             label="Nome (Razão Social)"
-                                            required
                                             size="small"
                                             error={!!errors.razaoSocial}
                                             helperText={errors.razaoSocial?.message}
