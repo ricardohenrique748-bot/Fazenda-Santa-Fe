@@ -24,17 +24,12 @@ export default function LoginPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            navigate('/dashboard');
-        }
-
         const savedEmail = localStorage.getItem('savedEmail');
         if (savedEmail) {
             setValue('email', savedEmail);
             setRememberMe(true);
         }
-    }, [setValue, navigate]);
+    }, [setValue]);
 
     const onSubmit = async (data: LoginFormInputs) => {
         setIsLoading(true);
