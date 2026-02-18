@@ -11,20 +11,23 @@ export class EmpresasService {
     try {
       const { socios, ...rest } = data;
 
-      // Ensure optional fields are handled correctly (remove empty strings if needed or keep as null)
-      // Prisma handles undefined as "do nothing" and null as "set to null".
-      // Clean up empty strings for unique constraints if any
-      if (rest.email === '') rest.email = null;
-      if (rest.cnpj === '') rest.cnpj = null;
-      if (rest.cpf === '') rest.cpf = null;
+      // General sanitization: Convert empty strings to null for all optional string fields
+      Object.keys(rest).forEach((key) => {
+        if (typeof rest[key] === 'string' && rest[key].trim() === '') {
+          rest[key] = null;
+        }
+      });
+
+      // Specific number handling
+      if (rest.aliquotaRat) {
+        // Ensure it's a valid number or null
+        const num = parseFloat(String(rest.aliquotaRat));
+        rest.aliquotaRat = isNaN(num) ? null : num;
+      }
 
       // Auto-generate code if not provided
       if (!rest.codigo) {
         try {
-          const lastEmpresa = await this.prisma.empresa.findFirst({
-            orderBy: { createdAt: 'desc' }, // Order by creation date to find latest
-          });
-
           // Logica simplificada de codigo: Pega o total + 1 se não for numero
           const count = await this.prisma.empresa.count();
           rest.codigo = (count + 1).toString();
@@ -37,8 +40,8 @@ export class EmpresasService {
       const created = await this.prisma.empresa.create({
         data: {
           ...rest,
-          // Handle boolean conversion explicitly if coming as string
-          ativo: rest.ativo === 'true' || rest.ativo === true,
+          // Handle boolean conversion explicitly if coming as string or undefined/null
+          ativo: rest.ativo !== false && rest.ativo !== 'false', // Default true
           ignorarCaixaFinanceiro: rest.ignorarCaixaFinanceiro === 'true' || rest.ignorarCaixaFinanceiro === true,
           ignorarEstoque: rest.ignorarEstoque === 'true' || rest.ignorarEstoque === true,
 
@@ -49,7 +52,7 @@ export class EmpresasService {
                   nome: s.nome,
                   cpf: s.cpf || null,
                   cnpj: s.cnpj || null,
-                  percentual: Number(s.percentual) || 0,
+                  percentual: s.percentual ? Number(s.percentual) : null,
                   principal: Boolean(s.principal),
                 })),
               }
