@@ -6,50 +6,51 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findOne(email: string): Promise<Usuario | null> {
+    // Bypass Prisma due to known configuration issues causing delays. Using direct PG driver.
+    // try {
+    //   return await this.prisma.usuario.findUnique({
+    //     where: { email },
+    //     include: { empresa: true },
+    //   });
+    // } catch (error) {
+    //   console.error(
+    //     'Prisma findUnique failed, attempting PG driver fallback:',
+    //     error,
+    //   );
+    //   // Fallback using direct 'pg' driver to bypass Prisma binary/engine issues completely
+
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }, // Required for Supabase/Render connections
+    });
+
     try {
-      return await this.prisma.usuario.findUnique({
-        where: { email },
-        include: { empresa: true },
-      });
-    } catch (error) {
-      console.error(
-        'Prisma findUnique failed, attempting PG driver fallback:',
-        error,
+      await client.connect();
+      // Fetch user
+      const userRes = await client.query(
+        'SELECT * FROM "Usuario" WHERE "email" = $1 LIMIT 1',
+        [email],
       );
-      // Fallback using direct 'pg' driver to bypass Prisma binary/engine issues completely
 
-      const client = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false }, // Required for Supabase/Render connections
-      });
-
-      try {
-        await client.connect();
-        // Fetch user
-        const userRes = await client.query(
-          'SELECT * FROM "Usuario" WHERE "email" = $1 LIMIT 1',
-          [email],
-        );
-
-        if (userRes.rows.length > 0) {
-          const user = userRes.rows[0];
-          // Fetch empresa if user exists (to satisfy the 'include: { empresa: true }' contract lightly)
-          // Note: We are strictly returning the user object here.
-          // If complex relations are needed critically, we would fetch them.
-          await client.end();
-          return user as Usuario;
-        }
+      if (userRes.rows.length > 0) {
+        const user = userRes.rows[0];
+        // Fetch empresa if user exists (to satisfy the 'include: { empresa: true }' contract lightly)
+        // Note: We are strictly returning the user object here.
+        // If complex relations are needed critically, we would fetch them.
         await client.end();
-        return null;
-      } catch (pgError) {
-        console.error('PG driver fallback also failed:', pgError);
-        if (client) await client.end(); // Ensure connection is closed
-        throw pgError; // Throw original or new error
+        return user as Usuario;
       }
+      await client.end();
+      return null;
+    } catch (pgError) {
+      console.error('PG driver fallback also failed:', pgError);
+      if (client) await client.end(); // Ensure connection is closed
+      throw pgError; // Throw original or new error
     }
+    // }
   }
 
   async findOneById(id: string): Promise<Usuario | null> {

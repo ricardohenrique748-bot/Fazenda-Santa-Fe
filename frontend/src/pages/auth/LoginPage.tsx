@@ -18,10 +18,13 @@ export default function LoginPage() {
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
         resolver: zodResolver(loginSchema),
     });
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const onSubmit = async (data: LoginFormInputs) => {
+        setIsLoading(true);
+        setError('');
         try {
             await authService.login(data.email, data.senha);
             navigate('/dashboard');
@@ -37,6 +40,8 @@ export default function LoginPage() {
                 const msg = err.response?.data?.message || 'Erro desconhecido';
                 setError(`Ocorreu um erro inesperado (${status}): ${msg}`);
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -102,9 +107,10 @@ export default function LoginPage() {
                             fullWidth
                             variant="contained"
                             size="large"
+                            disabled={isLoading}
                             sx={{ mt: 4, mb: 2, height: 50, fontSize: '1.1rem' }}
                         >
-                            Entrar
+                            {isLoading ? 'Entrando...' : 'Entrar'}
                         </Button>
                         <Button
                             fullWidth
