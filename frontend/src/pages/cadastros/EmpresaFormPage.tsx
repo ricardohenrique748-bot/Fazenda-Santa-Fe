@@ -162,6 +162,12 @@ export default function EmpresaFormPage() {
 
 
 
+    const onError = (errors: any) => {
+        console.log('Form errors:', errors);
+        const errorMessages = Object.values(errors).map((e: any) => e.message).join('\n');
+        alert(`Erro de validação:\n${errorMessages}`);
+    };
+
     return (
         <Box>
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -169,7 +175,7 @@ export default function EmpresaFormPage() {
             </Typography>
 
             <Paper sx={{ p: 2 }}>
-                <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+                <Box component="form" onSubmit={handleSubmit(onSubmit, onError)}>
                     <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
                         <Tab label="Cadastro Básico" />
                         <Tab label="Sócios IR" />
