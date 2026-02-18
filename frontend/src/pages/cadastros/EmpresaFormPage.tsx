@@ -154,9 +154,10 @@ export default function EmpresaFormPage() {
                 await empresasService.create(data);
             }
             navigate('/cadastros/empresas');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Erro ao salvar empresa', error);
-            alert('Erro ao salvar empresa');
+            const errorMessage = error.response?.data?.message || error.message || 'Erro desconhecido ao salvar empresa';
+            alert(`Erro ao salvar empresa: ${errorMessage}`);
         }
     };
 
