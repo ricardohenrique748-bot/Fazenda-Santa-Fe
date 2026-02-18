@@ -132,6 +132,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -247,7 +248,6 @@ function App() {
           <Route path="/comercial/*" element={<ModulePlaceholder title="Comercial" />} />
           <Route path="/relatorios/dashboard" element={<DashboardGeralPage />} />
           <Route path="/relatorios/geral" element={<DashboardGeralPage />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>
