@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import logo from '../../assets/logo.png';
 import { useForm } from 'react-hook-form';
-import { Box, Button, TextField, Paper, Container, Alert } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, TextField, Paper, Container, Alert } from '@mui/material';
 import { authService } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -15,17 +15,31 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<LoginFormInputs>({
         resolver: zodResolver(loginSchema),
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('savedEmail');
+        if (savedEmail) {
+            setValue('email', savedEmail);
+            setRememberMe(true);
+        }
+    }, [setValue]);
 
     const onSubmit = async (data: LoginFormInputs) => {
         setIsLoading(true);
         setError('');
         try {
+            if (rememberMe) {
+                localStorage.setItem('savedEmail', data.email);
+            } else {
+                localStorage.removeItem('savedEmail');
+            }
             await authService.login(data.email, data.senha);
             navigate('/dashboard');
         } catch (err: any) {
@@ -102,13 +116,20 @@ export default function LoginPage() {
                             {...register('senha')}
                             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                         />
+
+                        <FormControlLabel
+                            control={<Checkbox checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} color="primary" />}
+                            label="Lembrar meu login"
+                            sx={{ mt: 1, color: '#2C5530' }}
+                        />
+
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             size="large"
                             disabled={isLoading}
-                            sx={{ mt: 4, mb: 2, height: 50, fontSize: '1.1rem' }}
+                            sx={{ mt: 3, mb: 2, height: 50, fontSize: '1.1rem' }}
                         >
                             {isLoading ? 'Entrando...' : 'Entrar'}
                         </Button>
