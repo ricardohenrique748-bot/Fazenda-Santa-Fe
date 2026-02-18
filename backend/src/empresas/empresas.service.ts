@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
@@ -60,7 +60,19 @@ export class EmpresasService {
       return created;
     } catch (error: any) {
       console.error('CRITICAL: Error establishing empresa:', error);
-      throw new Error(`Falha ao criar empresa: ${error.message}`);
+      // Ensure specific message is propagated
+      const message = error.message || 'Erro desconhecido ao criar empresa';
+      // Prisma specific error handling
+      if (error.code === 'P2002') {
+        throw new HttpException(
+          `Empresa já cadastrada com este ${error.meta?.target || 'dado único'}.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        `Falha ao criar empresa: ${message}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
