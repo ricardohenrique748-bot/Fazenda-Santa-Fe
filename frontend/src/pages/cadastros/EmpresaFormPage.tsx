@@ -193,7 +193,7 @@ export default function EmpresaFormPage() {
                                             slotProps={{ input: { placeholder: 'Auto' }, inputLabel: { shrink: true } }}
                                         />
                                         <TextField
-                                            label="Nome (Razão Social)"
+                                            label="Nome / Razão Social"
                                             size="small"
                                             error={!!errors.razaoSocial}
                                             helperText={errors.razaoSocial?.message}
