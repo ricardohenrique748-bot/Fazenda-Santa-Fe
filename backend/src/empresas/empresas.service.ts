@@ -117,6 +117,25 @@ export class EmpresasService {
   }
 
   async remove(id: string) {
-    return this.prisma.empresa.delete({ where: { id } });
+    // Delete in cascade order manually if DB doesn't support it or if safer
+    // Also handling dependencies is critical.
+    try {
+      await this.prisma.$transaction([
+        this.prisma.socio.deleteMany({ where: { empresaId: id } }),
+        this.prisma.fazenda.deleteMany({ where: { empresaId: id } }),
+        // Add other relations here as they appear. For now, socios and fazendas are key.
+        this.prisma.usuario.deleteMany({ where: { empresaId: id } }),
+        this.prisma.funcionario.deleteMany({ where: { empresaId: id } }),
+        this.prisma.cliente.deleteMany({ where: { empresaId: id } }),
+        this.prisma.empresa.delete({ where: { id } }),
+      ]);
+      return { message: 'Empresa e dados vinculados removidos com sucesso' };
+    } catch (error: any) {
+      console.error('Erro ao excluir empresa:', error);
+      throw new HttpException(
+        `Não foi possível excluir a empresa. Pode haver registros vinculados não tratados. Detalhe: ${error.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
