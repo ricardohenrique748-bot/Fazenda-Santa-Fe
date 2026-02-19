@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +12,8 @@ import {
     FormControlLabel,
     Checkbox,
     MenuItem,
+    Autocomplete,
+    CircularProgress,
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { culturasService } from '../../services/culturasService';
@@ -27,7 +29,20 @@ const schema = z.object({
     unidadeSaida: z.string().optional(),
     controlaPlantio: z.boolean().optional(),
     exigirEspacamento: z.boolean().optional(),
+    estado: z.string().optional(),
+    municipio: z.string().optional(),
 });
+
+interface IBGEUF {
+    id: number;
+    sigla: string;
+    nome: string;
+}
+
+interface IBGEMunicipio {
+    id: number;
+    nome: string;
+}
 
 type FormInputs = z.infer<typeof schema>;
 
@@ -36,7 +51,7 @@ export default function CulturaFormPage() {
     const navigate = useNavigate();
     const isEditing = !!id && id !== 'novo';
 
-    const { register, handleSubmit, reset, control, formState: { errors, isSubmitting } } = useForm<FormInputs>({
+    const { register, handleSubmit, reset, control, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormInputs>({
         resolver: zodResolver(schema),
         defaultValues: {
             multicultura: false,
@@ -44,6 +59,56 @@ export default function CulturaFormPage() {
             exigirEspacamento: false
         }
     });
+
+    const [ufs, setUfs] = useState<IBGEUF[]>([]);
+    const [cities, setCities] = useState<IBGEMunicipio[]>([]);
+    const [loadingUfs, setLoadingUfs] = useState(false);
+    const [loadingCities, setLoadingCities] = useState(false);
+
+    const selectedUf = watch('estado');
+
+    useEffect(() => {
+        const fetchUfs = async () => {
+            setLoadingUfs(true);
+            try {
+                const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+                const data = await response.json();
+                setUfs(data);
+            } catch (error) {
+                console.error('Erro ao buscar estados', error);
+            } finally {
+                setLoadingUfs(false);
+            }
+        };
+        fetchUfs();
+    }, []);
+
+    useEffect(() => {
+        if (selectedUf) {
+            // Only fetch if not already loaded or different state? 
+            // Actually, fetchCities handles fetching.
+            // But we need to avoid fetching if we just set it programmatically via loadData without fetching? 
+            // loadData handles fetch, but if user changes it, we need to fetch.
+            // We can define fetchCities outside.
+            fetchCities(selectedUf);
+        } else {
+            setCities([]);
+        }
+    }, [selectedUf]);
+
+    const fetchCities = async (uf: string) => {
+        if (!uf) return;
+        setLoadingCities(true);
+        try {
+            const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`);
+            const data = await response.json();
+            setCities(data);
+        } catch (error) {
+            console.error('Erro ao buscar cidades', error);
+        } finally {
+            setLoadingCities(false);
+        }
+    };
 
     useEffect(() => {
         if (isEditing) {
@@ -178,6 +243,70 @@ export default function CulturaFormPage() {
                             />
                         </Box>
                     </Paper>
+
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2, mb: 3 }}>
+                        <Controller
+                            name="estado"
+                            control={control}
+                            render={({ field }) => (
+                                <TextField
+                                    select
+                                    fullWidth
+                                    label="UF"
+                                    InputLabelProps={{ shrink: true }}
+                                    {...field}
+                                    value={field.value ?? ''}
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setValue('municipio', '');
+                                    }}
+                                >
+                                    <MenuItem value=""><em>Selecione</em></MenuItem>
+                                    {loadingUfs ? (
+                                        <MenuItem disabled><CircularProgress size={20} /></MenuItem>
+                                    ) : (
+                                        ufs.map((uf) => (
+                                            <MenuItem key={uf.id} value={uf.sigla}>{uf.sigla} - {uf.nome}</MenuItem>
+                                        ))
+                                    )}
+                                </TextField>
+                            )}
+                        />
+                        <Controller
+                            name="municipio"
+                            control={control}
+                            render={({ field }) => (
+                                <Autocomplete
+                                    options={cities}
+                                    getOptionLabel={(option) => option.nome}
+                                    value={cities.find(c => c.nome === field.value) || null}
+                                    onChange={(_, newValue) => {
+                                        field.onChange(newValue ? newValue.nome : '');
+                                    }}
+                                    disabled={!selectedUf || loadingCities}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Município"
+                                            InputLabelProps={{ shrink: true }}
+                                            fullWidth
+                                            error={!!errors.municipio}
+                                            helperText={errors.municipio?.message}
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                endAdornment: (
+                                                    <>
+                                                        {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
+                                                        {params.InputProps.endAdornment}
+                                                    </>
+                                                ),
+                                            }}
+                                        />
+                                    )}
+                                />
+                            )}
+                        />
+                    </Box>
 
                     {/* Original Fields: Variedade and Ciclo */}
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>

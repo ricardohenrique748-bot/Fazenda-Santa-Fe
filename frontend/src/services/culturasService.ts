@@ -10,6 +10,8 @@ export interface Cultura {
     unidadeSaida?: string;
     controlaPlantio?: boolean;
     exigirEspacamento?: boolean;
+    estado?: string;
+    municipio?: string;
 }
 
 export const culturasService = {
