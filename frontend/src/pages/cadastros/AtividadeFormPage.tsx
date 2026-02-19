@@ -66,6 +66,7 @@ export default function AtividadeFormPage() {
                         <TextField
                             fullWidth
                             label="Nome"
+                            InputLabelProps={{ shrink: true }}
                             error={!!errors.nome}
                             helperText={errors.nome?.message}
                             {...register('nome')}
@@ -74,6 +75,7 @@ export default function AtividadeFormPage() {
                         <TextField
                             fullWidth
                             label="Descrição"
+                            InputLabelProps={{ shrink: true }}
                             {...register('descricao')}
                         />
 

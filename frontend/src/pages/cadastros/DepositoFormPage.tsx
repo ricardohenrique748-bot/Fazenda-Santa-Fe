@@ -64,6 +64,7 @@ export default function DepositoFormPage() {
                         <TextField
                             fullWidth
                             label="Nome do Depósito"
+                            InputLabelProps={{ shrink: true }}
                             error={!!errors.nome}
                             helperText={errors.nome?.message}
                             placeholder="Ex: Almoxarifado Central"
@@ -73,6 +74,7 @@ export default function DepositoFormPage() {
                         <TextField
                             fullWidth
                             label="Localização / Endereço"
+                            InputLabelProps={{ shrink: true }}
                             placeholder="Ex: Galpão A, Setor Industrial"
                             {...register('localizacao')}
                         />

@@ -97,6 +97,7 @@ export default function FazendaFormPage() {
                         <TextField
                             fullWidth
                             label="Nome da Fazenda"
+                            InputLabelProps={{ shrink: true }}
                             error={!!errors.nome}
                             helperText={errors.nome?.message}
                             {...register('nome')}
@@ -111,6 +112,7 @@ export default function FazendaFormPage() {
                                     select
                                     fullWidth
                                     label="Empresa Vinculada"
+                                    InputLabelProps={{ shrink: true }}
                                     error={!!errors.empresaId}
                                     helperText={errors.empresaId?.message}
                                     value={field.value || ''}
@@ -124,16 +126,16 @@ export default function FazendaFormPage() {
                             )}
                         />
 
-                        <TextField fullWidth label="Código Interno" {...register('codigo')} />
+                        <TextField fullWidth label="Código Interno" InputLabelProps={{ shrink: true }} {...register('codigo')} />
 
                         <Box sx={{ gridColumn: '1 / -1', mt: 2 }}>
                             <Typography variant="h6">Localização & Dados</Typography>
                         </Box>
 
-                        <TextField fullWidth label="Cidade" {...register('cidade')} />
-                        <TextField fullWidth label="Estado (UF)" {...register('estado')} />
-                        <TextField fullWidth label="Área Total (ha)" type="number" {...register('areaTotal')} />
-                        <TextField fullWidth label="Área Produtiva (ha)" type="number" {...register('areaProdutiva')} />
+                        <TextField fullWidth label="Cidade" InputLabelProps={{ shrink: true }} {...register('cidade')} />
+                        <TextField fullWidth label="Estado (UF)" InputLabelProps={{ shrink: true }} {...register('estado')} />
+                        <TextField fullWidth label="Área Total (ha)" type="number" InputLabelProps={{ shrink: true }} {...register('areaTotal')} />
+                        <TextField fullWidth label="Área Produtiva (ha)" type="number" InputLabelProps={{ shrink: true }} {...register('areaProdutiva')} />
 
                     </Box>
 

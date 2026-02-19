@@ -97,6 +97,7 @@ export default function UsuarioFormPage() {
                         <TextField
                             fullWidth
                             label="Nome Completo"
+                            InputLabelProps={{ shrink: true }}
                             error={!!errors.nome}
                             helperText={errors.nome?.message}
                             {...register('nome')}
@@ -106,6 +107,7 @@ export default function UsuarioFormPage() {
                             fullWidth
                             label="Email"
                             type="email"
+                            InputLabelProps={{ shrink: true }}
                             error={!!errors.email}
                             helperText={errors.email?.message}
                             {...register('email')}
@@ -129,6 +131,7 @@ export default function UsuarioFormPage() {
                                     select
                                     fullWidth
                                     label="Empresa"
+                                    InputLabelProps={{ shrink: true }}
                                     error={!!errors.empresaId}
                                     helperText={errors.empresaId?.message}
                                     value={field.value || ''}
@@ -151,6 +154,7 @@ export default function UsuarioFormPage() {
                                     select
                                     fullWidth
                                     label="Perfil de Acesso"
+                                    InputLabelProps={{ shrink: true }}
                                     error={!!errors.role}
                                     helperText={errors.role?.message}
                                     value={field.value || Role.OPERADOR}
@@ -164,7 +168,7 @@ export default function UsuarioFormPage() {
                             )}
                         />
 
-                        <TextField fullWidth label="Cargo" {...register('cargo')} />
+                        <TextField fullWidth label="Cargo" InputLabelProps={{ shrink: true }} {...register('cargo')} />
 
                         <Box sx={{ gridColumn: '1 / -1' }}>
                             <Controller

@@ -12,7 +12,6 @@ import {
     FormControlLabel,
     Checkbox,
     MenuItem,
-    Grid
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { culturasService } from '../../services/culturasService';
@@ -92,114 +91,110 @@ export default function CulturaFormPage() {
                 <Box component="form" onSubmit={handleSubmit(onSubmit)}>
 
                     {/* Header: Nome and Multicultura */}
-                    <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
-                        <Grid xs={12} sm={8}>
-                            <TextField
-                                fullWidth
-                                label="Nome"
-                                error={!!errors.nome}
-                                helperText={errors.nome?.message}
-                                {...register('nome')}
-                            />
-                        </Grid>
-                        <Grid xs={12} sm={4}>
-                            <Controller
-                                name="multicultura"
-                                control={control}
-                                render={({ field }) => (
-                                    <FormControlLabel
-                                        control={<Checkbox {...field} checked={!!field.value} />}
-                                        label="Multicultura"
-                                    />
-                                )}
-                            />
-                        </Grid>
-                    </Grid>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr' }, gap: 2, alignItems: 'center', mb: 3 }}>
+                        <TextField
+                            fullWidth
+                            label="Nome"
+                            InputLabelProps={{ shrink: true }}
+                            error={!!errors.nome}
+                            helperText={errors.nome?.message}
+                            {...register('nome')}
+                        />
+                        <Controller
+                            name="multicultura"
+                            control={control}
+                            render={({ field }) => (
+                                <FormControlLabel
+                                    control={<Checkbox {...field} checked={!!field.value} />}
+                                    label="Multicultura"
+                                />
+                            )}
+                        />
+                    </Box>
 
                     {/* Group Box: Configurações de Unidade e Plantio */}
                     <Paper variant="outlined" sx={{ p: 2, mb: 3, bgcolor: '#f8f9fa' }}>
                         <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Configurações
                         </Typography>
-                        <Grid container spacing={2}>
-                            <Grid xs={12} sm={6}>
-                                <TextField
-                                    select
-                                    fullWidth
-                                    label="UN. Captação"
-                                    {...register('unidadeCaptacao')}
-                                    defaultValue=""
-                                >
-                                    <MenuItem value=""><em>Selecione</em></MenuItem>
-                                    {UNITS.map((unit) => (
-                                        <MenuItem key={unit} value={unit}>
-                                            {unit}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
-                            <Grid xs={12} sm={6}>
-                                <TextField
-                                    select
-                                    fullWidth
-                                    label="UN. Saída"
-                                    {...register('unidadeSaida')}
-                                    defaultValue=""
-                                >
-                                    <MenuItem value=""><em>Selecione</em></MenuItem>
-                                    {UNITS.map((unit) => (
-                                        <MenuItem key={unit} value={unit}>
-                                            {unit}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
-
-                            <Grid xs={12} sm={6}>
-                                <Controller
-                                    name="controlaPlantio"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <FormControlLabel
-                                            control={<Checkbox {...field} checked={!!field.value} />}
-                                            label="Controla Plantio"
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid xs={12} sm={6}>
-                                <Controller
-                                    name="exigirEspacamento"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <FormControlLabel
-                                            control={<Checkbox {...field} checked={!!field.value} />}
-                                            label="Exigir Espaçamento"
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                        </Grid>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+                            <Controller
+                                name="unidadeCaptacao"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        select
+                                        fullWidth
+                                        label="UN. Captação"
+                                        InputLabelProps={{ shrink: true }}
+                                        {...field}
+                                        value={field.value ?? ''}
+                                    >
+                                        <MenuItem value=""><em>Selecione</em></MenuItem>
+                                        {UNITS.map((unit) => (
+                                            <MenuItem key={unit} value={unit}>{unit}</MenuItem>
+                                        ))}
+                                    </TextField>
+                                )}
+                            />
+                            <Controller
+                                name="unidadeSaida"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        select
+                                        fullWidth
+                                        label="UN. Saída"
+                                        InputLabelProps={{ shrink: true }}
+                                        {...field}
+                                        value={field.value ?? ''}
+                                    >
+                                        <MenuItem value=""><em>Selecione</em></MenuItem>
+                                        {UNITS.map((unit) => (
+                                            <MenuItem key={unit} value={unit}>{unit}</MenuItem>
+                                        ))}
+                                    </TextField>
+                                )}
+                            />
+                            <Controller
+                                name="controlaPlantio"
+                                control={control}
+                                render={({ field }) => (
+                                    <FormControlLabel
+                                        control={<Checkbox {...field} checked={!!field.value} />}
+                                        label="Controla Plantio"
+                                    />
+                                )}
+                            />
+                            <Controller
+                                name="exigirEspacamento"
+                                control={control}
+                                render={({ field }) => (
+                                    <FormControlLabel
+                                        control={<Checkbox {...field} checked={!!field.value} />}
+                                        label="Exigir Espaçamento"
+                                    />
+                                )}
+                            />
+                        </Box>
                     </Paper>
 
                     {/* Original Fields: Variedade and Ciclo */}
-                    <Grid container spacing={2}>
-                        <Grid xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                label="Variedade"
-                                {...register('variedade')}
-                            />
-                        </Grid>
-                        <Grid xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                label="Ciclo (Dias)"
-                                type="number"
-                                {...register('cicloDias', { valueAsNumber: true })}
-                            />
-                        </Grid>
-                    </Grid>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+                        <TextField
+                            fullWidth
+                            label="Variedade"
+                            InputLabelProps={{ shrink: true }}
+                            {...register('variedade')}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Ciclo (Dias)"
+                            type="number"
+                            InputLabelProps={{ shrink: true }}
+                            {...register('cicloDias', { valueAsNumber: true })}
+                        />
+                    </Box>
 
                     <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
                         <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>

@@ -197,38 +197,40 @@ export default function EmpresaFormPage() {
                                             {...register('codigo')}
                                             disabled
                                             size="small"
+                                            InputLabelProps={{ shrink: true }}
                                             slotProps={{ input: { placeholder: 'Auto' }, inputLabel: { shrink: true } }}
                                         />
                                         <TextField
                                             label="Nome / Razão Social"
                                             size="small"
+                                            InputLabelProps={{ shrink: true }}
                                             error={!!errors.razaoSocial}
                                             helperText={errors.razaoSocial?.message}
                                             {...register('razaoSocial')}
                                         />
                                     </Box>
                                     <Box sx={{ mb: 2 }}>
-                                        <TextField label="Fantasia" fullWidth size="small" {...register('nomeFantasia')} />
+                                        <TextField label="Fantasia" fullWidth size="small" InputLabelProps={{ shrink: true }} {...register('nomeFantasia')} />
                                     </Box>
 
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '4fr 1fr', gap: 2, mb: 2 }}>
-                                        <TextField label="Endereço" size="small" {...register('logradouro')} />
-                                        <TextField label="Nº" size="small" {...register('numero')} />
+                                        <TextField label="Endereço" size="small" InputLabelProps={{ shrink: true }} {...register('logradouro')} />
+                                        <TextField label="Nº" size="small" InputLabelProps={{ shrink: true }} {...register('numero')} />
                                     </Box>
 
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 2, mb: 2 }}>
-                                        <TextField label="Telefone" size="small" {...register('telefone')} />
-                                        <TextField label="E-mail" size="small" fullWidth {...register('email')} />
+                                        <TextField label="Telefone" size="small" InputLabelProps={{ shrink: true }} {...register('telefone')} />
+                                        <TextField label="E-mail" size="small" fullWidth InputLabelProps={{ shrink: true }} {...register('email')} />
                                     </Box>
 
                                     <Box sx={{ mb: 2 }}>
-                                        <TextField label="Bairro" size="small" fullWidth {...register('bairro')} />
+                                        <TextField label="Bairro" size="small" fullWidth InputLabelProps={{ shrink: true }} {...register('bairro')} />
                                     </Box>
 
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 2 }}>
-                                        <TextField label="UF" size="small" {...register('estado')} />
-                                        <TextField label="Município" size="small" {...register('cidade')} />
-                                        <TextField label="CEP" size="small" {...register('cep')} />
+                                        <TextField label="UF" size="small" InputLabelProps={{ shrink: true }} {...register('estado')} />
+                                        <TextField label="Município" size="small" InputLabelProps={{ shrink: true }} {...register('cidade')} />
+                                        <TextField label="CEP" size="small" InputLabelProps={{ shrink: true }} {...register('cep')} />
                                     </Box>
                                 </Paper>
                             </Box>
@@ -275,7 +277,7 @@ export default function EmpresaFormPage() {
                                             )}
                                         />
                                         <Box sx={{ mt: 2 }}>
-                                            <TextField label="CFOP" size="small" fullWidth {...register('cfop')} />
+                                            <TextField label="CFOP" size="small" fullWidth InputLabelProps={{ shrink: true }} {...register('cfop')} />
                                         </Box>
                                     </Box>
                                 </Paper>
@@ -287,12 +289,12 @@ export default function EmpresaFormPage() {
                                 <Paper variant="outlined" sx={{ p: 2 }}>
                                     <SectionTitle>Controle de Empresa</SectionTitle>
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                                        <TextField label="CNPJ" size="small" {...register('cnpj')} />
-                                        <TextField label="CPF" size="small" {...register('cpf')} />
-                                        <TextField label="Inscrição Estadual" size="small" {...register('inscricaoEstadual')} />
-                                        <TextField label="Inscrição Municipal" size="small" {...register('inscricaoMunicipal')} />
-                                        <TextField label="CEI" size="small" {...register('cei')} />
-                                        <TextField label="CNAE Fiscal" size="small" {...register('cnaeFiscal')} />
+                                        <TextField label="CNPJ" size="small" InputLabelProps={{ shrink: true }} {...register('cnpj')} />
+                                        <TextField label="CPF" size="small" InputLabelProps={{ shrink: true }} {...register('cpf')} />
+                                        <TextField label="Inscrição Estadual" size="small" InputLabelProps={{ shrink: true }} {...register('inscricaoEstadual')} />
+                                        <TextField label="Inscrição Municipal" size="small" InputLabelProps={{ shrink: true }} {...register('inscricaoMunicipal')} />
+                                        <TextField label="CEI" size="small" InputLabelProps={{ shrink: true }} {...register('cei')} />
+                                        <TextField label="CNAE Fiscal" size="small" InputLabelProps={{ shrink: true }} {...register('cnaeFiscal')} />
                                     </Box>
                                 </Paper>
 
@@ -304,16 +306,16 @@ export default function EmpresaFormPage() {
                                     </Box>
 
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '4fr 1fr', gap: 2, mb: 2 }}>
-                                        <TextField label="Endereço" size="small" {...register('correspondenciaLogradouro')} />
-                                        <TextField label="Nº" size="small" {...register('correspondenciaNumero')} />
+                                        <TextField label="Endereço" size="small" InputLabelProps={{ shrink: true }} {...register('correspondenciaLogradouro')} />
+                                        <TextField label="Nº" size="small" InputLabelProps={{ shrink: true }} {...register('correspondenciaNumero')} />
                                     </Box>
                                     <Box sx={{ mb: 2 }}>
-                                        <TextField label="Bairro" size="small" fullWidth {...register('correspondenciaBairro')} />
+                                        <TextField label="Bairro" size="small" fullWidth InputLabelProps={{ shrink: true }} {...register('correspondenciaBairro')} />
                                     </Box>
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 2 }}>
-                                        <TextField label="UF" size="small" {...register('correspondenciaEstado')} />
-                                        <TextField label="Município" size="small" {...register('correspondenciaCidade')} />
-                                        <TextField label="CEP" size="small" {...register('correspondenciaCep')} />
+                                        <TextField label="UF" size="small" InputLabelProps={{ shrink: true }} {...register('correspondenciaEstado')} />
+                                        <TextField label="Município" size="small" InputLabelProps={{ shrink: true }} {...register('correspondenciaCidade')} />
+                                        <TextField label="CEP" size="small" InputLabelProps={{ shrink: true }} {...register('correspondenciaCep')} />
                                     </Box>
                                 </Paper>
                             </Box>
@@ -348,39 +350,47 @@ export default function EmpresaFormPage() {
                                 <Paper variant="outlined" sx={{ p: 2 }}>
                                     <SectionTitle>FISCAL / SEFIP</SectionTitle>
                                     <Box sx={{ mt: 2, display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2 }}>
-                                        <TextField label="Lotação Tributária" size="small" {...register('lotacaoTributaria')} sx={{ gridColumn: '1 / -1' }} />
+                                        <TextField label="Lotação Tributária" size="small" InputLabelProps={{ shrink: true }} {...register('lotacaoTributaria')} sx={{ gridColumn: '1 / -1' }} />
                                         <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField label="Cód FPAS" size="small" {...register('codigoFpas')} />
-                                            <TextField label="Cód GPS" size="small" {...register('codigoGps')} />
+                                            <TextField label="Cód FPAS" size="small" InputLabelProps={{ shrink: true }} {...register('codigoFpas')} />
+                                            <TextField label="Cód GPS" size="small" InputLabelProps={{ shrink: true }} {...register('codigoGps')} />
                                         </Box>
                                         <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField label="Outras Ent." size="small" {...register('outrasEntidades')} />
-                                            <TextField label="Cód FAP" size="small" {...register('codigoFap')} />
+                                            <TextField label="Outras Ent." size="small" InputLabelProps={{ shrink: true }} {...register('outrasEntidades')} />
+                                            <TextField label="Cód FAP" size="small" InputLabelProps={{ shrink: true }} {...register('codigoFap')} />
                                         </Box>
                                         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                                             <TextField
                                                 label="Alíquota RAT"
                                                 size="small"
                                                 type="number"
+                                                InputLabelProps={{ shrink: true }}
                                                 inputProps={{ step: "0.1" }}
                                                 sx={{ width: '100px' }}
                                                 {...register('aliquotaRat')}
                                             />
                                         </Box>
 
-                                        <TextField
-                                            label="Código SIMPLES"
-                                            select
-                                            size="small"
-                                            defaultValue=""
-                                            inputProps={register('codigoSimples')}
-                                            sx={{ gridColumn: { md: 'span 2' } }}
-                                        >
-                                            <MenuItem value="">Selecione</MenuItem>
-                                            <MenuItem value="1">1 - Não Optante</MenuItem>
-                                            <MenuItem value="2">2 - Optante (Até 1.2M)</MenuItem>
-                                            <MenuItem value="3">3 - Optante (&gt; 1.2M)</MenuItem>
-                                        </TextField>
+                                        <Controller
+                                            name="codigoSimples"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <TextField
+                                                    label="Código SIMPLES"
+                                                    select
+                                                    size="small"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    sx={{ gridColumn: { md: 'span 2' } }}
+                                                    {...field}
+                                                    value={field.value ?? ''}
+                                                >
+                                                    <MenuItem value="">Selecione</MenuItem>
+                                                    <MenuItem value="1">1 - Não Optante</MenuItem>
+                                                    <MenuItem value="2">2 - Optante (Até 1.2M)</MenuItem>
+                                                    <MenuItem value="3">3 - Optante (&gt; 1.2M)</MenuItem>
+                                                </TextField>
+                                            )}
+                                        />
                                     </Box>
                                 </Paper>
                             </Box>
