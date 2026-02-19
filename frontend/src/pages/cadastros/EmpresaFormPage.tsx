@@ -135,9 +135,10 @@ export default function EmpresaFormPage() {
                     ...data,
                     ativo: data.ativo ?? true, // Default to true if null/undefined
                 });
-            } catch (error: any) {
+            } catch (error) {
                 console.error('Erro ao carregar empresa', error);
-                const msg = error.response?.data?.message || error.message || 'Erro desconhecido';
+                const err = error as any;
+                const msg = err.response?.data?.message || err.message || 'Erro desconhecido';
                 alert(`Erro ao carregar dados da empresa: ${msg}`);
             }
         };
