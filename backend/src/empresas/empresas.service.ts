@@ -84,31 +84,61 @@ export class EmpresasService {
   }
 
   async findOne(id: string) {
-    return this.prisma.empresa.findUnique({
-      where: { id },
-      include: { fazendas: true, socios: true },
-    });
+    try {
+      const empresa = await this.prisma.empresa.findUnique({
+        where: { id },
+        include: { fazendas: true, socios: true },
+      });
+      if (!empresa) {
+        throw new HttpException('Empresa não encontrada', HttpStatus.NOT_FOUND);
+      }
+      return empresa;
+    } catch (error: any) {
+      console.error('Erro ao buscar empresa:', error);
+      throw new HttpException(
+        error instanceof HttpException ? error.message : `Erro ao buscar empresa: ${error.message}`,
+        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
   }
 
   async update(id: string, data: any) {
     const { socios, ...rest } = data;
 
+    // General sanitization: Convert empty strings to null for all optional string fields
+    Object.keys(rest).forEach((key) => {
+      if (typeof rest[key] === 'string' && rest[key].trim() === '') {
+        rest[key] = null;
+      }
+    });
+
+    // Specific number handling
+    if (rest.aliquotaRat) {
+      const num = parseFloat(String(rest.aliquotaRat));
+      rest.aliquotaRat = isNaN(num) ? null : num;
+    }
+
     return this.prisma.empresa.update({
       where: { id },
       data: {
         ...rest,
+        // Handle boolean conversion explicitly if coming as string or undefined/null
+        ativo: rest.ativo !== false && rest.ativo !== 'false', // Default true
+        ignorarCaixaFinanceiro: rest.ignorarCaixaFinanceiro === 'true' || rest.ignorarCaixaFinanceiro === true,
+        ignorarEstoque: rest.ignorarEstoque === 'true' || rest.ignorarEstoque === true,
+        
         socios: socios
           ? {
             deleteMany: {},
             create: socios.map((s: any) => ({
               nome: s.nome,
-              cpf: s.cpf,
-              cnpj: s.cnpj,
+              cpf: s.cpf || null,
+              cnpj: s.cnpj || null,
               percentual:
                 typeof s.percentual === 'string'
                   ? parseFloat(s.percentual)
                   : s.percentual,
-              principal: s.principal,
+              principal: Boolean(s.principal),
             })),
           }
           : undefined,
