@@ -49,10 +49,9 @@ export default function LoginPage() {
             } else if (err.response?.status === 401) {
                 setError('E-mail ou senha incorretos.');
             } else {
-                // Showing more details for debugging
                 const status = err.response?.status;
                 const msg = err.response?.data?.message || 'Erro desconhecido';
-                setError(`Ocorreu um erro inesperado (${status}): ${msg}`);
+                setError(`Erro no Login (${status}): ${msg}`);
             }
         } finally {
             setIsLoading(false);

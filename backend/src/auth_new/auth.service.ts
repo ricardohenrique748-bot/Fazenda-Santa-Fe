@@ -14,20 +14,31 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     console.log(`DEBUG: Validating user email="${email}" pass="${pass}"`);
-    const user = await this.usersService.findOne(email);
-    if (!user) {
-      console.log(`DEBUG: User not found for email="${email}"`);
+    try {
+      const user = await this.usersService.findOne(email);
+      if (!user) {
+        console.log(`DEBUG: User not found for email="${email}"`);
+        return null;
+      }
+
+      console.log(`DEBUG: User found: ${user.email}, comparing password...`);
+      if (!user.senha) {
+        console.error('DEBUG: User has no password in DB');
+        return null;
+      }
+
+      const isMatch = await bcrypt.compare(pass, user.senha);
+      console.log(`DEBUG: Password match result: ${isMatch}`);
+
+      if (user && isMatch) {
+        const { senha, ...result } = user;
+        return result;
+      }
+      return null;
+    } catch (error) {
+      console.error('DEBUG: Error in validateUser:', error);
       return null;
     }
-    console.log(`DEBUG: User found: ${user.email}, comparing password...`);
-    const isMatch = await bcrypt.compare(pass, user.senha);
-    console.log(`DEBUG: Password match result: ${isMatch}`);
-
-    if (user && isMatch) {
-      const { senha, ...result } = user;
-      return result;
-    }
-    return null;
   }
 
   async login(user: any) {

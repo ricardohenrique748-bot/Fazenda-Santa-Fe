@@ -9,48 +9,42 @@ export class UsersService {
   constructor(private prisma: PrismaService) { }
 
   async findOne(email: string): Promise<Usuario | null> {
-    // Bypass Prisma due to known configuration issues causing delays. Using direct PG driver.
-    // try {
-    //   return await this.prisma.usuario.findUnique({
-    //     where: { email },
-    //     include: { empresa: true },
-    //   });
-    // } catch (error) {
-    //   console.error(
-    //     'Prisma findUnique failed, attempting PG driver fallback:',
-    //     error,
-    //   );
-    //   // Fallback using direct 'pg' driver to bypass Prisma binary/engine issues completely
-
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }, // Required for Supabase/Render connections
-    });
-
     try {
-      await client.connect();
-      // Fetch user
-      const userRes = await client.query(
-        'SELECT * FROM "Usuario" WHERE "email" = $1 LIMIT 1',
-        [email],
-      );
+      // Try Prisma first
+      return await this.prisma.usuario.findUnique({
+        where: { email },
+        include: { empresa: true },
+      });
+    } catch (error) {
+      console.error('Prisma findUnique failed, attempting PG driver fallback:', error);
 
-      if (userRes.rows.length > 0) {
-        const user = userRes.rows[0];
-        // Fetch empresa if user exists (to satisfy the 'include: { empresa: true }' contract lightly)
-        // Note: We are strictly returning the user object here.
-        // If complex relations are needed critically, we would fetch them.
-        await client.end();
-        return user as Usuario;
+      const isLocal = process.env.DATABASE_URL?.includes('localhost') || process.env.DATABASE_URL?.includes('127.0.0.1');
+      const sslConfig = isLocal ? false : { rejectUnauthorized: false };
+
+      const client = new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: sslConfig,
+      });
+
+      try {
+        await client.connect();
+        const userRes = await client.query(
+          'SELECT * FROM "Usuario" WHERE "email" = $1 LIMIT 1',
+          [email],
+        );
+
+        if (userRes.rows.length > 0) {
+          const user = userRes.rows[0];
+          return user as Usuario;
+        }
+        return null;
+      } catch (pgError) {
+        console.error('PG driver fallback also failed:', pgError);
+        throw pgError;
+      } finally {
+        await client.end().catch(() => { }); // Ensure closed
       }
-      await client.end();
-      return null;
-    } catch (pgError) {
-      console.error('PG driver fallback also failed:', pgError);
-      if (client) await client.end(); // Ensure connection is closed
-      throw pgError; // Throw original or new error
     }
-    // }
   }
 
   async findOneById(id: string): Promise<Usuario | null> {
