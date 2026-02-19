@@ -95,14 +95,14 @@ model Usuario {
   nome          String
   email         String                @unique
   senha         String
-  empresaId     String
+  empresaId     String?
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
   ativo         Boolean               @default(true)
   cargo         String?
   role          Role                  @default(OPERADOR)
   movimentacoes EstoqueMovimentacao[]
-  empresa       Empresa               @relation(fields: [empresaId], references: [id])
+  empresa       Empresa?              @relation(fields: [empresaId], references: [id])
 }
 
 model Funcionario {
