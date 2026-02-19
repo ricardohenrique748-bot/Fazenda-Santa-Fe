@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { SyntheticEvent, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import type { SubmitHandler } from 'react-hook-form';
+import type { SubmitHandler, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
@@ -156,18 +156,20 @@ export default function EmpresaFormPage() {
                 await empresasService.create(data);
             }
             navigate('/cadastros/empresas');
-        } catch (error: any) {
+        } catch (error) {
             console.error('Erro ao salvar empresa', error);
-            const errorMessage = error.response?.data?.message || error.message || 'Erro desconhecido ao salvar empresa';
+            const err = error as any;
+            const errorMessage = err.response?.data?.message || err.message || 'Erro desconhecido ao salvar empresa';
             alert(`Erro ao salvar empresa: ${errorMessage}`);
         }
     };
 
-
-
-    const onError = (errors: any) => {
+    const onError = (errors: FieldErrors<EmpresaFormInputs>) => {
         console.log('Form errors:', errors);
-        const errorMessages = Object.values(errors).map((e: any) => e.message).join('\n');
+        const errorMessages = Object.values(errors)
+            .map((e) => e?.message)
+            .filter(Boolean)
+            .join('\n');
         alert(`Erro de validação:\n${errorMessages}`);
     };
 
