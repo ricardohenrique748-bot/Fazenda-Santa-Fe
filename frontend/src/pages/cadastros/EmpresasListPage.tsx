@@ -78,11 +78,11 @@ export default function EmpresasListPage() {
     const navigate = useNavigate();
     const openMenu = Boolean(anchorEl);
 
-    // Mock Stats
+    // Stats calculadas com base no campo ativo
     const stats = {
         total: empresas?.length || 0,
-        active: empresas?.length || 0, // Assuming all active for now as per schema
-        inactive: 0
+        active: empresas?.filter(e => e.ativo !== false)?.length || 0,
+        inactive: empresas?.filter(e => e.ativo === false)?.length || 0,
     };
 
     useEffect(() => {

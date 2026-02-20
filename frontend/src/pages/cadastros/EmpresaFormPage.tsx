@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import type { SubmitHandler, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useFieldArray } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -82,13 +82,13 @@ const SectionTitle = ({ children }: { children: ReactNode }) => (
 export default function EmpresaFormPage() {
     const { id } = useParams();
     const navigate = useNavigate();
-    console.log('EmpresaFormPage rendered'); // Force HMR update
     const isEditing = !!id && id !== 'novo';
     const [tabValue, setTabValue] = useState(0);
     const [fazendas, setFazendas] = useState<Fazenda[]>([]);
+    const [copiarEndereco, setCopiarEndereco] = useState(false);
 
-    const { register, control, handleSubmit, reset, formState: { errors, isSubmitting }, watch } = useForm<EmpresaFormInputs>({
-        resolver: zodResolver(empresaSchema),
+    const { register, control, handleSubmit, reset, formState: { errors, isSubmitting }, setValue, getValues } = useForm<EmpresaFormInputs>({
+        resolver: zodResolver(empresaSchema) as any,
         defaultValues: {
             ativo: true,
             ignorarCaixaFinanceiro: false,
@@ -96,6 +96,20 @@ export default function EmpresaFormPage() {
             socios: []
         }
     });
+
+    // Handler para copiar endereço principal para correspondência
+    const handleCopiarEndereco = (checked: boolean) => {
+        setCopiarEndereco(checked);
+        if (checked) {
+            const values = getValues();
+            setValue('correspondenciaLogradouro', values.logradouro || '');
+            setValue('correspondenciaNumero', values.numero || '');
+            setValue('correspondenciaBairro', values.bairro || '');
+            setValue('correspondenciaCidade', values.cidade || '');
+            setValue('correspondenciaEstado', values.estado || '');
+            setValue('correspondenciaCep', values.cep || '');
+        }
+    };
 
     const { fields: sociosFields, append: appendSocio, remove: removeSocio } = useFieldArray({
         control,
@@ -119,7 +133,7 @@ export default function EmpresaFormPage() {
         setOpenSocioModal(false);
     };
 
-    const handleTabChange = (event: SyntheticEvent, newValue: number) => {
+    const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
 
@@ -150,10 +164,17 @@ export default function EmpresaFormPage() {
 
     const onSubmit: SubmitHandler<EmpresaFormInputs> = async (data) => {
         try {
+            // Limpar campos que não devem ser enviados ao backend
+            const { ...submitData } = data as any;
+            delete submitData.id;
+            delete submitData.createdAt;
+            delete submitData.updatedAt;
+            delete submitData.fazendas;
+
             if (isEditing) {
-                await empresasService.update(id, data);
+                await empresasService.update(id, submitData);
             } else {
-                await empresasService.create(data);
+                await empresasService.create(submitData);
             }
             navigate('/cadastros/empresas');
         } catch (error) {
@@ -305,7 +326,13 @@ export default function EmpresaFormPage() {
                                 {/* Correspondência */}
                                 <Paper variant="outlined" sx={{ p: 2 }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Checkbox size="small" /> {/* Placeholder for "Copiar Endereço" or similar logic if needed */}
+                                        <Tooltip title="Copiar endereço principal">
+                                            <Checkbox
+                                                size="small"
+                                                checked={copiarEndereco}
+                                                onChange={(e) => handleCopiarEndereco(e.target.checked)}
+                                            />
+                                        </Tooltip>
                                         <SectionTitle>Correspondência / Cobrança</SectionTitle>
                                     </Box>
 
@@ -328,7 +355,17 @@ export default function EmpresaFormPage() {
                                 <Paper variant="outlined" sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                                         <SectionTitle>Fazendas da Empresa</SectionTitle>
-                                        <Button variant="outlined" size="small" onClick={() => navigate('/cadastros/fazendas')}>
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            onClick={() => {
+                                                if (isEditing && id) {
+                                                    navigate(`/cadastros/fazendas/novo?empresaId=${id}`);
+                                                } else {
+                                                    alert('Salve a empresa primeiro para vincular fazendas.');
+                                                }
+                                            }}
+                                        >
                                             Fazenda
                                         </Button>
                                     </Box>

@@ -2,10 +2,23 @@ import api from './api';
 
 export interface Empresa {
     id: string;
-    razaoSocial: string;
+    codigo?: string;
+    razaoSocial?: string;
     nomeFantasia?: string;
-    cnpj: string;
+    cnpj?: string;
+    cpf?: string;
     inscricaoEstadual?: string;
+    inscricaoMunicipal?: string;
+    cei?: string;
+    cnaeFiscal?: string;
+    cfop?: string;
+
+    // Flags
+    ativo?: boolean;
+    ignorarCaixaFinanceiro?: boolean;
+    ignorarEstoque?: boolean;
+
+    // Endereço Principal
     logradouro?: string;
     numero?: string;
     complemento?: string;
@@ -13,11 +26,32 @@ export interface Empresa {
     cidade?: string;
     estado?: string;
     cep?: string;
+
+    // Contato
     telefone?: string;
     email?: string;
     site?: string;
-    ativo?: boolean;
+
+    // Correspondência
+    correspondenciaLogradouro?: string;
+    correspondenciaNumero?: string;
+    correspondenciaBairro?: string;
+    correspondenciaCidade?: string;
+    correspondenciaEstado?: string;
+    correspondenciaCep?: string;
+
+    // Fiscal
+    lotacaoTributaria?: string;
+    codigoFpas?: string;
+    codigoGps?: string;
+    outrasEntidades?: string;
+    codigoFap?: string;
+    codigoSimples?: string;
+    aliquotaRat?: number;
+
+    // Relações
     fazendas?: Fazenda[];
+    socios?: any[];
 }
 
 import type { Fazenda } from './fazendasService';

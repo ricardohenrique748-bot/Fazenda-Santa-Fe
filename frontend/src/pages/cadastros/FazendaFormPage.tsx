@@ -4,7 +4,7 @@ import type { SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Box, Button, TextField, Typography, Paper, MenuItem } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { fazendasService } from '../../services/fazendasService';
 import { empresasService } from '../../services/empresasService';
 import type { Empresa } from '../../services/empresasService';
@@ -24,6 +24,8 @@ type FazendaFormInputs = z.infer<typeof fazendaSchema>;
 export default function FazendaFormPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const empresaIdFromUrl = searchParams.get('empresaId') || '';
     const isEditing = !!id && id !== 'novo';
     const [empresas, setEmpresas] = useState<Empresa[]>([]);
 
@@ -36,7 +38,7 @@ export default function FazendaFormPage() {
             estado: '',
             areaTotal: 0,
             areaProdutiva: 0,
-            empresaId: '',
+            empresaId: empresaIdFromUrl,
         },
     });
 

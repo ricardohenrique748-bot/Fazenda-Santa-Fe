@@ -11,6 +11,12 @@ export class EmpresasService {
     try {
       const { socios, ...rest } = data;
 
+      // Remove campos que não pertencem ao schema do Prisma
+      delete rest.id;
+      delete rest.createdAt;
+      delete rest.updatedAt;
+      delete rest.fazendas;
+
       // General sanitization: Convert empty strings to null for all optional string fields
       Object.keys(rest).forEach((key) => {
         if (typeof rest[key] === 'string' && rest[key].trim() === '') {
@@ -18,9 +24,8 @@ export class EmpresasService {
         }
       });
 
-      // Specific number handling
-      if (rest.aliquotaRat) {
-        // Ensure it's a valid number or null
+      // Specific number handling - uso !== undefined para não ignorar valor 0
+      if (rest.aliquotaRat !== undefined && rest.aliquotaRat !== null) {
         const num = parseFloat(String(rest.aliquotaRat));
         rest.aliquotaRat = isNaN(num) ? null : num;
       }
@@ -105,6 +110,12 @@ export class EmpresasService {
   async update(id: string, data: any) {
     const { socios, ...rest } = data;
 
+    // Remove campos que não pertencem ao schema do Prisma
+    delete rest.id;
+    delete rest.createdAt;
+    delete rest.updatedAt;
+    delete rest.fazendas;
+
     // General sanitization: Convert empty strings to null for all optional string fields
     Object.keys(rest).forEach((key) => {
       if (typeof rest[key] === 'string' && rest[key].trim() === '') {
@@ -112,8 +123,8 @@ export class EmpresasService {
       }
     });
 
-    // Specific number handling
-    if (rest.aliquotaRat) {
+    // Specific number handling - uso !== undefined para não ignorar valor 0
+    if (rest.aliquotaRat !== undefined && rest.aliquotaRat !== null) {
       const num = parseFloat(String(rest.aliquotaRat));
       rest.aliquotaRat = isNaN(num) ? null : num;
     }
@@ -126,7 +137,7 @@ export class EmpresasService {
         ativo: rest.ativo !== false && rest.ativo !== 'false', // Default true
         ignorarCaixaFinanceiro: rest.ignorarCaixaFinanceiro === 'true' || rest.ignorarCaixaFinanceiro === true,
         ignorarEstoque: rest.ignorarEstoque === 'true' || rest.ignorarEstoque === true,
-        
+
         socios: socios
           ? {
             deleteMany: {},

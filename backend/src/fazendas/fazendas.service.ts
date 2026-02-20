@@ -1,18 +1,38 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class FazendasService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
-  async create(data: Prisma.FazendaCreateInput) {
-    // Validate custom logic if needed (e.g. check if empresa exists is done by prisma via foreign key)
+  async create(data: any) {
     try {
-      return await this.prisma.fazenda.create({ data });
-    } catch (error) {
+      // Limpar campos indevidos
+      const cleanData = { ...data };
+      delete cleanData.id;
+      delete cleanData.createdAt;
+      delete cleanData.updatedAt;
+      delete cleanData.empresa;
+
+      // Converter campos numéricos
+      if (cleanData.areaTotal !== undefined) {
+        cleanData.areaTotal = parseFloat(String(cleanData.areaTotal)) || 0;
+      }
+      if (cleanData.areaProdutiva !== undefined) {
+        cleanData.areaProdutiva = parseFloat(String(cleanData.areaProdutiva)) || 0;
+      }
+
+      // Converter strings vazias para null
+      Object.keys(cleanData).forEach((key) => {
+        if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '' && key !== 'empresaId' && key !== 'nome') {
+          cleanData[key] = null;
+        }
+      });
+
+      return await this.prisma.fazenda.create({ data: cleanData });
+    } catch (error: any) {
       throw new BadRequestException(
-        'Erro ao criar fazenda. Verifique os dados e a empresa vinculada.',
+        `Erro ao criar fazenda: ${error.message || 'Verifique os dados e a empresa vinculada.'}`,
       );
     }
   }
@@ -32,10 +52,32 @@ export class FazendasService {
     });
   }
 
-  async update(id: string, data: Prisma.FazendaUpdateInput) {
+  async update(id: string, data: any) {
+    // Limpar campos indevidos
+    const cleanData = { ...data };
+    delete cleanData.id;
+    delete cleanData.createdAt;
+    delete cleanData.updatedAt;
+    delete cleanData.empresa;
+
+    // Converter campos numéricos
+    if (cleanData.areaTotal !== undefined) {
+      cleanData.areaTotal = parseFloat(String(cleanData.areaTotal)) || 0;
+    }
+    if (cleanData.areaProdutiva !== undefined) {
+      cleanData.areaProdutiva = parseFloat(String(cleanData.areaProdutiva)) || 0;
+    }
+
+    // Converter strings vazias para null
+    Object.keys(cleanData).forEach((key) => {
+      if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '' && key !== 'empresaId' && key !== 'nome') {
+        cleanData[key] = null;
+      }
+    });
+
     return this.prisma.fazenda.update({
       where: { id },
-      data,
+      data: cleanData,
     });
   }
 
