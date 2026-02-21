@@ -27,7 +27,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { APP_MENU } from '../../config/menu';
 import type { AppMenuItem } from '../../config/menu';
 import { authService } from '../../services/api';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo-animated.gif';
 
 // --- Recursive Menu Item Component ---
 const NestedMenuItem = forwardRef<HTMLDivElement, { item: AppMenuItem; onClick: () => void }>(
