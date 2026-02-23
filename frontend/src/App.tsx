@@ -62,9 +62,6 @@ import ContratosListPage from './pages/compras/ContratosListPage';
 import DashboardGeralPage from './pages/relatorios/DashboardGeralPage';
 import { Box, Typography } from '@mui/material';
 
-import dashboardBg from './assets/dashboard-bg-refined.png';
-
-import logo from './assets/logo-agrosys.png';
 
 function Dashboard() {
   return (
@@ -87,22 +84,11 @@ function Dashboard() {
         maxWidth: 800,
         zIndex: 2
       }}>
-        <Box
-          component="img"
-          src={logo}
-          alt="AgroSys Logo"
-          sx={{
-            height: { xs: 140, md: 240 },
-            filter: 'drop-shadow(0px 8px 24px rgba(44, 85, 48, 0.12))',
-            mb: 2
-          }}
-        />
-
         <Box>
           <Typography variant="h1" sx={{
             color: '#1B3A1E', // Dark Green
             fontWeight: 900,
-            fontSize: { xs: '3.5rem', md: '6rem' },
+            fontSize: { xs: '4rem', md: '7rem' },
             mb: 0.5,
             textTransform: 'uppercase',
             letterSpacing: '-2px',

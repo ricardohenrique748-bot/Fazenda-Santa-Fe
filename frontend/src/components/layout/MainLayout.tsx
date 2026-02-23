@@ -234,32 +234,9 @@ export default function MainLayout() {
                 }}
             >
                 <Toolbar sx={{ justifyContent: 'space-between', gap: 2 }}>
-                    {/* Logo Section */}
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box
-                            component="img"
-                            src={logo}
-                            alt="Fazenda Santa Fé"
-                            onClick={() => navigate('/dashboard')}
-                            sx={{
-                                height: 80,
-                                width: 'auto',
-                                cursor: 'pointer',
-                                mr: 4,
-                                objectFit: 'contain',
-                                filter: 'drop-shadow(0px 4px 8px rgba(0,0,0,0.05))',
-                                animation: 'header-float 4s ease-in-out infinite',
-                                transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                                '&:hover': {
-                                    transform: 'scale(1.1) rotate(-1deg)'
-                                },
-                                '@keyframes header-float': {
-                                    '0%': { transform: 'translateY(0px)' },
-                                    '50%': { transform: 'translateY(-5px)' },
-                                    '100%': { transform: 'translateY(0px)' },
-                                }
-                            }}
-                        />
+                    {/* Logo Section Removida */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', mr: 4 }}>
+                        <Typography variant="h6" sx={{ color: '#2C5530', fontWeight: 900 }}>AgroSys</Typography>
                     </Box>
 
                     {/* Navigation Section - Centered if possible, or just left aligned next to logo */}
