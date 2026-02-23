@@ -64,6 +64,8 @@ import { Box, Typography } from '@mui/material';
 
 import dashboardBg from './assets/dashboard-bg-refined.png';
 
+import logo from './assets/logo-agrosys.png';
+
 function Dashboard() {
   return (
     <Box sx={{
@@ -72,57 +74,83 @@ function Dashboard() {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: 'calc(100vh - 65px)',
+      minHeight: 'calc(100vh - 80px)', // Adjusted for new header height
       textAlign: 'center',
       margin: { xs: -2, md: -4 },
-      width: { xs: 'calc(100% + 32px)', md: 'calc(100% + 64px)' },
-      backgroundImage: `url(${dashboardBg})`,
+      width: { xs: 'calc(100% + 32px)', md: 'calc(100%+ 64px)' },
+      backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${dashboardBg})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      '&::before': {
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.3)', // Even lighter overlay for clarity
-        zIndex: 1
-      }
+      backgroundAttachment: 'fixed',
     }}>
       <Box sx={{
         position: 'relative',
         zIndex: 2,
-        p: { xs: 4, md: 8 },
-        borderRadius: 6,
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        border: '1px solid rgba(255, 255, 255, 0.15)',
+        p: { xs: 4, md: 6 },
+        borderRadius: 8,
+        background: 'rgba(255, 255, 255, 0.03)',
+        backdropFilter: 'blur(30px) saturate(180%)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        maxWidth: 850,
-        mx: 2
+        maxWidth: 900,
+        width: '90%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 3
       }}>
-        <Typography variant="h1" gutterBottom sx={{
-          color: '#fff',
-          fontWeight: 900,
-          fontSize: { xs: '2.5rem', md: '4.5rem' },
-          textShadow: '0px 10px 30px rgba(0,0,0,0.3)',
-          letterSpacing: '-0.02em',
-          mb: 3
-        }}>
-          Fazenda Santa Fé
-        </Typography>
-        <Typography variant="h5" sx={{
-          color: 'rgba(255,255,255,0.95)',
-          maxWidth: 650,
-          mx: 'auto',
-          fontWeight: 400,
-          lineHeight: 1.7,
-          fontSize: { xs: '1rem', md: '1.4rem' },
-          textShadow: '0px 2px 4px rgba(0,0,0,0.3)'
-        }}>
-          Plataforma integrada de gestão agrícola. Controle frotas, finanças, RH e colheita em um só lugar com precisão e eficiência.
-        </Typography>
+        <Box
+          component="img"
+          src={logo}
+          alt="AgroSys Logo"
+          sx={{
+            height: { xs: 120, md: 200 },
+            filter: 'drop-shadow(0px 10px 30px rgba(0,0,0,0.3))',
+            animation: 'hero-float 6s ease-in-out infinite',
+            '@keyframes hero-float': {
+              '0%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+              '100%': { transform: 'translateY(0px)' },
+            }
+          }}
+        />
+
+        <Box>
+          <Typography variant="h1" sx={{
+            color: '#fff',
+            fontWeight: 900,
+            fontSize: { xs: '3rem', md: '5.5rem' },
+            mb: 1,
+            textTransform: 'uppercase',
+            letterSpacing: '-2px',
+            lineHeight: 1,
+            background: 'linear-gradient(135deg, #fff 0%, #a5d6a7 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            AgroSys
+          </Typography>
+
+          <Typography variant="h4" sx={{
+            color: '#4CAF50', // Logo Green
+            fontWeight: 700,
+            mb: 4,
+            textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+          }}>
+            Gestão Agrícola Inteligente
+          </Typography>
+
+          <Typography variant="body1" sx={{
+            color: 'rgba(255,255,255,0.85)',
+            maxWidth: 600,
+            mx: 'auto',
+            fontWeight: 400,
+            fontSize: { xs: '1rem', md: '1.2rem' },
+            lineHeight: 1.6
+          }}>
+            Transformando o campo com tecnologia de precisão. Controle frotas, finanças, colheita e RH em uma única plataforma integrada de alta performance.
+          </Typography>
+        </Box>
       </Box>
     </Box>
   )
