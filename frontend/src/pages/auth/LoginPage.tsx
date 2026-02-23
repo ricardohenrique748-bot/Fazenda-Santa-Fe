@@ -83,10 +83,17 @@ export default function LoginPage() {
                         src={logo}
                         alt="Fazenda Santa Fé"
                         sx={{
-                            height: 120,
+                            height: 180,
                             width: 'auto',
                             mb: 4,
-                            objectFit: 'contain'
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0px 10px 20px rgba(0,0,0,0.05))',
+                            animation: 'float 3s ease-in-out infinite',
+                            '@keyframes float': {
+                                '0%': { transform: 'translateY(0px)' },
+                                '50%': { transform: 'translateY(-15px)' },
+                                '100%': { transform: 'translateY(0px)' },
+                            }
                         }}
                     />
 

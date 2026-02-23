@@ -242,11 +242,15 @@ export default function MainLayout() {
                             alt="Fazenda Santa Fé"
                             onClick={() => navigate('/dashboard')}
                             sx={{
-                                height: 50,
+                                height: 65,
                                 width: 'auto',
                                 cursor: 'pointer',
                                 mr: 4,
-                                objectFit: 'contain'
+                                objectFit: 'contain',
+                                transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                                '&:hover': {
+                                    transform: 'scale(1.1) rotate(-2deg)'
+                                }
                             }}
                         />
                     </Box>
