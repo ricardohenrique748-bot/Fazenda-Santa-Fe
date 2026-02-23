@@ -74,81 +74,62 @@ function Dashboard() {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: 'calc(100vh - 80px)', // Adjusted for new header height
+      minHeight: 'calc(100vh - 80px)',
       textAlign: 'center',
-      margin: { xs: -2, md: -4 },
-      width: { xs: 'calc(100% + 32px)', md: 'calc(100%+ 64px)' },
-      backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${dashboardBg})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
+      padding: 4,
+      background: 'linear-gradient(135deg, #F9F9F7 0%, #E8EBE0 100%)', // Match AgroSys tones
     }}>
       <Box sx={{
-        position: 'relative',
-        zIndex: 2,
-        p: { xs: 4, md: 6 },
-        borderRadius: 8,
-        background: 'rgba(255, 255, 255, 0.03)',
-        backdropFilter: 'blur(30px) saturate(180%)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        maxWidth: 900,
-        width: '90%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 3
+        gap: 2,
+        maxWidth: 800,
+        zIndex: 2
       }}>
         <Box
           component="img"
           src={logo}
           alt="AgroSys Logo"
           sx={{
-            height: { xs: 120, md: 200 },
-            filter: 'drop-shadow(0px 10px 30px rgba(0,0,0,0.3))',
-            animation: 'hero-float 6s ease-in-out infinite',
-            '@keyframes hero-float': {
-              '0%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-20px)' },
-              '100%': { transform: 'translateY(0px)' },
-            }
+            height: { xs: 140, md: 240 },
+            filter: 'drop-shadow(0px 8px 24px rgba(44, 85, 48, 0.12))',
+            mb: 2
           }}
         />
 
         <Box>
           <Typography variant="h1" sx={{
-            color: '#fff',
+            color: '#1B3A1E', // Dark Green
             fontWeight: 900,
-            fontSize: { xs: '3rem', md: '5.5rem' },
-            mb: 1,
+            fontSize: { xs: '3.5rem', md: '6rem' },
+            mb: 0.5,
             textTransform: 'uppercase',
             letterSpacing: '-2px',
-            lineHeight: 1,
-            background: 'linear-gradient(135deg, #fff 0%, #a5d6a7 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            lineHeight: 1
           }}>
             AgroSys
           </Typography>
 
           <Typography variant="h4" sx={{
-            color: '#4CAF50', // Logo Green
+            color: '#2C5530', // Brand Green
             fontWeight: 700,
             mb: 4,
-            textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+            letterSpacing: '1px'
           }}>
             Gestão Agrícola Inteligente
           </Typography>
 
           <Typography variant="body1" sx={{
-            color: 'rgba(255,255,255,0.85)',
+            color: '#546E7A',
             maxWidth: 600,
             mx: 'auto',
-            fontWeight: 400,
+            fontWeight: 500,
             fontSize: { xs: '1rem', md: '1.2rem' },
             lineHeight: 1.6
           }}>
-            Transformando o campo com tecnologia de precisão. Controle frotas, finanças, colheita e RH em uma única plataforma integrada de alta performance.
+            Plataforma única para controle de frotas, finanças, colheita e RH.
+            Tecnologia de precisão para resultados máximos no campo.
           </Typography>
         </Box>
       </Box>
