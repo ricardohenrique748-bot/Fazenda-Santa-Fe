@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import logo from '../../assets/logo-animated.gif';
+import logo from '../../assets/logo-agrosys.png';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Checkbox, FormControlLabel, TextField, Paper, Container, Alert } from '@mui/material';
 import { authService } from '../../services/api';
