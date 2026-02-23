@@ -575,6 +575,8 @@ model Cultura {
   unidadeSaida      String?
   controlaPlantio   Boolean                @default(false)
   exigirEspacamento Boolean                @default(false)
+  estado            String?
+  municipio         String?
   createdAt         DateTime               @default(now())
   updatedAt         DateTime               @updatedAt
   planejamentos     PlanejamentoAgricola[]

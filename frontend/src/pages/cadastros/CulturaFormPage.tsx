@@ -60,6 +60,8 @@ export default function CulturaFormPage() {
         }
     });
 
+
+
     const [ufs, setUfs] = useState<IBGEUF[]>([]);
     const [cities, setCities] = useState<IBGEMunicipio[]>([]);
     const [loadingUfs, setLoadingUfs] = useState(false);

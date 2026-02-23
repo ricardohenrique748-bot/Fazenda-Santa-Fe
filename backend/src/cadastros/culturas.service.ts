@@ -3,10 +3,15 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CulturasService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
-  create(data: any) {
-    return this.prisma.cultura.create({ data });
+  async create(data: any) {
+    const { estado, municipio, ...prismaData } = data;
+    try {
+      return await this.prisma.cultura.create({ data: prismaData });
+    } catch (error) {
+      throw error;
+    }
   }
 
   findAll() {
@@ -17,8 +22,13 @@ export class CulturasService {
     return this.prisma.cultura.findUnique({ where: { id } });
   }
 
-  update(id: string, data: any) {
-    return this.prisma.cultura.update({ where: { id }, data });
+  async update(id: string, data: any) {
+    const { estado, municipio, ...prismaData } = data;
+    try {
+      return await this.prisma.cultura.update({ where: { id }, data: prismaData });
+    } catch (error) {
+      throw error;
+    }
   }
 
   remove(id: string) {

@@ -1,0 +1,27 @@
+﻿Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "malut_db", schema "public" at "localhost:5435"
+
+node.exe : Error: P1001: 
+Can't reach database server 
+at `localhost:5435`
+No linha:1 caractere:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Error:   
+  P1001: C...localhost:543   
+ 5`:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+
+Please make sure your 
+database server is running 
+at `localhost:5435`.
