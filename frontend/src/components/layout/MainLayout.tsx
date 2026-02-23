@@ -242,14 +242,21 @@ export default function MainLayout() {
                             alt="Fazenda Santa Fé"
                             onClick={() => navigate('/dashboard')}
                             sx={{
-                                height: 65,
+                                height: 80,
                                 width: 'auto',
                                 cursor: 'pointer',
                                 mr: 4,
                                 objectFit: 'contain',
+                                filter: 'drop-shadow(0px 4px 8px rgba(0,0,0,0.05))',
+                                animation: 'header-float 4s ease-in-out infinite',
                                 transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                                 '&:hover': {
-                                    transform: 'scale(1.1) rotate(-2deg)'
+                                    transform: 'scale(1.1) rotate(-1deg)'
+                                },
+                                '@keyframes header-float': {
+                                    '0%': { transform: 'translateY(0px)' },
+                                    '50%': { transform: 'translateY(-5px)' },
+                                    '100%': { transform: 'translateY(0px)' },
                                 }
                             }}
                         />
