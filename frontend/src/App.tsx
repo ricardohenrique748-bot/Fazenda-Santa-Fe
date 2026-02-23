@@ -71,10 +71,13 @@ function Dashboard() {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: 'calc(100vh - 80px)',
+      minHeight: 'calc(100vh - 80px)', // Compensa a altura do header
       textAlign: 'center',
       padding: 4,
-      background: 'linear-gradient(135deg, #F9F9F7 0%, #E8EBE0 100%)', // Match AgroSys tones
+      // Faz o fundo "sangrar" para as bordas, anulando o padding do pai
+      margin: { xs: -2, md: -4 },
+      width: { xs: 'calc(100% + 32px)', md: 'calc(100% + 64px)' },
+      background: 'linear-gradient(135deg, #F9F9F7 0%, #E8EBE0 100%)',
     }}>
       <Box sx={{
         display: 'flex',
@@ -86,7 +89,7 @@ function Dashboard() {
       }}>
         <Box>
           <Typography variant="h1" sx={{
-            color: '#1B3A1E', // Dark Green
+            color: '#1B3A1E',
             fontWeight: 900,
             fontSize: { xs: '4rem', md: '7rem' },
             mb: 0.5,
@@ -98,7 +101,7 @@ function Dashboard() {
           </Typography>
 
           <Typography variant="h4" sx={{
-            color: '#2C5530', // Brand Green
+            color: '#2C5530',
             fontWeight: 700,
             mb: 4,
             letterSpacing: '1px'
