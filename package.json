@@ -1,7 +1,7 @@
 {
-    "name": "malut-solucoes",
+    "name": "agrosys",
     "version": "1.0.0",
-    "description": "Sistema de Gestão Malut Soluções",
+    "description": "Sistema de Gestão AgroSys",
     "scripts": {
         "dev": "npm run dev --prefix frontend",
         "backend": "npm run start:dev --prefix backend",

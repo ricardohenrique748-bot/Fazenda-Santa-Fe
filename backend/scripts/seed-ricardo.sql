@@ -1,6 +1,6 @@
 -- Inserir empresa padrão se não existir
 INSERT INTO "Empresa" (id, "razaoSocial", cnpj, "createdAt", "updatedAt")
-VALUES ('550e8400-e29b-41d4-a716-446655440000', 'Malut Soluções', '00.000.000/0001-00', now(), now())
+VALUES ('550e8400-e29b-41d4-a716-446655440000', 'AgroSys', '00.000.000/0001-00', now(), now())
 ON CONFLICT (cnpj) DO NOTHING;
 
 -- Inserir usuário Ricardo Luz

@@ -16,9 +16,9 @@ async function main() {
         where: { cnpj: '00.000.000/0001-00' },
         update: {},
         create: {
-            razaoSocial: 'Malut Soluções',
+            razaoSocial: 'AgroSys',
             cnpj: '00.000.000/0001-00',
-            nomeFantasia: 'Malut'
+            nomeFantasia: 'AgroSys'
         }
     })
 

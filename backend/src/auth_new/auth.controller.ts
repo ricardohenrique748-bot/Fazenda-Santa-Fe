@@ -4,7 +4,7 @@ import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -29,7 +29,7 @@ export class AuthController {
       email: 'ricardo.luz@eunaman.com.br',
       senha: '85245655',
       nome: 'Ricardo Luz',
-      nomeEmpresa: 'Malut Soluções',
+      nomeEmpresa: 'AgroSys',
       cnpj: '00.000.000/0001-00',
     });
   }
