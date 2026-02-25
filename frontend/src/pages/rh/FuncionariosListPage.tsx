@@ -32,7 +32,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { funcionariosService } from '../../services/funcionariosService';
 import type { Funcionario } from '../../services/funcionariosService';
-import { authService } from '../../services/api';
+
 
 // --- Stat Card Component ---
 const StatCard = ({ title, value, icon, color }: { title: string; value: string | number; icon: React.ReactNode; color: string }) => (
@@ -112,9 +112,7 @@ export default function FuncionariosListPage() {
             console.error('Erro ao carregar funcionários', error);
             setFuncionarios([]);
             setFilteredFuncionarios([]);
-            if (error.response?.status === 401) {
-                authService.logout();
-            } else {
+            if (error.response?.status !== 401) {
                 alert('Não foi possível carregar os funcionários. Verifique sua conexão.');
             }
         }

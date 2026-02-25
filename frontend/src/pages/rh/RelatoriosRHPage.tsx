@@ -34,7 +34,7 @@ import { funcionariosService } from '../../services/funcionariosService';
 import { apontamentosService } from '../../services/apontamentosService';
 import type { Funcionario } from '../../services/funcionariosService';
 import type { Apontamento } from '../../services/apontamentosService';
-import { authService } from '../../services/api';
+
 
 // --- Stat Card Component ---
 const StatCard = ({ title, value, icon, color, subtitle }: any) => (
@@ -83,10 +83,8 @@ export default function RelatoriosRHPage() {
                 setFuncionarios(fData);
                 setApontamentos(aData);
             } catch (error: any) {
+                // O interceptor global já lida com o logout se necessário
                 console.error('Erro ao carregar dados para relatórios', error);
-                if (error.response?.status === 401) {
-                    authService.logout();
-                }
             } finally {
                 setLoading(false);
             }

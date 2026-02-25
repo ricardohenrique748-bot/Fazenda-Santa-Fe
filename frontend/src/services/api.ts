@@ -34,8 +34,15 @@ api.interceptors.response.use(
     (response: any) => response,
     (error: any) => {
         const isLoginRequest = error.config?.url?.includes('/auth/login');
+        const errorMessage = error.response?.data?.message || '';
+
         if (error.response?.status === 401 && !isLoginRequest) {
-            authService.logout();
+            // Se for erro de empresa não identificada, não desloga (pode ser o mestre carregando dados)
+            const isMissingCompany = errorMessage.includes('Empresa') || errorMessage.includes('empresa');
+
+            if (!isMissingCompany) {
+                authService.logout();
+            }
         }
         return Promise.reject(error);
     }
