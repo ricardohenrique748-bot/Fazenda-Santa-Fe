@@ -28,6 +28,7 @@ export class FuncionariosController {
   @Get()
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
+    console.log('FuncionariosController.findAll - User:', req.user?.email, 'EmpresaId:', empresaId);
     return this.funcionariosService.findAll(empresaId);
   }
 

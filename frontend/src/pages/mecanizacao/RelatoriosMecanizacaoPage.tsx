@@ -31,7 +31,7 @@ import {
     LocalShipping as TruckIcon
 } from '@mui/icons-material';
 import { mecanizacaoService, type MecanizacaoReportData } from '../../services/mecanizacaoService';
-import { authService } from '../../services/api';
+
 
 // --- Stat Card Component ---
 const StatCard = ({ title, value, icon, color, subtitle }: any) => (
@@ -76,9 +76,7 @@ export default function RelatoriosMecanizacaoPage() {
                 setData(reportData);
             } catch (error: any) {
                 console.error('Erro ao carregar dados de mecanização', error);
-                if (error.response?.status === 401) {
-                    authService.logout();
-                }
+                // O interceptor global já lida com o logout se necessário
             } finally {
                 setLoading(false);
             }

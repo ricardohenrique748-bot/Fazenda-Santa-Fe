@@ -33,14 +33,18 @@ export const authService = {
 api.interceptors.response.use(
     (response: any) => response,
     (error: any) => {
+        console.log('API Interceptor V4 Triggered - Status:', error.response?.status);
         const isLoginRequest = error.config?.url?.includes('/auth/login');
         const errorMessage = error.response?.data?.message || '';
+        const errorData = JSON.stringify(error.response?.data || {}).toLowerCase();
 
         if (error.response?.status === 401 && !isLoginRequest) {
-            // Se for erro de empresa não identificada, não desloga (pode ser o mestre carregando dados)
-            const isMissingCompany = errorMessage.includes('Empresa') || errorMessage.includes('empresa');
+            // Se for erro de empresa não identificada ou restrições de vínculo, não desloga.
+            const isCompanyRelated =
+                errorMessage.toLowerCase().includes('empresa') ||
+                errorData.includes('empresa');
 
-            if (!isMissingCompany) {
+            if (!isCompanyRelated) {
                 authService.logout();
             }
         }

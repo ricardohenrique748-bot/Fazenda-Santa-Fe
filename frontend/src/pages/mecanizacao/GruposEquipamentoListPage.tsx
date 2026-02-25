@@ -28,7 +28,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { gruposEquipamentoService } from '../../services/gruposEquipamentoService';
 import type { GrupoEquipamento } from '../../services/gruposEquipamentoService';
-import { authService } from '../../services/api';
+
 
 const StatCard = ({ title, value, icon, color }: any) => (
     <Card sx={{ height: '100%', boxShadow: '0px 4px 20px rgba(0,0,0,0.05)', borderRadius: 3, position: 'relative', overflow: 'hidden' }}>
@@ -95,9 +95,7 @@ export default function GruposEquipamentoListPage() {
             setFilteredGrupos(Array.isArray(data) ? data : []);
         } catch (error: any) {
             console.error('Erro ao carregar grupos', error);
-            if (error.response?.status === 401) {
-                authService.logout();
-            }
+            // O interceptor global já lida com o logout se necessário
         }
     };
 
