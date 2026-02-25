@@ -34,7 +34,11 @@ export class UsersService {
         );
 
         if (userRes.rows.length > 0) {
-          const user = userRes.rows[0];
+          const row = userRes.rows[0];
+          const user = {
+            ...row,
+            empresaId: row.empresaId || row.empresaid,
+          };
           return user as Usuario;
         }
         return null;
@@ -72,7 +76,11 @@ export class UsersService {
         );
 
         if (userRes.rows.length > 0) {
-          const user = userRes.rows[0];
+          const row = userRes.rows[0];
+          const user = {
+            ...row,
+            empresaId: row.empresaId || row.empresaid,
+          };
           await client.end();
           return user as Usuario;
         }

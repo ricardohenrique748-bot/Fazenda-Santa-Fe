@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
-  UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { VeiculosService } from './veiculos.service';
 import { Prisma } from '@prisma/client';
@@ -17,13 +17,13 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('veiculos')
 export class VeiculosController {
-  constructor(private readonly veiculosService: VeiculosService) {}
+  constructor(private readonly veiculosService: VeiculosService) { }
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.VeiculoCreateInput) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.veiculosService.create(empresaId, data);
   }
 
@@ -31,7 +31,7 @@ export class VeiculosController {
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.veiculosService.findAll(empresaId);
   }
 
@@ -39,7 +39,7 @@ export class VeiculosController {
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.veiculosService.findOne(empresaId, id);
   }
 
@@ -51,7 +51,7 @@ export class VeiculosController {
   ) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.veiculosService.update(empresaId, id, data);
   }
 
@@ -59,7 +59,7 @@ export class VeiculosController {
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.veiculosService.remove(empresaId, id);
   }
 }

@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
-  UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApontamentosService } from './apontamentos.service';
 import { Prisma } from '@prisma/client';
@@ -17,13 +17,13 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('apontamentos')
 export class ApontamentosController {
-  constructor(private readonly apontamentosService: ApontamentosService) {}
+  constructor(private readonly apontamentosService: ApontamentosService) { }
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.ApontamentoCreateInput) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.apontamentosService.create(empresaId, data);
   }
 
@@ -31,7 +31,7 @@ export class ApontamentosController {
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.apontamentosService.findAll(empresaId);
   }
 
@@ -39,7 +39,7 @@ export class ApontamentosController {
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.apontamentosService.findOne(empresaId, id);
   }
 
@@ -51,7 +51,7 @@ export class ApontamentosController {
   ) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.apontamentosService.update(empresaId, id, data);
   }
 
@@ -59,7 +59,7 @@ export class ApontamentosController {
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.apontamentosService.remove(empresaId, id);
   }
 }

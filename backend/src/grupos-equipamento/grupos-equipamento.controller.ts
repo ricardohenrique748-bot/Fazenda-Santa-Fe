@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
-  UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { GruposEquipamentoService } from './grupos-equipamento.service';
 import { Prisma } from '@prisma/client';
@@ -19,13 +19,13 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 export class GruposEquipamentoController {
   constructor(
     private readonly gruposEquipamentoService: GruposEquipamentoService,
-  ) {}
+  ) { }
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.GrupoEquipamentoCreateInput) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.gruposEquipamentoService.create(empresaId, data);
   }
 
@@ -33,7 +33,7 @@ export class GruposEquipamentoController {
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.gruposEquipamentoService.findAll(empresaId);
   }
 
@@ -41,7 +41,7 @@ export class GruposEquipamentoController {
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.gruposEquipamentoService.findOne(empresaId, id);
   }
 
@@ -53,7 +53,7 @@ export class GruposEquipamentoController {
   ) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.gruposEquipamentoService.update(empresaId, id, data);
   }
 
@@ -61,7 +61,7 @@ export class GruposEquipamentoController {
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.gruposEquipamentoService.remove(empresaId, id);
   }
 }

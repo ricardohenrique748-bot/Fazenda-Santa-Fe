@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
-  UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { FuncionariosService } from './funcionarios.service';
 import { Prisma } from '@prisma/client';
@@ -17,13 +17,15 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('funcionarios')
 export class FuncionariosController {
-  constructor(private readonly funcionariosService: FuncionariosService) {}
+  constructor(private readonly funcionariosService: FuncionariosService) { }
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.FuncionarioCreateInput) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException(
+        'Sua conta não possui uma empresa vinculada. Entre em contato com o suporte.',
+      );
     return this.funcionariosService.create(empresaId, data);
   }
 
@@ -31,7 +33,9 @@ export class FuncionariosController {
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException(
+        'Sua conta não possui uma empresa vinculada.',
+      );
     return this.funcionariosService.findAll(empresaId);
   }
 
@@ -39,7 +43,9 @@ export class FuncionariosController {
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException(
+        'Sua conta não possui uma empresa vinculada.',
+      );
     return this.funcionariosService.findOne(empresaId, id);
   }
 
@@ -51,7 +57,9 @@ export class FuncionariosController {
   ) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException(
+        'Sua conta não possui uma empresa vinculada.',
+      );
     return this.funcionariosService.update(empresaId, id, data);
   }
 
@@ -59,7 +67,9 @@ export class FuncionariosController {
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new UnauthorizedException('Empresa não identificada no token.');
+      throw new ForbiddenException(
+        'Sua conta não possui uma empresa vinculada.',
+      );
     return this.funcionariosService.remove(empresaId, id);
   }
 }

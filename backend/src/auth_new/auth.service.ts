@@ -43,10 +43,11 @@ export class AuthService {
 
   async login(user: any) {
     console.log('DEBUG: AuthService.login called with user:', user);
+    const empresaId = user.empresaId || user.empresa?.id;
     const payload = {
       email: user.email,
       sub: user.id,
-      empresaId: user.empresaId,
+      empresaId: empresaId,
     };
     console.log('DEBUG: Generated JWT payload:', payload);
     return {
@@ -55,7 +56,7 @@ export class AuthService {
         id: user.id,
         nome: user.nome,
         email: user.email,
-        empresaId: user.empresaId,
+        empresaId: empresaId,
       },
     };
   }
