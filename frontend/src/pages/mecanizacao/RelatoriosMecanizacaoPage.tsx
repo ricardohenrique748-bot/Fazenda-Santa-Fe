@@ -78,8 +78,6 @@ export default function RelatoriosMecanizacaoPage() {
                 console.error('Erro ao carregar dados de mecanização', error);
                 if (error.response?.status === 401) {
                     authService.logout();
-                } else if (error.response?.status === 403) {
-                    alert(error.response?.data?.message || 'Acesso negado.');
                 }
             } finally {
                 setLoading(false);
