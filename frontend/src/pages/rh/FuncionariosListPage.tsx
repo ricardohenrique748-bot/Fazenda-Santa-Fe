@@ -113,15 +113,7 @@ export default function FuncionariosListPage() {
             setFuncionarios([]);
             setFilteredFuncionarios([]);
             if (error.response?.status === 401) {
-                const msg = error.response?.data?.message || '';
-                if (msg.includes('Empresa') || msg.includes('empresa')) {
-                    alert(msg || 'Sua conta não possui uma empresa vinculada.');
-                } else {
-                    alert('Sessão expirada ou inválida. Por favor, faça login novamente.');
-                    authService.logout();
-                }
-            } else if (error.response?.status === 403) {
-                alert(error.response?.data?.message || 'Acesso negado. Sua conta pode estar sem empresa vinculada no cadastro de usuários.');
+                authService.logout();
             } else {
                 alert('Não foi possível carregar os funcionários. Verifique sua conexão.');
             }
