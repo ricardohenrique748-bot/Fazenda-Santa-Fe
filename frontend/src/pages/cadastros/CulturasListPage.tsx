@@ -147,6 +147,8 @@ export default function CulturasListPage() {
             )
         },
         { field: 'variedade', headerName: 'Variedade', flex: 1, minWidth: 150 },
+        { field: 'estado', headerName: 'UF', width: 70 },
+        { field: 'municipio', headerName: 'Município', flex: 1, minWidth: 150 },
         {
             field: 'cicloDias',
             headerName: 'Ciclo Estimado',

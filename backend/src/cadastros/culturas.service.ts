@@ -6,9 +6,8 @@ export class CulturasService {
   constructor(private prisma: PrismaService) { }
 
   async create(data: any) {
-    const { estado, municipio, ...prismaData } = data;
     try {
-      return await this.prisma.cultura.create({ data: prismaData });
+      return await this.prisma.cultura.create({ data });
     } catch (error) {
       throw error;
     }
@@ -23,9 +22,8 @@ export class CulturasService {
   }
 
   async update(id: string, data: any) {
-    const { estado, municipio, ...prismaData } = data;
     try {
-      return await this.prisma.cultura.update({ where: { id }, data: prismaData });
+      return await this.prisma.cultura.update({ where: { id }, data });
     } catch (error) {
       throw error;
     }

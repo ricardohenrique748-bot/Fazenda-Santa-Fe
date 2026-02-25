@@ -23,7 +23,7 @@ const UNITS = ['GRA', 'KG', 'LTS', 'PES', 'SC', 'TON', 'UN'] as const;
 const schema = z.object({
     nome: z.string().min(3, 'Nome é obrigatório'),
     variedade: z.string().optional(),
-    cicloDias: z.number().optional(),
+    cicloDias: z.coerce.number().optional().nullable(),
     multicultura: z.boolean().optional(),
     unidadeCaptacao: z.string().optional(),
     unidadeSaida: z.string().optional(),
@@ -323,7 +323,11 @@ export default function CulturaFormPage() {
                             label="Ciclo (Dias)"
                             type="number"
                             InputLabelProps={{ shrink: true }}
-                            {...register('cicloDias', { valueAsNumber: true })}
+                            error={!!errors.cicloDias}
+                            helperText={errors.cicloDias?.message}
+                            {...register('cicloDias', {
+                                setValueAs: (v) => v === "" ? null : Number(v)
+                            })}
                         />
                     </Box>
 
