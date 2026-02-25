@@ -190,7 +190,7 @@ export default function UsuariosListPage() {
             headerName: 'Empresa',
             flex: 1,
             minWidth: 200,
-            valueGetter: (_value, row) => row.empresa?.razaoSocial || row.empresaId || '-',
+            valueGetter: (_value, row) => row.empresa?.razaoSocial || (row.empresaId ? row.empresaId : 'Mestre / Todas'),
         },
         {
             field: 'ativo',

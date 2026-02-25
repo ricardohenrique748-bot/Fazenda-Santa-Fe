@@ -16,7 +16,7 @@ const usuarioSchema = z.object({
     role: z.nativeEnum(Role),
     cargo: z.string().optional(),
     ativo: z.boolean().default(true),
-    empresaId: z.string().min(1, 'Empresa é obrigatória'),
+    empresaId: z.string().optional().nullable(),
 });
 
 type UsuarioFormInputs = z.infer<typeof usuarioSchema>;
@@ -67,16 +67,21 @@ export default function UsuarioFormPage() {
 
     const onSubmit: SubmitHandler<UsuarioFormInputs> = async (data) => {
         try {
+            const formattedData = {
+                ...data,
+                empresaId: data.empresaId || null,
+            };
+
             if (isEditing) {
-                const updateData = { ...data };
+                const updateData = { ...formattedData };
                 if (!updateData.senha) delete updateData.senha;
-                await usuariosService.update(id, updateData);
+                await usuariosService.update(id, updateData as any);
             } else {
-                if (!data.senha) {
+                if (!formattedData.senha) {
                     alert('Senha é obrigatória para novos usuários');
                     return;
                 }
-                await usuariosService.create(data);
+                await usuariosService.create(formattedData as any);
             }
             navigate('/cadastros/usuarios');
         } catch (error) {
@@ -136,6 +141,9 @@ export default function UsuarioFormPage() {
                                     helperText={errors.empresaId?.message}
                                     value={field.value || ''}
                                 >
+                                    <MenuItem value="">
+                                        <em>Empresa Geral (Ver Todas)</em>
+                                    </MenuItem>
                                     {empresas.map((empresa) => (
                                         <MenuItem key={empresa.id} value={empresa.id}>
                                             {empresa.razaoSocial}

@@ -16,7 +16,7 @@ export interface Usuario {
     role: Role;
     cargo?: string;
     ativo: boolean;
-    empresaId: string;
+    empresaId: string | null;
     empresa?: Empresa;
 }
 
