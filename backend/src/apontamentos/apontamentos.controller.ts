@@ -23,7 +23,7 @@ export class ApontamentosController {
   create(@Req() req: any, @Body() data: Prisma.ApontamentoCreateInput) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
     return this.apontamentosService.create(empresaId, data);
   }
 
@@ -31,7 +31,7 @@ export class ApontamentosController {
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
     return this.apontamentosService.findAll(empresaId);
   }
 
@@ -39,7 +39,7 @@ export class ApontamentosController {
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
     return this.apontamentosService.findOne(empresaId, id);
   }
 
@@ -51,7 +51,7 @@ export class ApontamentosController {
   ) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
     return this.apontamentosService.update(empresaId, id, data);
   }
 
@@ -59,7 +59,7 @@ export class ApontamentosController {
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
+      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
     return this.apontamentosService.remove(empresaId, id);
   }
 }
