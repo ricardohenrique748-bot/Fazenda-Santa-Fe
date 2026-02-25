@@ -118,7 +118,12 @@ export default function ApontamentosListPage() {
         } catch (error) {
             console.error('Erro ao carregar apontamentos', error);
             if ((error as any).response?.status === 401) {
-                authService.logout();
+                const msg = (error as any).response?.data?.message || '';
+                if (msg.includes('Empresa') || msg.includes('empresa')) {
+                    alert(msg || 'Sua conta não possui uma empresa vinculada.');
+                } else {
+                    authService.logout();
+                }
             } else if ((error as any).response?.status === 403) {
                 alert((error as any).response?.data?.message || 'Acesso negado.');
             }

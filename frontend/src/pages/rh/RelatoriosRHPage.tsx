@@ -85,8 +85,13 @@ export default function RelatoriosRHPage() {
             } catch (error: any) {
                 console.error('Erro ao carregar dados para relatórios', error);
                 if (error.response?.status === 401) {
-                    alert('Sessão expirada. Por favor, faça login novamente.');
-                    authService.logout();
+                    const msg = error.response?.data?.message || '';
+                    if (msg.includes('Empresa') || msg.includes('empresa')) {
+                        alert(msg || 'Sua conta não possui uma empresa vinculada.');
+                    } else {
+                        alert('Sessão expirada. Por favor, faça login novamente.');
+                        authService.logout();
+                    }
                 } else if (error.response?.status === 403) {
                     alert(error.response?.data?.message || 'Acesso negado.');
                 }

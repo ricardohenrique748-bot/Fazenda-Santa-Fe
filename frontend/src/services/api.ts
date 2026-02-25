@@ -35,8 +35,15 @@ api.interceptors.response.use(
     (error: any) => {
         // Don't auto-logout if we are already on the login page or if the error is from the login endpoint
         const isLoginRequest = error.config?.url?.includes('/auth/login');
+        const errorMessage = error.response?.data?.message || '';
+
+        // Se for 401, verificamos se é falta de empresa (que não deve deslogar) ou sessão expirada/token inválido
         if (error.response?.status === 401 && !isLoginRequest) {
-            authService.logout();
+            const isMissingCompany = errorMessage.includes('Empresa') || errorMessage.includes('empresa');
+
+            if (!isMissingCompany) {
+                authService.logout();
+            }
         }
         return Promise.reject(error);
     }
