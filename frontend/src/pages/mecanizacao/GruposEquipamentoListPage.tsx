@@ -96,14 +96,7 @@ export default function GruposEquipamentoListPage() {
         } catch (error: any) {
             console.error('Erro ao carregar grupos', error);
             if (error.response?.status === 401) {
-                const msg = error.response?.data?.message || '';
-                if (msg.includes('Empresa') || msg.includes('empresa')) {
-                    alert(msg || 'Sua conta não possui uma empresa vinculada.');
-                } else {
-                    authService.logout();
-                }
-            } else if (error.response?.status === 403) {
-                alert(error.response?.data?.message || 'Acesso negado.');
+                authService.logout();
             }
         }
     };
