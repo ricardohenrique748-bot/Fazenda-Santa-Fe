@@ -4,27 +4,27 @@ import { startOfMonth, endOfMonth, subMonths } from 'date-fns';
 
 @Injectable()
 export class RelatoriosMecanizacaoService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
-  async getDashboardData(empresaId: string) {
+  async getDashboardData(empresaId?: string) {
     const now = new Date();
     const firstDayMonth = startOfMonth(now);
     const lastDayMonth = endOfMonth(now);
 
     // KPIs
     const totalVeiculos = await this.prisma.veiculo.count({
-      where: { empresaId },
+      where: empresaId ? { empresaId } : {},
     });
     const ativos = await this.prisma.veiculo.count({
-      where: { empresaId, status: 'ATIVO' },
+      where: { ...(empresaId ? { empresaId } : {}), status: 'ATIVO' },
     });
     const emManutencao = await this.prisma.veiculo.count({
-      where: { empresaId, status: 'MANUTENCAO' },
+      where: { ...(empresaId ? { empresaId } : {}), status: 'MANUTENCAO' },
     });
 
     const custoMensal = await this.prisma.manutencao.aggregate({
       where: {
-        veiculo: { empresaId },
+        ...(empresaId ? { veiculo: { empresaId } } : {}),
         data: {
           gte: firstDayMonth,
           lte: lastDayMonth,
@@ -36,7 +36,7 @@ export class RelatoriosMecanizacaoService {
     // Gráfico: Frota por Tipo
     const frotaPorTipo = await this.prisma.veiculo.groupBy({
       by: ['tipo'],
-      where: { empresaId },
+      where: empresaId ? { empresaId } : {},
       _count: { id: true },
     });
 
@@ -49,7 +49,7 @@ export class RelatoriosMecanizacaoService {
 
       const soma = await this.prisma.manutencao.aggregate({
         where: {
-          veiculo: { empresaId },
+          ...(empresaId ? { veiculo: { empresaId } } : {}),
           data: { gte: start, lte: end },
         },
         _sum: { custoTotal: true },
@@ -64,7 +64,7 @@ export class RelatoriosMecanizacaoService {
     // Gráfico: Top 5 Veículos mais caros
     const topVeiculos = await this.prisma.manutencao.groupBy({
       by: ['veiculoId'],
-      where: { veiculo: { empresaId } },
+      where: empresaId ? { veiculo: { empresaId } } : {},
       _sum: { custoTotal: true },
       orderBy: { _sum: { custoTotal: 'desc' } },
       take: 5,

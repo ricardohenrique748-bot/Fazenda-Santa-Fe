@@ -22,25 +22,19 @@ export class VeiculosController {
   @Post()
   create(@Req() req: any, @Body() data: Prisma.VeiculoCreateInput) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
-    return this.veiculosService.create(empresaId, data);
+    return this.veiculosService.create(data, empresaId);
   }
 
   @Get()
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
     return this.veiculosService.findAll(empresaId);
   }
 
   @Get(':id')
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
-    return this.veiculosService.findOne(empresaId, id);
+    return this.veiculosService.findOne(id, empresaId);
   }
 
   @Patch(':id')
@@ -50,16 +44,12 @@ export class VeiculosController {
     @Body() data: Prisma.VeiculoUpdateInput,
   ) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
-    return this.veiculosService.update(empresaId, id, data);
+    return this.veiculosService.update(id, data, empresaId);
   }
 
   @Delete(':id')
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada (V3).');
-    return this.veiculosService.remove(empresaId, id);
+    return this.veiculosService.remove(id, empresaId);
   }
 }

@@ -24,25 +24,19 @@ export class GruposEquipamentoController {
   @Post()
   create(@Req() req: any, @Body() data: Prisma.GrupoEquipamentoCreateInput) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.gruposEquipamentoService.create(empresaId, data);
+    return this.gruposEquipamentoService.create(data, empresaId);
   }
 
   @Get()
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.gruposEquipamentoService.findAll(empresaId);
   }
 
   @Get(':id')
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.gruposEquipamentoService.findOne(empresaId, id);
+    return this.gruposEquipamentoService.findOne(id, empresaId);
   }
 
   @Patch(':id')
@@ -52,16 +46,12 @@ export class GruposEquipamentoController {
     @Body() data: Prisma.GrupoEquipamentoUpdateInput,
   ) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.gruposEquipamentoService.update(empresaId, id, data);
+    return this.gruposEquipamentoService.update(id, data, empresaId);
   }
 
   @Delete(':id')
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.gruposEquipamentoService.remove(empresaId, id);
+    return this.gruposEquipamentoService.remove(id, empresaId);
   }
 }

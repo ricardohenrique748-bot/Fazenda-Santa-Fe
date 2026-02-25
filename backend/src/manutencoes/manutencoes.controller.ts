@@ -22,25 +22,19 @@ export class ManutencoesController {
   @Post()
   create(@Req() req: any, @Body() data: Prisma.ManutencaoCreateInput) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.manutencoesService.create(empresaId, data);
+    return this.manutencoesService.create(data, empresaId);
   }
 
   @Get()
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.manutencoesService.findAll(empresaId);
   }
 
   @Get(':id')
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.manutencoesService.findOne(empresaId, id);
+    return this.manutencoesService.findOne(id, empresaId);
   }
 
   @Patch(':id')
@@ -50,16 +44,12 @@ export class ManutencoesController {
     @Body() data: Prisma.ManutencaoUpdateInput,
   ) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.manutencoesService.update(empresaId, id, data);
+    return this.manutencoesService.update(id, data, empresaId);
   }
 
   @Delete(':id')
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
-    return this.manutencoesService.remove(empresaId, id);
+    return this.manutencoesService.remove(id, empresaId);
   }
 }

@@ -4,23 +4,23 @@ import { GrupoEquipamento, Prisma } from '@prisma/client';
 
 @Injectable()
 export class GruposEquipamentoService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(
-    empresaId: string,
     data: Prisma.GrupoEquipamentoCreateInput,
+    empresaId?: string,
   ): Promise<GrupoEquipamento> {
     return this.prisma.grupoEquipamento.create({
       data: {
         ...data,
-        empresa: { connect: { id: empresaId } },
+        ...(empresaId ? { empresa: { connect: { id: empresaId } } } : {}),
       },
     });
   }
 
-  async findAll(empresaId: string) {
+  async findAll(empresaId?: string) {
     return this.prisma.grupoEquipamento.findMany({
-      where: { empresaId },
+      where: empresaId ? { empresaId } : {},
       include: {
         _count: {
           select: { veiculos: true },
@@ -31,11 +31,11 @@ export class GruposEquipamentoService {
   }
 
   async findOne(
-    empresaId: string,
     id: string,
+    empresaId?: string,
   ): Promise<GrupoEquipamento | null> {
     return this.prisma.grupoEquipamento.findFirst({
-      where: { id, empresaId },
+      where: { id, ...(empresaId ? { empresaId } : {}) },
       include: {
         veiculos: {
           select: { nome: true, placa: true, status: true },
@@ -45,11 +45,11 @@ export class GruposEquipamentoService {
   }
 
   async update(
-    empresaId: string,
     id: string,
     data: Prisma.GrupoEquipamentoUpdateInput,
+    empresaId?: string,
   ): Promise<GrupoEquipamento> {
-    const existing = await this.findOne(empresaId, id);
+    const existing = await this.findOne(id, empresaId);
     if (!existing)
       throw new BadRequestException('Grupo de equipamento não encontrado.');
 
@@ -62,8 +62,8 @@ export class GruposEquipamentoService {
     });
   }
 
-  async remove(empresaId: string, id: string): Promise<GrupoEquipamento> {
-    const existing = await this.findOne(empresaId, id);
+  async remove(id: string, empresaId?: string): Promise<GrupoEquipamento> {
+    const existing = await this.findOne(id, empresaId);
     if (!existing)
       throw new BadRequestException('Grupo de equipamento não encontrado.');
 

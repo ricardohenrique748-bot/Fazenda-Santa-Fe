@@ -4,7 +4,7 @@ import { Apontamento, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ApontamentosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(
     empresaId: string,
@@ -17,7 +17,7 @@ export class ApontamentosService {
     const funcionarioId =
       (data as any).funcionario?.connect?.id || (data as any).funcionarioId;
 
-    if (funcionarioId) {
+    if (funcionarioId && empresaId) {
       const func = await this.prisma.funcionario.findFirst({
         where: { id: funcionarioId, empresaId },
       });
@@ -27,13 +27,15 @@ export class ApontamentosService {
     return this.prisma.apontamento.create({ data });
   }
 
-  async findAll(empresaId: string) {
+  async findAll(empresaId?: string) {
     return this.prisma.apontamento.findMany({
-      where: {
-        funcionario: {
-          empresaId: empresaId,
-        },
-      },
+      where: empresaId
+        ? {
+          funcionario: {
+            empresaId: empresaId,
+          },
+        }
+        : {},
       include: {
         funcionario: { select: { nome: true } },
         fazenda: { select: { nome: true } },
@@ -42,13 +44,17 @@ export class ApontamentosService {
     });
   }
 
-  async findOne(empresaId: string, id: string): Promise<Apontamento | null> {
+  async findOne(id: string, empresaId?: string): Promise<Apontamento | null> {
     return this.prisma.apontamento.findFirst({
       where: {
         id,
-        funcionario: {
-          empresaId: empresaId,
-        },
+        ...(empresaId
+          ? {
+            funcionario: {
+              empresaId: empresaId,
+            },
+          }
+          : {}),
       },
       include: {
         funcionario: true,
@@ -58,11 +64,11 @@ export class ApontamentosService {
   }
 
   async update(
-    empresaId: string,
     id: string,
     data: Prisma.ApontamentoUpdateInput,
+    empresaId?: string,
   ): Promise<Apontamento> {
-    const existing = await this.findOne(empresaId, id);
+    const existing = await this.findOne(id, empresaId);
     if (!existing)
       throw new Error('Apontamento não encontrado ou acesso negado.');
 
@@ -73,8 +79,8 @@ export class ApontamentosService {
     });
   }
 
-  async remove(empresaId: string, id: string): Promise<Apontamento> {
-    const existing = await this.findOne(empresaId, id);
+  async remove(id: string, empresaId?: string): Promise<Apontamento> {
+    const existing = await this.findOne(id, empresaId);
     if (!existing)
       throw new Error('Apontamento não encontrado ou acesso negado.');
 

@@ -18,8 +18,6 @@ export class RelatoriosMecanizacaoController {
   @Get('dashboard')
   async getDashboard(@Req() req: any) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException('Sua conta não possui uma empresa vinculada.');
     return this.relatoriosService.getDashboardData(empresaId);
   }
 }

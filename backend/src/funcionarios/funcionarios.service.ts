@@ -4,7 +4,7 @@ import { Funcionario, Prisma } from '@prisma/client';
 
 @Injectable()
 export class FuncionariosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(
     empresaId: string,
@@ -13,11 +13,11 @@ export class FuncionariosService {
     const existing = await this.prisma.funcionario.findFirst({
       where: {
         cpf: data.cpf,
-        empresaId: empresaId,
+        ...(empresaId ? { empresaId } : {}),
       },
     });
     if (existing) {
-      throw new BadRequestException('CPF já cadastrado nesta empresa.');
+      throw new BadRequestException('CPF já cadastrado.');
     }
 
     // Se o data já vier com empresaId, garantir que seja o correto
@@ -33,14 +33,14 @@ export class FuncionariosService {
     return this.prisma.funcionario.create({
       data: {
         ...cleanData,
-        empresa: { connect: { id: empresaId } },
+        ...(empresaId ? { empresa: { connect: { id: empresaId } } } : {}),
       },
     });
   }
 
-  async findAll(empresaId: string) {
+  async findAll(empresaId?: string) {
     return this.prisma.funcionario.findMany({
-      where: { empresaId },
+      where: empresaId ? { empresaId } : {},
       include: {
         empresa: {
           select: { razaoSocial: true },
@@ -50,20 +50,20 @@ export class FuncionariosService {
     });
   }
 
-  async findOne(empresaId: string, id: string): Promise<Funcionario | null> {
+  async findOne(id: string, empresaId?: string): Promise<Funcionario | null> {
     return this.prisma.funcionario.findFirst({
-      where: { id, empresaId },
+      where: { id, ...(empresaId ? { empresaId } : {}) },
       include: { empresa: true },
     });
   }
 
   async update(
-    empresaId: string,
     id: string,
     data: Prisma.FuncionarioUpdateInput,
+    empresaId?: string,
   ): Promise<Funcionario> {
-    // Garantir que pertence à empresa antes de atualizar
-    const existing = await this.findOne(empresaId, id);
+    // Garantir que pertence à empresa antes de atualizar (se filtrado)
+    const existing = await this.findOne(id, empresaId);
     if (!existing) throw new BadRequestException('Funcionário não encontrado.');
 
     const {
@@ -80,9 +80,9 @@ export class FuncionariosService {
     });
   }
 
-  async remove(empresaId: string, id: string): Promise<Funcionario> {
-    // Garantir que pertence à empresa antes de remover
-    const existing = await this.findOne(empresaId, id);
+  async remove(id: string, empresaId?: string): Promise<Funcionario> {
+    // Garantir que pertence à empresa antes de remover (se filtrado)
+    const existing = await this.findOne(id, empresaId);
     if (!existing) throw new BadRequestException('Funcionário não encontrado.');
 
     return this.prisma.funcionario.delete({

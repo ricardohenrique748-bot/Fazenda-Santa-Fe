@@ -4,21 +4,23 @@ import { Manutencao, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ManutencoesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(
-    empresaId: string,
     data: Prisma.ManutencaoCreateInput,
+    empresaId?: string,
   ): Promise<Manutencao> {
     // Ao criar manutenção, opcionalmente atualizar horímetro/odômetro do veículo
     const { veiculo: _veiculo, ...cleanData } = data as any;
 
-    // Validar se o veículo pertence à empresa
-    const veiculoExists = await this.prisma.veiculo.findFirst({
-      where: { id: data.veiculo.connect?.id, empresaId },
-    });
-    if (!veiculoExists)
-      throw new Error('Caminhão/Máquina não encontrada para esta empresa.');
+    // Validar se o veículo pertence à empresa (se filtrado)
+    if (empresaId) {
+      const veiculoExists = await this.prisma.veiculo.findFirst({
+        where: { id: data.veiculo.connect?.id, empresaId },
+      });
+      if (!veiculoExists)
+        throw new Error('Caminhão/Máquina não encontrada para esta empresa.');
+    }
 
     const manutencao = await this.prisma.manutencao.create({
       data: {
@@ -42,11 +44,13 @@ export class ManutencoesService {
     return manutencao;
   }
 
-  async findAll(empresaId: string) {
+  async findAll(empresaId?: string) {
     return this.prisma.manutencao.findMany({
-      where: {
-        veiculo: { empresaId },
-      },
+      where: empresaId
+        ? {
+          veiculo: { empresaId },
+        }
+        : {},
       include: {
         veiculo: { select: { nome: true, placa: true, numeroFrota: true } },
       },
@@ -54,22 +58,26 @@ export class ManutencoesService {
     });
   }
 
-  async findOne(empresaId: string, id: string) {
+  async findOne(id: string, empresaId?: string) {
     return this.prisma.manutencao.findFirst({
       where: {
         id,
-        veiculo: { empresaId },
+        ...(empresaId
+          ? {
+            veiculo: { empresaId },
+          }
+          : {}),
       },
       include: { veiculo: true },
     });
   }
 
   async update(
-    empresaId: string,
     id: string,
     data: Prisma.ManutencaoUpdateInput,
+    empresaId?: string,
   ): Promise<Manutencao> {
-    const existing = await this.findOne(empresaId, id);
+    const existing = await this.findOne(id, empresaId);
     if (!existing) throw new Error('Manutenção não encontrada.');
 
     const { veiculo: _veiculo, ...cleanData } = data as any;
@@ -80,8 +88,8 @@ export class ManutencoesService {
     });
   }
 
-  async remove(empresaId: string, id: string): Promise<Manutencao> {
-    const existing = await this.findOne(empresaId, id);
+  async remove(id: string, empresaId?: string): Promise<Manutencao> {
+    const existing = await this.findOne(id, empresaId);
     if (!existing) throw new Error('Manutenção não encontrada.');
 
     return this.prisma.manutencao.delete({

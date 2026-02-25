@@ -22,31 +22,19 @@ export class FuncionariosController {
   @Post()
   create(@Req() req: any, @Body() data: Prisma.FuncionarioCreateInput) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada (V3). Entre em contato com o suporte.',
-      );
     return this.funcionariosService.create(empresaId, data);
   }
 
   @Get()
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada (V3).',
-      );
     return this.funcionariosService.findAll(empresaId);
   }
 
   @Get(':id')
   findOne(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada (V3).',
-      );
-    return this.funcionariosService.findOne(empresaId, id);
+    return this.funcionariosService.findOne(id, empresaId);
   }
 
   @Patch(':id')
@@ -56,20 +44,12 @@ export class FuncionariosController {
     @Body() data: Prisma.FuncionarioUpdateInput,
   ) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada (V3).',
-      );
-    return this.funcionariosService.update(empresaId, id, data);
+    return this.funcionariosService.update(id, data, empresaId);
   }
 
   @Delete(':id')
   remove(@Req() req: any, @Param('id') id: string) {
     const empresaId = req.user?.empresaId;
-    if (!empresaId)
-      throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada (V3).',
-      );
-    return this.funcionariosService.remove(empresaId, id);
+    return this.funcionariosService.remove(id, empresaId);
   }
 }

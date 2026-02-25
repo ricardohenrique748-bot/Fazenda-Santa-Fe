@@ -4,11 +4,11 @@ import { Veiculo, Prisma } from '@prisma/client';
 
 @Injectable()
 export class VeiculosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(
-    empresaId: string,
     data: Prisma.VeiculoCreateInput,
+    empresaId?: string,
   ): Promise<Veiculo> {
     // CLEANUP: Remove relational fields to avoid Prisma errors
     const {
@@ -18,35 +18,35 @@ export class VeiculosService {
       ...cleanData
     } = data as any;
 
-    // Verificar se placa ou número de frota já existem NA MESMA EMPRESA
+    // Verificar se placa ou número de frota já existem
     if (cleanData.placa) {
       const existingPlaca = await this.prisma.veiculo.findFirst({
-        where: { placa: cleanData.placa, empresaId },
+        where: { placa: cleanData.placa, ...(empresaId ? { empresaId } : {}) },
       });
       if (existingPlaca)
-        throw new BadRequestException('Placa já cadastrada nesta empresa');
+        throw new BadRequestException('Placa já cadastrada');
     }
     if (cleanData.numeroFrota) {
       const existingFrota = await this.prisma.veiculo.findFirst({
-        where: { numeroFrota: cleanData.numeroFrota, empresaId },
+        where: { numeroFrota: cleanData.numeroFrota, ...(empresaId ? { empresaId } : {}) },
       });
       if (existingFrota)
         throw new BadRequestException(
-          'Número de frota já cadastrado nesta empresa',
+          'Número de frota já cadastrado',
         );
     }
 
     return this.prisma.veiculo.create({
       data: {
         ...cleanData,
-        empresa: { connect: { id: empresaId } },
+        ...(empresaId ? { empresa: { connect: { id: empresaId } } } : {}),
       },
     });
   }
 
-  async findAll(empresaId: string) {
+  async findAll(empresaId?: string) {
     return this.prisma.veiculo.findMany({
-      where: { empresaId },
+      where: empresaId ? { empresaId } : {},
       include: {
         grupo: { select: { nome: true } },
       },
@@ -54,9 +54,9 @@ export class VeiculosService {
     });
   }
 
-  async findOne(empresaId: string, id: string) {
+  async findOne(id: string, empresaId?: string) {
     return this.prisma.veiculo.findFirst({
-      where: { id, empresaId },
+      where: { id, ...(empresaId ? { empresaId } : {}) },
       include: {
         grupo: true,
         manutencoes: {
@@ -68,11 +68,11 @@ export class VeiculosService {
   }
 
   async update(
-    empresaId: string,
     id: string,
     data: Prisma.VeiculoUpdateInput,
+    empresaId?: string,
   ): Promise<Veiculo> {
-    const existing = await this.findOne(empresaId, id);
+    const existing = await this.findOne(id, empresaId);
     if (!existing) throw new BadRequestException('Veículo não encontrado.');
 
     const {
@@ -88,8 +88,8 @@ export class VeiculosService {
     });
   }
 
-  async remove(empresaId: string, id: string): Promise<Veiculo> {
-    const existing = await this.findOne(empresaId, id);
+  async remove(id: string, empresaId?: string): Promise<Veiculo> {
+    const existing = await this.findOne(id, empresaId);
     if (!existing) throw new BadRequestException('Veículo não encontrado.');
 
     return this.prisma.veiculo.delete({
