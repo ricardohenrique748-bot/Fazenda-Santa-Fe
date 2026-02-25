@@ -43,13 +43,27 @@ export class AuthService {
 
   async login(user: any) {
     console.log('DEBUG: AuthService.login called with user:', user);
-    const empresaId = user.empresaId || user.empresa?.id;
+
+    // Fallback agressivo: se empresaId não estiver no objeto, buscar no banco pelo ID do usuário
+    let empresaId = user.empresaId || user.empresa?.id;
+
+    if (!empresaId && user.id) {
+      console.log('DEBUG: empresaId missing in login object, fetching from DB for user.id:', user.id);
+      const dbUser = await this.prisma.usuario.findUnique({
+        where: { id: user.id },
+        select: { empresaId: true }
+      });
+      empresaId = dbUser?.empresaId;
+    }
+
     const payload = {
       email: user.email,
       sub: user.id,
       empresaId: empresaId,
     };
-    console.log('DEBUG: Generated JWT payload:', payload);
+
+    console.log('DEBUG: Generated JWT payload with empresaId:', empresaId);
+
     return {
       access_token: this.jwtService.sign(payload),
       user: {

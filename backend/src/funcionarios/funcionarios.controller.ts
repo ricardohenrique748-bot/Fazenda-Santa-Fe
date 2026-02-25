@@ -24,7 +24,7 @@ export class FuncionariosController {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
       throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada. Entre em contato com o suporte.',
+        'Sua conta não possui uma empresa vinculada (V3). Entre em contato com o suporte.',
       );
     return this.funcionariosService.create(empresaId, data);
   }
@@ -34,7 +34,7 @@ export class FuncionariosController {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
       throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada.',
+        'Sua conta não possui uma empresa vinculada (V3).',
       );
     return this.funcionariosService.findAll(empresaId);
   }
@@ -44,7 +44,7 @@ export class FuncionariosController {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
       throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada.',
+        'Sua conta não possui uma empresa vinculada (V3).',
       );
     return this.funcionariosService.findOne(empresaId, id);
   }
@@ -58,7 +58,7 @@ export class FuncionariosController {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
       throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada.',
+        'Sua conta não possui uma empresa vinculada (V3).',
       );
     return this.funcionariosService.update(empresaId, id, data);
   }
@@ -68,7 +68,7 @@ export class FuncionariosController {
     const empresaId = req.user?.empresaId;
     if (!empresaId)
       throw new ForbiddenException(
-        'Sua conta não possui uma empresa vinculada.',
+        'Sua conta não possui uma empresa vinculada (V3).',
       );
     return this.funcionariosService.remove(empresaId, id);
   }
