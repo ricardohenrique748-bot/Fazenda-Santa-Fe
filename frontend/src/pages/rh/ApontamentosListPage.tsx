@@ -33,6 +33,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { apontamentosService } from '../../services/apontamentosService';
 import type { Apontamento } from '../../services/apontamentosService';
+import { authService } from '../../services/api';
 
 // --- Stat Card Component ---
 const StatCard = ({ title, value, icon, color }: { title: string; value: string | number; icon: React.ReactNode; color: string }) => (
@@ -116,6 +117,11 @@ export default function ApontamentosListPage() {
             setFilteredApontamentos(safeData);
         } catch (error) {
             console.error('Erro ao carregar apontamentos', error);
+            if ((error as any).response?.status === 401) {
+                authService.logout();
+            } else if ((error as any).response?.status === 403) {
+                alert((error as any).response?.data?.message || 'Acesso negado.');
+            }
             setApontamentos([]);
             setFilteredApontamentos([]);
         }

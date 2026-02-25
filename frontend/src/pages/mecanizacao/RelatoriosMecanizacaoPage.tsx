@@ -20,18 +20,14 @@ import {
     PieChart,
     Pie,
     Cell,
-    LineChart,
-    Line,
     Legend,
     AreaChart,
     Area
 } from 'recharts';
 import {
-    DirectionsCar as CarIcon,
     Build as BuildIcon,
     MonetizationOn as MoneyIcon,
     CheckCircle as ActiveIcon,
-    TrendingUp as TrendIcon,
     LocalShipping as TruckIcon
 } from '@mui/icons-material';
 import { mecanizacaoService, type MecanizacaoReportData } from '../../services/mecanizacaoService';
@@ -82,6 +78,8 @@ export default function RelatoriosMecanizacaoPage() {
                 console.error('Erro ao carregar dados de mecanização', error);
                 if (error.response?.status === 401) {
                     authService.logout();
+                } else if (error.response?.status === 403) {
+                    alert(error.response?.data?.message || 'Acesso negado.');
                 }
             } finally {
                 setLoading(false);
@@ -175,7 +173,7 @@ export default function RelatoriosMecanizacaoPage() {
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
                                 <XAxis dataKey="mes" />
                                 <YAxis tickFormatter={(value) => `R$ ${value >= 1000 ? (value / 1000).toFixed(0) + 'k' : value}`} />
-                                <Tooltip formatter={(value: number) => `R$ ${value.toLocaleString('pt-BR')}`} />
+                                <Tooltip formatter={(value: any) => value ? `R$ ${Number(value).toLocaleString('pt-BR')}` : '-'} />
                                 <Area
                                     type="monotone"
                                     dataKey="valor"
@@ -229,7 +227,7 @@ export default function RelatoriosMecanizacaoPage() {
                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(0,0,0,0.05)" />
                                 <XAxis type="number" tickFormatter={(value) => `R$ ${value}`} />
                                 <YAxis dataKey="nome" type="category" width={180} />
-                                <Tooltip formatter={(value: number) => `R$ ${value.toLocaleString('pt-BR')}`} />
+                                <Tooltip formatter={(value: any) => value ? `R$ ${Number(value).toLocaleString('pt-BR')}` : '-'} />
                                 <Bar
                                     dataKey="valor"
                                     name="Custo Total"

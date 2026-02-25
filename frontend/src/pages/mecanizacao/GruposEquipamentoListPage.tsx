@@ -97,6 +97,8 @@ export default function GruposEquipamentoListPage() {
             console.error('Erro ao carregar grupos', error);
             if (error.response?.status === 401) {
                 authService.logout();
+            } else if (error.response?.status === 403) {
+                alert(error.response?.data?.message || 'Acesso negado.');
             }
         }
     };

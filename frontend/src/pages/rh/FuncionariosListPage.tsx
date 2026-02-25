@@ -115,6 +115,8 @@ export default function FuncionariosListPage() {
             if (error.response?.status === 401) {
                 alert('Sessão expirada ou inválida. Por favor, faça login novamente.');
                 authService.logout();
+            } else if (error.response?.status === 403) {
+                alert(error.response?.data?.message || 'Acesso negado. Sua conta pode estar sem empresa vinculada no cadastro de usuários.');
             } else {
                 alert('Não foi possível carregar os funcionários. Verifique sua conexão.');
             }

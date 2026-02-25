@@ -87,6 +87,8 @@ export default function RelatoriosRHPage() {
                 if (error.response?.status === 401) {
                     alert('Sessão expirada. Por favor, faça login novamente.');
                     authService.logout();
+                } else if (error.response?.status === 403) {
+                    alert(error.response?.data?.message || 'Acesso negado.');
                 }
             } finally {
                 setLoading(false);

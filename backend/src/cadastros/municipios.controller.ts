@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { MunicipiosService } from './municipios.service';
+import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('municipios')
 export class MunicipiosController {
-  constructor(private readonly service: MunicipiosService) {}
+  constructor(private readonly service: MunicipiosService) { }
 
   @Post()
   create(@Body() data: any) {

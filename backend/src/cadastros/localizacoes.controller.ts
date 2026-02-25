@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { LocalizacoesService } from './localizacoes.service';
+import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('localizacoes')
 export class LocalizacoesController {
-  constructor(private readonly service: LocalizacoesService) {}
+  constructor(private readonly service: LocalizacoesService) { }
 
   @Post()
   create(@Body() data: any) {
