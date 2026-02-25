@@ -142,7 +142,7 @@ export default function UsuarioFormPage() {
                                     value={field.value || ''}
                                 >
                                     <MenuItem value="">
-                                        <em>Empresa Geral (Ver Todas)</em>
+                                        Empresa Geral (Ver Todas)
                                     </MenuItem>
                                     {empresas.map((empresa) => (
                                         <MenuItem key={empresa.id} value={empresa.id}>
