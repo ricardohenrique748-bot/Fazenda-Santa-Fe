@@ -10,19 +10,6 @@ export class FuncionariosService {
     empresaId: string,
     data: Prisma.FuncionarioCreateInput,
   ): Promise<Funcionario> {
-    const existing = await this.prisma.funcionario.findFirst({
-      where: {
-        cpf: data.cpf,
-        ...(empresaId ? { empresaId } : {}),
-      },
-    });
-    if (existing) {
-      throw new BadRequestException('CPF já cadastrado.');
-    }
-
-    // Se o data já vier com empresaId, garantir que seja o correto
-    // Mas o Prisma.FuncionarioCreateInput geralmente espera um connect ou create se for relacional
-    // Como o controller passa o objeto direto, vamos garantir o empresaId
     const {
       empresa: _empresa,
       apontamentos: _apontamentos,
@@ -31,10 +18,27 @@ export class FuncionariosService {
       empresaId: _frontendEmpresaId, // Remove from cleanData if present to avoid conflicts
       ...cleanData
     } = data as any;
+
+    const finalEmpresaId = empresaId || _frontendEmpresaId;
+
+    const existing = await this.prisma.funcionario.findFirst({
+      where: {
+        cpf: data.cpf,
+        ...(finalEmpresaId ? { empresaId: finalEmpresaId } : {}),
+      },
+    });
+    if (existing) {
+      throw new BadRequestException('CPF já cadastrado.');
+    }
+
+    if (!finalEmpresaId) {
+      throw new BadRequestException('Empresa não informada.');
+    }
+
     return this.prisma.funcionario.create({
       data: {
         ...cleanData,
-        ...(empresaId ? { empresa: { connect: { id: empresaId } } } : {}),
+        empresa: { connect: { id: finalEmpresaId } },
       },
     });
   }
@@ -72,12 +76,16 @@ export class FuncionariosService {
       apontamentos: _apontamentos,
       entregasEPI: _entregasEPI,
       exames: _exames,
-      empresaId: _unused,
+      empresaId: _frontendEmpresaId,
       ...cleanData
     } = data as any;
+
     return this.prisma.funcionario.update({
       where: { id },
-      data: cleanData,
+      data: {
+        ...cleanData,
+        ...(_frontendEmpresaId ? { empresa: { connect: { id: _frontendEmpresaId } } } : {}),
+      },
     });
   }
 
