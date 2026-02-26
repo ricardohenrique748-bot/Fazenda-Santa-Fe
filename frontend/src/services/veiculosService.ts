@@ -23,6 +23,7 @@ export interface Veiculo {
     id: string;
     nome: string;
     placa?: string;
+    chassi?: string;
     numeroFrota?: string;
     tipo: TipoVeiculo;
     marca?: string;

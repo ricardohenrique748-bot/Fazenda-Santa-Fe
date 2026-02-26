@@ -11,6 +11,7 @@ import { empresasService, type Empresa } from '../../services/empresasService';
 const veiculoSchema = z.object({
     nome: z.string().min(1, 'Nome é obrigatório'),
     placa: z.string().optional(),
+    chassi: z.string().optional(),
     numeroFrota: z.string().optional(),
     tipo: z.nativeEnum(TipoVeiculo),
     marca: z.string().optional(),
@@ -109,6 +110,7 @@ export default function VeiculoFormPage() {
                             )}
                         />
                         <TextField fullWidth label="Placa" {...register('placa')} />
+                        <TextField fullWidth label="Chassi" {...register('chassi')} />
                         <TextField fullWidth label="Nº Frota" {...register('numeroFrota')} />
                         <TextField fullWidth label="Marca" {...register('marca')} />
                         <TextField fullWidth label="Modelo" {...register('modelo')} />
