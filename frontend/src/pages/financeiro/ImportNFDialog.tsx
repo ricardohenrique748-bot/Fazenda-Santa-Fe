@@ -107,11 +107,20 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
         if (selectedFile) {
-            if (selectedFile.type !== 'text/xml' && !selectedFile.name.endsWith('.xml')) {
-                setError('Por favor, selecione um arquivo XML de NF-e.');
+            const isXml = selectedFile.type === 'text/xml' || selectedFile.name.endsWith('.xml');
+            const isPdf = selectedFile.type === 'application/pdf' || selectedFile.name.endsWith('.pdf');
+
+            if (!isXml && !isPdf) {
+                setError('Por favor, selecione um arquivo XML ou PDF da NF-e.');
                 return;
             }
-            parseXML(selectedFile);
+
+            if (isXml) {
+                parseXML(selectedFile);
+            } else if (isPdf) {
+                // PDF Parsing placeholder
+                setError('O suporte para leitura automática de PDF será implementado em breve. Por enquanto escolha o arquivo XML para preenchimento automático.');
+            }
         }
     };
 
@@ -255,7 +264,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle sx={{ fontWeight: 800 }}>Importar Nota Fiscal (XML)</DialogTitle>
+            <DialogTitle sx={{ fontWeight: 800 }}>Importar Nota Fiscal (XML ou PDF)</DialogTitle>
             <DialogContent dividers>
                 {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
@@ -271,7 +280,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                         bgcolor: '#fafafa'
                     }}>
                         <CloudUploadIcon sx={{ fontSize: 60, color: 'action.active', mb: 2 }} />
-                        <Typography variant="h6" gutterBottom>Arraste o XML ou clique para selecionar</Typography>
+                        <Typography variant="h6" gutterBottom>Arraste o XML/PDF ou clique para selecionar</Typography>
                         <Button
                             variant="contained"
                             component="label"
@@ -281,7 +290,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                             <input
                                 type="file"
                                 hidden
-                                accept=".xml"
+                                accept=".xml,.pdf"
                                 onChange={handleFileChange}
                             />
                         </Button>
