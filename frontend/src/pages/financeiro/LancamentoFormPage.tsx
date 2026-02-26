@@ -17,6 +17,7 @@ const lancamentoSchema = z.object({
     planoContasId: z.string().min(1, 'Categoria é obrigatória'),
     empresaId: z.string().min(1, 'Empresa é obrigatória'),
     status: z.nativeEnum(StatusFinanceiro).default(StatusFinanceiro.PENDENTE),
+    formaPagamento: z.string().optional()
 });
 
 type LancamentoFormInputs = z.infer<typeof lancamentoSchema>;
@@ -32,7 +33,8 @@ export default function LancamentoFormPage() {
             tipo: TipoLancamento.PAGAR,
             valor: 0,
             status: StatusFinanceiro.PENDENTE,
-            dataVencimento: new Date().toISOString().split('T')[0]
+            dataVencimento: new Date().toISOString().split('T')[0],
+            formaPagamento: ''
         }
     });
 
@@ -136,6 +138,13 @@ export default function LancamentoFormPage() {
                             error={!!errors.valor}
                             helperText={errors.valor?.message}
                             {...register('valor')}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Forma de Pagamento"
+                            {...register('formaPagamento')}
+                            placeholder="Ex: Pix, Boleto, Cartão"
                         />
 
                         <TextField

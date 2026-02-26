@@ -31,7 +31,8 @@ import type { PlanoContas } from '../../services/financeiroService';
 const planoContasSchema = z.object({
     descricao: z.string().min(3, 'Descrição deve ter no mínimo 3 caracteres'),
     tipo: z.enum(['RECEBER', 'PAGAR']),
-    codigo: z.string().optional()
+    codigo: z.string().optional(),
+    formaPagamento: z.string().optional()
 });
 
 type PlanoContasFormData = z.infer<typeof planoContasSchema>;
@@ -45,7 +46,8 @@ export default function PlanoContasPage() {
         resolver: zodResolver(planoContasSchema),
         defaultValues: {
             tipo: 'RECEBER',
-            codigo: ''
+            codigo: '',
+            formaPagamento: ''
         }
     });
 
@@ -68,9 +70,10 @@ export default function PlanoContasPage() {
             setValue('descricao', categoria.descricao);
             setValue('tipo', categoria.tipo);
             setValue('codigo', categoria.codigo || '');
+            setValue('formaPagamento', categoria.formaPagamento || '');
         } else {
             setEditingId(null);
-            reset({ tipo: 'RECEBER', codigo: '' });
+            reset({ tipo: 'RECEBER', codigo: '', formaPagamento: '' });
         }
         setOpenDialog(true);
     };
@@ -141,7 +144,12 @@ export default function PlanoContasPage() {
                         >
                             <ListItemText
                                 primary={c.descricao}
-                                secondary={c.codigo ? `Código: ${c.codigo}` : null}
+                                secondary={
+                                    <Box>
+                                        {c.codigo && <Typography variant="caption" display="block">Código: {c.codigo}</Typography>}
+                                        {c.formaPagamento && <Typography variant="caption" sx={{ color: 'text.secondary' }}>Forma de Pagto: {c.formaPagamento}</Typography>}
+                                    </Box>
+                                }
                             />
                             <Chip label="Receita" color="success" size="small" variant="outlined" />
                         </ListItem>
@@ -172,7 +180,12 @@ export default function PlanoContasPage() {
                         >
                             <ListItemText
                                 primary={c.descricao}
-                                secondary={c.codigo ? `Código: ${c.codigo}` : null}
+                                secondary={
+                                    <Box>
+                                        {c.codigo && <Typography variant="caption" display="block">Código: {c.codigo}</Typography>}
+                                        {c.formaPagamento && <Typography variant="caption" sx={{ color: 'text.secondary' }}>Forma de Pagto: {c.formaPagamento}</Typography>}
+                                    </Box>
+                                }
                             />
                             <Chip label="Despesa" color="error" size="small" variant="outlined" />
                         </ListItem>
@@ -193,7 +206,7 @@ export default function PlanoContasPage() {
                                 label="Tipo"
                                 fullWidth
                                 defaultValue="RECEBER"
-                                inputProps={register('tipo')}
+                                {...register('tipo')}
                                 error={!!errors.tipo}
                                 helperText={errors.tipo?.message}
                             >
@@ -207,6 +220,13 @@ export default function PlanoContasPage() {
                                 {...register('descricao')}
                                 error={!!errors.descricao}
                                 helperText={errors.descricao?.message}
+                            />
+
+                            <TextField
+                                label="Forma de Pagamento"
+                                fullWidth
+                                {...register('formaPagamento')}
+                                placeholder="Ex: Pix, Boleto, Cartão"
                             />
 
                             <TextField

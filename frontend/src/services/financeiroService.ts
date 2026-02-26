@@ -20,6 +20,7 @@ export interface PlanoContas {
     codigo?: string;
     descricao: string;
     tipo: TipoLancamento;
+    formaPagamento?: string;
 }
 
 export interface LancamentoFinanceiro {
@@ -30,6 +31,7 @@ export interface LancamentoFinanceiro {
     dataPagamento?: string;
     status: StatusFinanceiro;
     tipo: TipoLancamento;
+    formaPagamento?: string;
     planoContasId: string;
     planoContas?: PlanoContas;
     empresaId: string;

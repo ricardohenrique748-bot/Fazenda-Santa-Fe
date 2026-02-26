@@ -162,6 +162,7 @@ export default function ContasListPage() {
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                         Cat: {params.row.planoContas?.descricao || 'Sem Categoria'}
+                        {params.row.formaPagamento && ` • ${params.row.formaPagamento}`}
                     </Typography>
                 </Box>
             )
