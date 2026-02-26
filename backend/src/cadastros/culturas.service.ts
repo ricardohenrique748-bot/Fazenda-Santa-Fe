@@ -20,6 +20,20 @@ export class CulturasService {
         }
       });
 
+      // Garantir tipos corretos para Prisma
+      if (cleanData.cicloDias !== undefined && cleanData.cicloDias !== null) {
+        cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : cleanData.cicloDias;
+      }
+      if (cleanData.multicultura !== undefined && cleanData.multicultura !== null) {
+        cleanData.multicultura = String(cleanData.multicultura) === 'true';
+      }
+      if (cleanData.controlaPlantio !== undefined && cleanData.controlaPlantio !== null) {
+        cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
+      }
+      if (cleanData.exigirEspacamento !== undefined && cleanData.exigirEspacamento !== null) {
+        cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
+      }
+
       return await this.prisma.cultura.create({ data: cleanData });
     } catch (error) {
       throw error;
@@ -48,6 +62,20 @@ export class CulturasService {
           cleanData[key] = null;
         }
       });
+
+      // Garantir tipos corretos para Prisma
+      if (cleanData.cicloDias !== undefined && cleanData.cicloDias !== null) {
+        cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : cleanData.cicloDias;
+      }
+      if (cleanData.multicultura !== undefined && cleanData.multicultura !== null) {
+        cleanData.multicultura = String(cleanData.multicultura) === 'true';
+      }
+      if (cleanData.controlaPlantio !== undefined && cleanData.controlaPlantio !== null) {
+        cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
+      }
+      if (cleanData.exigirEspacamento !== undefined && cleanData.exigirEspacamento !== null) {
+        cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
+      }
 
       return await this.prisma.cultura.update({ where: { id }, data: cleanData });
     } catch (error) {

@@ -4,10 +4,11 @@ import { useForm, Controller } from 'react-hook-form';
 import type { SubmitHandler, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Box, Button, TextField, Typography, Paper, Tabs, Tab, FormControlLabel, Checkbox, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip, InputAdornment, CircularProgress } from '@mui/material';
+import { Add as AddIcon, Delete as DeleteIcon, Search as SearchIcon } from '@mui/icons-material';
 import { useFieldArray } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import { empresasService } from '../../services/empresasService';
 import type { Fazenda } from '../../services/fazendasService';
 
@@ -119,6 +120,41 @@ export default function EmpresaFormPage() {
     // Modal state for Socio
     const [openSocioModal, setOpenSocioModal] = useState(false);
     const [newSocio, setNewSocio] = useState({ nome: '', cpf: '', cnpj: '', percentual: '', principal: false });
+    const [loadingCnpj, setLoadingCnpj] = useState(false);
+
+    const handleBuscarCnpj = async () => {
+        const cnpjUnmasked = getValues('cnpj')?.replace(/\D/g, '');
+        if (!cnpjUnmasked || cnpjUnmasked.length !== 14) {
+            alert('Por favor, informe um CNPJ com 14 dígitos válidos.');
+            return;
+        }
+        setLoadingCnpj(true);
+        try {
+            const resp = await axios.get(`https://brasilapi.com.br/api/cnpj/v1/${cnpjUnmasked}`);
+            const data = resp.data;
+            if (data) {
+                setValue('razaoSocial', data.razao_social || '', { shouldValidate: true });
+                setValue('nomeFantasia', data.nome_fantasia || '', { shouldValidate: true });
+                setValue('cep', data.cep || '', { shouldValidate: true });
+                setValue('logradouro', data.logradouro || '', { shouldValidate: true });
+                setValue('numero', data.numero || '', { shouldValidate: true });
+                setValue('complemento', data.complemento || '', { shouldValidate: true });
+                setValue('bairro', data.bairro || '', { shouldValidate: true });
+                setValue('cidade', data.municipio || '', { shouldValidate: true });
+                setValue('estado', data.uf || '', { shouldValidate: true });
+                setValue('telefone', data.ddd_telefone_1 || '', { shouldValidate: true });
+                setValue('email', data.email || '', { shouldValidate: true });
+                setValue('cnaeFiscal', data.cnae_fiscal ? String(data.cnae_fiscal) : '', { shouldValidate: true });
+                // Note: IE and IM depend on other services, brasilapi doesnt always provide IM/IE directly here,
+                // but if available, you could get from state services.
+            }
+        } catch (error) {
+            console.error('Erro ao consultar CNPJ na BrasilAPI', error);
+            alert('Não foi possível localizar este CNPJ. Verifique a digitação ou tente mais tarde.');
+        } finally {
+            setLoadingCnpj(false);
+        }
+    };
 
     const handleAddSocio = () => {
         if (!newSocio.nome) {
