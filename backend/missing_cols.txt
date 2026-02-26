@@ -1,0 +1,5 @@
+Column missing in DB: Veiculo.chassi
+Column missing in DB: PlanoContas.formaPagamento
+Column missing in DB: LancamentoFinanceiro.formaPagamento
+Column missing in DB: Cultura.estado
+Column missing in DB: Cultura.municipio
