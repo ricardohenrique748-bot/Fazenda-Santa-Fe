@@ -24,15 +24,15 @@ export class CulturasService {
       if (cleanData.cicloDias !== undefined && cleanData.cicloDias !== null) {
         cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : cleanData.cicloDias;
       }
-      if (cleanData.multicultura !== undefined && cleanData.multicultura !== null) {
-        cleanData.multicultura = String(cleanData.multicultura) === 'true';
-      }
-      if (cleanData.controlaPlantio !== undefined && cleanData.controlaPlantio !== null) {
-        cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
-      }
-      if (cleanData.exigirEspacamento !== undefined && cleanData.exigirEspacamento !== null) {
-        cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
-      }
+
+      if (cleanData.multicultura === null) cleanData.multicultura = false;
+      else if (cleanData.multicultura !== undefined) cleanData.multicultura = String(cleanData.multicultura) === 'true';
+
+      if (cleanData.controlaPlantio === null) cleanData.controlaPlantio = false;
+      else if (cleanData.controlaPlantio !== undefined) cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
+
+      if (cleanData.exigirEspacamento === null) cleanData.exigirEspacamento = false;
+      else if (cleanData.exigirEspacamento !== undefined) cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
 
       return await this.prisma.cultura.create({ data: cleanData });
     } catch (error) {
@@ -67,15 +67,15 @@ export class CulturasService {
       if (cleanData.cicloDias !== undefined && cleanData.cicloDias !== null) {
         cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : cleanData.cicloDias;
       }
-      if (cleanData.multicultura !== undefined && cleanData.multicultura !== null) {
-        cleanData.multicultura = String(cleanData.multicultura) === 'true';
-      }
-      if (cleanData.controlaPlantio !== undefined && cleanData.controlaPlantio !== null) {
-        cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
-      }
-      if (cleanData.exigirEspacamento !== undefined && cleanData.exigirEspacamento !== null) {
-        cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
-      }
+
+      if (cleanData.multicultura === null) cleanData.multicultura = false;
+      else if (cleanData.multicultura !== undefined) cleanData.multicultura = String(cleanData.multicultura) === 'true';
+
+      if (cleanData.controlaPlantio === null) cleanData.controlaPlantio = false;
+      else if (cleanData.controlaPlantio !== undefined) cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
+
+      if (cleanData.exigirEspacamento === null) cleanData.exigirEspacamento = false;
+      else if (cleanData.exigirEspacamento !== undefined) cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
 
       return await this.prisma.cultura.update({ where: { id }, data: cleanData });
     } catch (error) {

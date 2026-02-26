@@ -65,8 +65,9 @@ export class FinanceiroController {
   }
 
   @Get('lancamentos')
-  findAllLancamentos(@Query() filters: any) {
-    return this.financeiroService.findAllLancamentos(filters);
+  findAllLancamentos(@Request() req: any, @Query() filters: any) {
+    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
+    return this.financeiroService.findAllLancamentos({ ...filters, empresaId: req.user.empresaId });
   }
 
   @Patch('lancamentos/:id/baixar')
@@ -83,6 +84,7 @@ export class FinanceiroController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
+    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
     return this.financeiroService.getFluxoCaixa(
       req.user.empresaId,
       startDate,
