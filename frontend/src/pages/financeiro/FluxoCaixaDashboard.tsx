@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Grid, Card, CardContent, TextField, Button } from '@mui/material';
+import { Box, Typography, Paper, Grid2 as Grid, Card, CardContent, TextField, Button } from '@mui/material';
 import { TrendingUp, TrendingDown, AccountBalance, Schedule } from '@mui/icons-material';
 import { financeiroService } from '../../services/financeiroService';
 import { startOfMonth, endOfMonth, format, subMonths } from 'date-fns';
@@ -61,7 +61,7 @@ export default function FluxoCaixaDashboard() {
     return (
         <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h4">Fluxo de Caixa</Typography>
+                <Typography variant="h4">Conciliação Bancária</Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <TextField
                         type="date"
@@ -85,7 +85,7 @@ export default function FluxoCaixaDashboard() {
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {cards.map((card, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index} sx={{ display: 'flex' }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index} sx={{ display: 'flex' }}>
                         <Card sx={{ borderLeft: 5, borderColor: card.color, width: '100%' }}>
                             <CardContent>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>

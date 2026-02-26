@@ -29,12 +29,14 @@ import {
     TrendingUp as TrendingUpIcon,
     AccountBalance as AccountBalanceIcon,
     FilterList as FilterListIcon,
-    CalendarToday as CalendarTodayIcon
+    CalendarToday as CalendarTodayIcon,
+    FileUpload as FileUploadIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { financeiroService, TipoLancamento } from '../../services/financeiroService';
 import type { LancamentoFinanceiro } from '../../services/financeiroService';
+import ImportNFDialog from './ImportNFDialog';
 
 // --- Stat Card Component ---
 const StatCard = ({ title, value, icon, color }: { title: string; value: string | number; icon: React.ReactNode; color: string }) => (
@@ -79,6 +81,7 @@ export default function ContasListPage() {
     const [tabValue, setTabValue] = useState(0); // 0: PAGAR, 1: RECEBER
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [isImportNFOpen, setIsImportNFOpen] = useState(false);
 
     const navigate = useNavigate();
     const openMenu = Boolean(anchorEl);
@@ -218,23 +221,46 @@ export default function ContasListPage() {
                         Controle de fluxo de caixa, vencimentos e liquidação de títulos.
                     </Typography>
                 </Box>
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => navigate('/financeiro/lancamentos/novo')}
-                    sx={{
-                        borderRadius: 3,
-                        px: 3,
-                        py: 1,
-                        textTransform: 'none',
-                        fontSize: '1rem',
-                        fontWeight: 600,
-                        boxShadow: '0px 8px 20px rgba(44, 85, 48, 0.25)',
-                        background: 'linear-gradient(135deg, #2C5530 0%, #1B3A1E 100%)'
-                    }}
-                >
-                    Novo Lançamento
-                </Button>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button
+                        variant="outlined"
+                        startIcon={<FileUploadIcon />}
+                        onClick={() => setIsImportNFOpen(true)}
+                        sx={{
+                            borderRadius: 3,
+                            px: 3,
+                            py: 1,
+                            textTransform: 'none',
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            borderColor: '#2C5530',
+                            color: '#2C5530',
+                            '&:hover': {
+                                borderColor: '#1B3A1E',
+                                bgcolor: 'rgba(44, 85, 48, 0.04)'
+                            }
+                        }}
+                    >
+                        Importar NF
+                    </Button>
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={() => navigate('/financeiro/lancamentos/novo')}
+                        sx={{
+                            borderRadius: 3,
+                            px: 3,
+                            py: 1,
+                            textTransform: 'none',
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            boxShadow: '0px 8px 20px rgba(44, 85, 48, 0.25)',
+                            background: 'linear-gradient(135deg, #2C5530 0%, #1B3A1E 100%)'
+                        }}
+                    >
+                        Novo Lançamento
+                    </Button>
+                </Box>
             </Box>
 
             {/* Stats Cards */}
@@ -388,6 +414,14 @@ export default function ContasListPage() {
                     <EditIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} /> Editar Lançamento
                 </MenuItem>
             </Menu>
+
+            <ImportNFDialog
+                open={isImportNFOpen}
+                onClose={() => {
+                    setIsImportNFOpen(false);
+                    loadLancamentos();
+                }}
+            />
         </Box>
     );
 }
