@@ -6,47 +6,60 @@ import { Funcionario, Prisma } from '@prisma/client';
 export class FuncionariosService {
   constructor(private prisma: PrismaService) { }
 
-  async create(
-    empresaId: string,
-    data: Prisma.FuncionarioCreateInput,
-  ): Promise<Funcionario> {
+  async create(empresaId: string, data: any): Promise<Funcionario> {
     try {
-      const {
-        empresa: _empresa,
-        apontamentos: _apontamentos,
-        entregasEPI: _entregasEPI,
-        exames: _exames,
-        empresaId: _frontendEmpresaId,
-        dataAdmissao,
-        ...cleanData
-      } = data as any;
-
-      const finalEmpresaId = empresaId || _frontendEmpresaId;
-
-      console.log('FuncionariosService.create - empresaId:', finalEmpresaId, '- cpf:', cleanData.cpf);
-
-      if (!finalEmpresaId) {
-        throw new BadRequestException('Empresa não informada.');
+      // Limpar campos que não pertencem ao modelo
+      const cleanData: any = {};
+      const allowedFields = ['nome', 'cpf', 'email', 'telefone', 'cargo', 'dataAdmissao', 'salario', 'ativo'];
+      for (const field of allowedFields) {
+        if (data[field] !== undefined) {
+          cleanData[field] = data[field];
+        }
       }
 
-      const existing = await this.prisma.funcionario.findFirst({
-        where: {
-          cpf: cleanData.cpf as string,
-        },
-      });
-      if (existing) {
-        throw new BadRequestException('CPF já cadastrado.');
+      // empresaId: prioridade para o do token, fallback para o do body
+      const finalEmpresaId = empresaId || data.empresaId;
+      console.log('FuncionariosService.create - empresaId do token:', empresaId, '| finalEmpresaId:', finalEmpresaId, '| cpf:', cleanData.cpf);
+
+      if (!finalEmpresaId) {
+        throw new BadRequestException('Empresa não informada. Faça logout e login novamente.');
+      }
+
+      // Converter strings vazias para null
+      for (const key of Object.keys(cleanData)) {
+        if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '') {
+          cleanData[key] = null;
+        }
+      }
+
+      // Converter data de admissão
+      if (cleanData.dataAdmissao) {
+        cleanData.dataAdmissao = new Date(cleanData.dataAdmissao);
+      }
+
+      // Converter salário para número
+      if (cleanData.salario !== undefined && cleanData.salario !== null) {
+        cleanData.salario = Number(cleanData.salario);
+      }
+
+      // Verificar CPF duplicado
+      if (cleanData.cpf) {
+        const existing = await this.prisma.funcionario.findFirst({
+          where: { cpf: cleanData.cpf },
+        });
+        if (existing) {
+          throw new BadRequestException('CPF já cadastrado para outro funcionário.');
+        }
       }
 
       return this.prisma.funcionario.create({
         data: {
           ...cleanData,
-          dataAdmissao: dataAdmissao ? new Date(dataAdmissao) : undefined,
           empresa: { connect: { id: finalEmpresaId } },
         },
       });
     } catch (error: any) {
-      console.error('ERRO AO CRIAR FUNCIONARIO:', JSON.stringify(error?.message || error, null, 2));
+      console.error('ERRO AO CRIAR FUNCIONARIO:', error?.message || JSON.stringify(error));
       throw error;
     }
   }
