@@ -28,6 +28,7 @@ export class FuncionariosService {
       apontamentos: _apontamentos,
       entregasEPI: _entregasEPI,
       exames: _exames,
+      empresaId: _frontendEmpresaId, // Remove from cleanData if present to avoid conflicts
       ...cleanData
     } = data as any;
     return this.prisma.funcionario.create({

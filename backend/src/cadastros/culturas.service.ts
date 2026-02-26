@@ -7,7 +7,20 @@ export class CulturasService {
 
   async create(data: any) {
     try {
-      return await this.prisma.cultura.create({ data });
+      const cleanData = { ...data };
+      delete cleanData.id;
+      delete cleanData.createdAt;
+      delete cleanData.updatedAt;
+      delete cleanData.planejamentos;
+
+      // Converter strings vazias para null
+      Object.keys(cleanData).forEach((key) => {
+        if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '') {
+          cleanData[key] = null;
+        }
+      });
+
+      return await this.prisma.cultura.create({ data: cleanData });
     } catch (error) {
       throw error;
     }
@@ -23,7 +36,20 @@ export class CulturasService {
 
   async update(id: string, data: any) {
     try {
-      return await this.prisma.cultura.update({ where: { id }, data });
+      const cleanData = { ...data };
+      delete cleanData.id;
+      delete cleanData.createdAt;
+      delete cleanData.updatedAt;
+      delete cleanData.planejamentos;
+
+      // Converter strings vazias para null
+      Object.keys(cleanData).forEach((key) => {
+        if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '') {
+          cleanData[key] = null;
+        }
+      });
+
+      return await this.prisma.cultura.update({ where: { id }, data: cleanData });
     } catch (error) {
       throw error;
     }
