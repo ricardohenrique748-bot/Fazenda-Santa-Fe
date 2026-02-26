@@ -55,6 +55,9 @@ export const planejamentoService = {
         const response = await api.post('/planejamento/safras', data);
         return response.data;
     },
+    deleteSafra: async (id: string): Promise<void> => {
+        await api.delete(`/planejamento/safras/${id}`);
+    },
 
     // Planejamentos
     getPlanejamentos: async (safraId?: string): Promise<Planejamento[]> => {

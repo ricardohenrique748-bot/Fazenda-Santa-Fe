@@ -122,6 +122,20 @@ export default function SafraListPage() {
         setSelectedId(null);
     };
 
+    const handleDelete = async () => {
+        if (!selectedId) return;
+        if (window.confirm('Tem certeza que deseja excluir esta safra? Isso pode apagar dados vinculados.')) {
+            try {
+                await planejamentoService.deleteSafra(selectedId);
+                loadData();
+            } catch (error) {
+                console.error('Erro ao excluir safra:', error);
+                alert('Erro ao excluir safra. Talvez existam planejamentos vinculados a ela.');
+            }
+        }
+        handleMenuClose();
+    };
+
     const columns: GridColDef[] = [
         {
             field: 'nome',
@@ -358,15 +372,7 @@ export default function SafraListPage() {
                 <MenuItem sx={{ py: 1.5, px: 2.5 }} onClick={() => selectedId && navigate(`/planejamento/safras/${selectedId}`)}>
                     <EditIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} /> Editar Safra
                 </MenuItem>
-                <MenuItem sx={{ py: 1.5, px: 2.5 }} onClick={() => {
-                    // Ideally implement delete logic here or open confirmation
-                    // For now just console log or basic alert if needed
-                    // But user typically wants full crud.
-                    // The requirement is to enable Safra creation. Listing actions are bonus.
-                    // I'll keep delete disabled or simple alert for now to avoid complexity unless asked.
-                    // Actually, let's just enable navigation for Edit. Delete requires Service call.
-                    // I will leave delete disabled but enable Edit.
-                }} disabled>
+                <MenuItem sx={{ py: 1.5, px: 2.5 }} onClick={handleDelete}>
                     <DeleteIcon fontSize="small" sx={{ mr: 1.5, color: 'error.main' }} /> Excluir Safra
                 </MenuItem>
             </Menu>
