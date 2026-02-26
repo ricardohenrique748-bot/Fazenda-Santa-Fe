@@ -33,7 +33,7 @@ export class CulturasService {
 
       return await this.prisma.cultura.create({ data: cleanData });
     } catch (error) {
-      console.error('ERRO AO CRIAR CULTURA:', error);
+      console.error('ERRO AO CRIAR CULTURA (FULL ERROR):', JSON.stringify(error, null, 2));
       throw error;
     }
   }
@@ -74,7 +74,7 @@ export class CulturasService {
 
       return await this.prisma.cultura.update({ where: { id }, data: cleanData });
     } catch (error) {
-      console.error('ERRO AO ATUALIZAR CULTURA:', error);
+      console.error('ERRO AO ATUALIZAR CULTURA (FULL ERROR):', JSON.stringify(error, null, 2));
       throw error;
     }
   }
