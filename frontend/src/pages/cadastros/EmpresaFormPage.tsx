@@ -350,7 +350,25 @@ export default function EmpresaFormPage() {
                                 <Paper variant="outlined" sx={{ p: 2 }}>
                                     <SectionTitle>Controle de Empresa</SectionTitle>
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                                        <TextField label="CNPJ" size="small" InputLabelProps={{ shrink: true }} {...register('cnpj')} />
+                                        <TextField
+                                            label="CNPJ"
+                                            size="small"
+                                            InputLabelProps={{ shrink: true }}
+                                            {...register('cnpj')}
+                                            slotProps={{
+                                                input: {
+                                                    endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            <Tooltip title="Buscar dados do CNPJ">
+                                                                <IconButton onClick={handleBuscarCnpj} disabled={loadingCnpj} edge="end" size="small">
+                                                                    {loadingCnpj ? <CircularProgress size={16} /> : <SearchIcon fontSize="small" />}
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </InputAdornment>
+                                                    )
+                                                }
+                                            }}
+                                        />
                                         <TextField label="CPF" size="small" InputLabelProps={{ shrink: true }} {...register('cpf')} />
                                         <TextField label="Inscrição Estadual" size="small" InputLabelProps={{ shrink: true }} {...register('inscricaoEstadual')} />
                                         <TextField label="Inscrição Municipal" size="small" InputLabelProps={{ shrink: true }} {...register('inscricaoMunicipal')} />
