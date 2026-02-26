@@ -10,39 +10,45 @@ export class FuncionariosService {
     empresaId: string,
     data: Prisma.FuncionarioCreateInput,
   ): Promise<Funcionario> {
-    const {
-      empresa: _empresa,
-      apontamentos: _apontamentos,
-      entregasEPI: _entregasEPI,
-      exames: _exames,
-      empresaId: _frontendEmpresaId,
-      dataAdmissao,
-      ...cleanData
-    } = data as any;
+    try {
+      const {
+        empresa: _empresa,
+        apontamentos: _apontamentos,
+        entregasEPI: _entregasEPI,
+        exames: _exames,
+        empresaId: _frontendEmpresaId,
+        dataAdmissao,
+        ...cleanData
+      } = data as any;
 
-    const finalEmpresaId = empresaId || _frontendEmpresaId;
+      const finalEmpresaId = empresaId || _frontendEmpresaId;
 
-    const existing = await this.prisma.funcionario.findFirst({
-      where: {
-        cpf: data.cpf,
-        ...(finalEmpresaId ? { empresaId: finalEmpresaId } : {}),
-      },
-    });
-    if (existing) {
-      throw new BadRequestException('CPF já cadastrado.');
+      console.log('FuncionariosService.create - empresaId:', finalEmpresaId, '- cpf:', cleanData.cpf);
+
+      if (!finalEmpresaId) {
+        throw new BadRequestException('Empresa não informada.');
+      }
+
+      const existing = await this.prisma.funcionario.findFirst({
+        where: {
+          cpf: cleanData.cpf as string,
+        },
+      });
+      if (existing) {
+        throw new BadRequestException('CPF já cadastrado.');
+      }
+
+      return this.prisma.funcionario.create({
+        data: {
+          ...cleanData,
+          dataAdmissao: dataAdmissao ? new Date(dataAdmissao) : undefined,
+          empresa: { connect: { id: finalEmpresaId } },
+        },
+      });
+    } catch (error: any) {
+      console.error('ERRO AO CRIAR FUNCIONARIO:', JSON.stringify(error?.message || error, null, 2));
+      throw error;
     }
-
-    if (!finalEmpresaId) {
-      throw new BadRequestException('Empresa não informada.');
-    }
-
-    return this.prisma.funcionario.create({
-      data: {
-        ...cleanData,
-        dataAdmissao: dataAdmissao ? new Date(dataAdmissao) : undefined,
-        empresa: { connect: { id: finalEmpresaId } },
-      },
-    });
   }
 
   async findAll(empresaId?: string) {
