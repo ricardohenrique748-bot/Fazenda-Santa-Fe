@@ -15,7 +15,8 @@ export class FuncionariosService {
       apontamentos: _apontamentos,
       entregasEPI: _entregasEPI,
       exames: _exames,
-      empresaId: _frontendEmpresaId, // Remove from cleanData if present to avoid conflicts
+      empresaId: _frontendEmpresaId,
+      dataAdmissao,
       ...cleanData
     } = data as any;
 
@@ -38,6 +39,7 @@ export class FuncionariosService {
     return this.prisma.funcionario.create({
       data: {
         ...cleanData,
+        dataAdmissao: dataAdmissao ? new Date(dataAdmissao) : undefined,
         empresa: { connect: { id: finalEmpresaId } },
       },
     });
@@ -84,6 +86,7 @@ export class FuncionariosService {
       where: { id },
       data: {
         ...cleanData,
+        dataAdmissao: cleanData.dataAdmissao ? new Date(cleanData.dataAdmissao) : undefined,
         ...(_frontendEmpresaId ? { empresa: { connect: { id: _frontendEmpresaId } } } : {}),
       },
     });

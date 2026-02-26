@@ -22,20 +22,18 @@ export class CulturasService {
 
       // Garantir tipos corretos para Prisma
       if (cleanData.cicloDias !== undefined && cleanData.cicloDias !== null) {
-        cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : cleanData.cicloDias;
+        cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : Number(cleanData.cicloDias);
       }
 
-      if (cleanData.multicultura === null) cleanData.multicultura = false;
-      else if (cleanData.multicultura !== undefined) cleanData.multicultura = String(cleanData.multicultura) === 'true';
-
-      if (cleanData.controlaPlantio === null) cleanData.controlaPlantio = false;
-      else if (cleanData.controlaPlantio !== undefined) cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
-
-      if (cleanData.exigirEspacamento === null) cleanData.exigirEspacamento = false;
-      else if (cleanData.exigirEspacamento !== undefined) cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
+      // Simplificar Booleano
+      const toBool = (v: any) => v === true || String(v) === 'true';
+      if (cleanData.multicultura !== undefined) cleanData.multicultura = toBool(cleanData.multicultura);
+      if (cleanData.controlaPlantio !== undefined) cleanData.controlaPlantio = toBool(cleanData.controlaPlantio);
+      if (cleanData.exigirEspacamento !== undefined) cleanData.exigirEspacamento = toBool(cleanData.exigirEspacamento);
 
       return await this.prisma.cultura.create({ data: cleanData });
     } catch (error) {
+      console.error('ERRO AO CRIAR CULTURA:', error);
       throw error;
     }
   }
@@ -65,20 +63,18 @@ export class CulturasService {
 
       // Garantir tipos corretos para Prisma
       if (cleanData.cicloDias !== undefined && cleanData.cicloDias !== null) {
-        cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : cleanData.cicloDias;
+        cleanData.cicloDias = typeof cleanData.cicloDias === 'string' ? parseInt(cleanData.cicloDias, 10) : Number(cleanData.cicloDias);
       }
 
-      if (cleanData.multicultura === null) cleanData.multicultura = false;
-      else if (cleanData.multicultura !== undefined) cleanData.multicultura = String(cleanData.multicultura) === 'true';
-
-      if (cleanData.controlaPlantio === null) cleanData.controlaPlantio = false;
-      else if (cleanData.controlaPlantio !== undefined) cleanData.controlaPlantio = String(cleanData.controlaPlantio) === 'true';
-
-      if (cleanData.exigirEspacamento === null) cleanData.exigirEspacamento = false;
-      else if (cleanData.exigirEspacamento !== undefined) cleanData.exigirEspacamento = String(cleanData.exigirEspacamento) === 'true';
+      // Simplificar Booleano
+      const toBool = (v: any) => v === true || String(v) === 'true';
+      if (cleanData.multicultura !== undefined) cleanData.multicultura = toBool(cleanData.multicultura);
+      if (cleanData.controlaPlantio !== undefined) cleanData.controlaPlantio = toBool(cleanData.controlaPlantio);
+      if (cleanData.exigirEspacamento !== undefined) cleanData.exigirEspacamento = toBool(cleanData.exigirEspacamento);
 
       return await this.prisma.cultura.update({ where: { id }, data: cleanData });
     } catch (error) {
+      console.error('ERRO AO ATUALIZAR CULTURA:', error);
       throw error;
     }
   }
