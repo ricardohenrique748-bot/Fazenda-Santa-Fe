@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class FinanceiroService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // Plano de Contas
   async createPlanoContas(
@@ -54,13 +54,23 @@ export class FinanceiroService {
   }
 
   async findAllLancamentos(filters: any) {
-    const { tipo, status, empresaId } = filters;
+    const { tipo, status, empresaId, startDate, endDate } = filters;
+
+    const where: Prisma.LancamentoFinanceiroWhereInput = {
+      empresaId,
+      tipo,
+      status,
+    };
+
+    if (startDate || endDate) {
+      where.dataVencimento = {
+        gte: startDate ? new Date(startDate) : undefined,
+        lte: endDate ? new Date(endDate) : undefined,
+      };
+    }
+
     return this.prisma.lancamentoFinanceiro.findMany({
-      where: {
-        tipo,
-        status,
-        empresaId,
-      },
+      where,
       include: {
         planoContas: true,
         empresa: { select: { razaoSocial: true } },

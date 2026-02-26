@@ -42,7 +42,7 @@ import GruposListPage from './pages/estoque/GruposListPage';
 import FabricantesListPage from './pages/estoque/FabricantesListPage';
 import ContasListPage from './pages/financeiro/ContasListPage';
 import LancamentoFormPage from './pages/financeiro/LancamentoFormPage';
-import FluxoCaixaDashboard from './pages/financeiro/FluxoCaixaDashboard';
+import ConciliacaoBancariaPage from './pages/financeiro/ConciliacaoBancariaPage';
 import PlanoContasPage from './pages/financeiro/PlanoContasPage';
 import PlanejamentoFormPage from './pages/planejamento/PlanejamentoFormPage';
 import SafraListPage from './pages/planejamento/SafraListPage';
@@ -208,7 +208,7 @@ function App() {
           <Route path="/financeiro/plano-contas" element={<PlanoContasPage />} />
           <Route path="/financeiro/contas" element={<ContasListPage />} />
           <Route path="/financeiro/lancamentos/novo" element={<LancamentoFormPage />} />
-          <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixaDashboard />} />
+          <Route path="/financeiro/conciliacao-bancaria" element={<ConciliacaoBancariaPage />} />
 
           <Route path="/planejamento/safras" element={<SafraListPage />} />
           <Route path="/planejamento/safras/novo" element={<SafraFormPage />} />

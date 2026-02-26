@@ -93,7 +93,7 @@ export const APP_MENU: ModuleMenu[] = [
         items: [
             { label: 'Plano de Contas', path: '/financeiro/plano-contas' },
             { label: 'Contas a Pagar/Receber', path: '/financeiro/contas' },
-            { label: 'Conciliação Bancária', path: '/financeiro/fluxo-caixa' },
+            { label: 'Conciliação Bancária', path: '/financeiro/conciliacao-bancaria' },
         ]
     },
     {
