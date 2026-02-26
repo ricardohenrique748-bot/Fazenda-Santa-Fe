@@ -143,9 +143,10 @@ export default function CulturaFormPage() {
                 await culturasService.create(data);
             }
             navigate('/cadastros/culturas');
-        } catch (error) {
-            console.error('Erro ao salvar', error);
-            alert('Erro ao salvar');
+        } catch (error: any) {
+            console.error('Erro ao salvar cultura', error);
+            const msg = error.response?.data?.message || 'Erro ao salvar cultura';
+            alert(msg);
         }
     };
 

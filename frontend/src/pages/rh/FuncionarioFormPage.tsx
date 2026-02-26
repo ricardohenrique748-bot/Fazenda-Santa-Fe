@@ -80,9 +80,10 @@ export default function FuncionarioFormPage() {
                 await funcionariosService.create(payload);
             }
             navigate('/rh/funcionarios');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Erro ao salvar funcionário', error);
-            alert('Erro ao salvar funcionário');
+            const msg = error.response?.data?.message || 'Erro ao salvar funcionário';
+            alert(msg);
         }
     };
 
