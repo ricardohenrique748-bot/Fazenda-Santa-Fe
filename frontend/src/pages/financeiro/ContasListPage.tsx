@@ -218,7 +218,7 @@ export default function ContasListPage() {
                         Contas a {tabValue === 0 ? 'Pagar' : 'Receber'}
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
-                        Controle de fluxo de caixa, vencimentos e liquidação de títulos.
+                        Conciliação bancária, vencimentos e liquidação de títulos.
                     </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2 }}>

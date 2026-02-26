@@ -273,33 +273,35 @@ model EstoqueMovimentacao {
 }
 
 model PlanoContas {
-  id          String                 @id @default(uuid())
-  codigo      String?
-  descricao   String
-  tipo        TipoLancamento
-  empresaId   String
-  empresa     Empresa                @relation(fields: [empresaId], references: [id])
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-  lancamentos LancamentoFinanceiro[]
+  id              String                 @id @default(uuid())
+  codigo          String?
+  descricao       String
+  tipo            TipoLancamento
+  formaPagamento  String?
+  empresaId       String
+  empresa         Empresa                @relation(fields: [empresaId], references: [id])
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  lancamentos     LancamentoFinanceiro[]
 
   @@unique([codigo, empresaId])
 }
 
 model LancamentoFinanceiro {
-  id             String           @id @default(uuid())
-  descricao      String
-  valor          Float
-  dataVencimento DateTime
-  dataPagamento  DateTime?
-  status         StatusFinanceiro @default(PENDENTE)
-  tipo           TipoLancamento
-  planoContasId  String
-  empresaId      String
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  empresa        Empresa          @relation(fields: [empresaId], references: [id])
-  planoContas    PlanoContas      @relation(fields: [planoContasId], references: [id])
+  id              String           @id @default(uuid())
+  descricao       String
+  valor           Float
+  dataVencimento  DateTime
+  dataPagamento   DateTime?
+  status          StatusFinanceiro @default(PENDENTE)
+  tipo            TipoLancamento
+  formaPagamento  String?
+  planoContasId   String
+  empresaId       String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  empresa         Empresa          @relation(fields: [empresaId], references: [id])
+  planoContas     PlanoContas      @relation(fields: [planoContasId], references: [id])
 }
 
 model Safra {

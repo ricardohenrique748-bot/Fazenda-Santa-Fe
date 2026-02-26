@@ -125,7 +125,7 @@ export default function DashboardGeralPage() {
 
                 <Grid size={{ xs: 12, md: 8 }}>
                     <Paper sx={{ p: 3, height: 400 }}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>Fluxo de Caixa (Realizado)</Typography>
+                        <Typography variant="h6" sx={{ mb: 2 }}>Conciliação Bancária (Realizado)</Typography>
                         <Divider sx={{ mb: 3 }} />
                         <ResponsiveContainer width="100%" height="80%">
                             <BarChart data={financeiroChartData}>

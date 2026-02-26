@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Grid2 as Grid, Card, CardContent, TextField, Button } from '@mui/material';
+import { Box, Typography, Paper, Grid, Card, CardContent, TextField, Button } from '@mui/material';
 import { TrendingUp, TrendingDown, AccountBalance, Schedule } from '@mui/icons-material';
 import { financeiroService } from '../../services/financeiroService';
-import { startOfMonth, endOfMonth, format, subMonths } from 'date-fns';
+import { startOfMonth, endOfMonth, format } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function FluxoCaixaDashboard() {
