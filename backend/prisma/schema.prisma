@@ -9,85 +9,74 @@ datasource db {
 }
 
 model Empresa {
-  id                String                 @id @default(uuid())
-  cnpj              String?                @unique // Made optional because CPF might be used
-  cpf               String?                @unique // Added CPF
-  codigo            String?                // Added Código
-  createdAt         DateTime               @default(now())
-  updatedAt         DateTime               @updatedAt
-  bairro            String?
-  cep               String?
-  cidade            String?
-  complemento       String?
-  email             String?
-  estado            String?
-  inscricaoEstadual String?
-  logradouro        String?
-  nomeFantasia      String?
-  numero            String?
-  razaoSocial       String?
-  site              String?
-  telefone          String?
-  
-  // New flags
-  ativo                   Boolean @default(true) // Replaces "Inativar" (inverted logic usually better, or keep inativar?)
-  // User asked for "Inativar" checkbox. Usually `ativo` @default(true) is better practice, but UI says "Inativar".
-  // I will stick to common practice `ativo` default true, and UI will match `!ativo`.
-  ignorarCaixaFinanceiro  Boolean @default(false)
-  ignorarEstoque          Boolean @default(false)
-  cfop                    String?
-  
-  // Controle
-  inscricaoMunicipal      String?
-  cei                     String?
-  cnaeFiscal              String?
-  
-  // Correspondencia
+  id                        String                 @id @default(uuid())
+  cnpj                      String?                @unique
+  createdAt                 DateTime               @default(now())
+  updatedAt                 DateTime               @updatedAt
+  bairro                    String?
+  cep                       String?
+  cidade                    String?
+  complemento               String?
+  email                     String?
+  estado                    String?
+  inscricaoEstadual         String?
+  logradouro                String?
+  nomeFantasia              String?
+  numero                    String?
+  razaoSocial               String?
+  site                      String?
+  telefone                  String?
+  cpf                       String?                @unique
+  codigo                    String?
+  ativo                     Boolean?               @default(true)
+  ignorarCaixaFinanceiro    Boolean?               @default(false)
+  ignorarEstoque            Boolean?               @default(false)
+  cfop                      String?
+  lotacaoTributaria         String?
+  codigoFpas                String?
+  codigoGps                 String?
+  outrasEntidades           String?
+  codigoFap                 String?
+  codigoSimples             String?
+  aliquotaRat               Float?
+  inscricaoMunicipal        String?
+  cei                       String?
+  cnaeFiscal                String?
   correspondenciaLogradouro String?
   correspondenciaNumero     String?
   correspondenciaBairro     String?
   correspondenciaEstado     String?
   correspondenciaCidade     String?
   correspondenciaCep        String?
-  
-  // Fiscal / SEFIP
-  lotacaoTributaria       String?
-  codigoFpas              String?
-  codigoGps               String?
-  outrasEntidades         String?
-  codigoFap               String?
-  codigoSimples           String?
-  aliquotaRat             Float?
-
-  depositos         Deposito[]
-  fazendas          Fazenda[]
-  fornecedores      Fornecedor[]
-  funcionarios      Funcionario[]
-  lancamentos       LancamentoFinanceiro[]
-  usuarios          Usuario[]
-  veiculos          Veiculo[]
-  unidades          UnidadeNegocio[]
-  gruposEquipamento GrupoEquipamento[]
-  produtos          Produto[]
-  grupoProdutos     GrupoProduto[]
-  fabricantes       Fabricante[]
-  planoContas       PlanoContas[]
-  clientes          Cliente[]
-  pedidosVenda      PedidoVenda[]
-  socios            Socio[]
+  clientes                  Cliente[]
+  depositos                 Deposito[]
+  fabricantes               Fabricante[]
+  fazendas                  Fazenda[]
+  fornecedores              Fornecedor[]
+  funcionarios              Funcionario[]
+  gruposEquipamento         GrupoEquipamento[]
+  grupoProdutos             GrupoProduto[]
+  lancamentos               LancamentoFinanceiro[]
+  pedidosVenda              PedidoVenda[]
+  planoContas               PlanoContas[]
+  produtos                  Produto[]
+  socios                    Socio[]
+  unidades                  UnidadeNegocio[]
+  usuarios                  Usuario[]
+  veiculos                  Veiculo[]
 }
 
 model Socio {
-  id          String   @id @default(uuid())
-  nome        String
-  cpf         String?
-  cnpj        String?
-  percentual  Float?
-  principal   Boolean  @default(false)
-  empresaId   String
-  empresa     Empresa  @relation(fields: [empresaId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  nome       String
+  cpf        String?
+  cnpj       String?
+  percentual Float?
+  principal  Boolean  @default(false)
+  empresaId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  empresa    Empresa  @relation(fields: [empresaId], references: [id])
 }
 
 model Usuario {
@@ -102,7 +91,7 @@ model Usuario {
   cargo         String?
   role          Role                  @default(OPERADOR)
   movimentacoes EstoqueMovimentacao[]
-  empresa       Empresa?              @relation(fields: [empresaId], references: [id])
+  empresa       Empresa?              @relation(fields: [empresaId], references: [id], onDelete: Restrict)
 }
 
 model Funcionario {
@@ -137,8 +126,8 @@ model Fazenda {
   estado        String?
   apontamentos  Apontamento[]
   empresa       Empresa                @relation(fields: [empresaId], references: [id])
-  planejamentos PlanejamentoAgricola[]
   localizacoes  Localizacao[]
+  planejamentos PlanejamentoAgricola[]
 }
 
 model Apontamento {
@@ -159,7 +148,6 @@ model Veiculo {
   id             String            @id @default(uuid())
   nome           String
   placa          String?           @unique
-  chassi         String?           @unique
   numeroFrota    String?           @unique
   tipo           TipoVeiculo
   marca          String?
@@ -171,10 +159,11 @@ model Veiculo {
   empresaId      String
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
-  manutencoes    Manutencao[]
   grupoId        String?
-  grupo          GrupoEquipamento? @relation(fields: [grupoId], references: [id])
+  chassi         String?           @unique
+  manutencoes    Manutencao[]
   empresa        Empresa           @relation(fields: [empresaId], references: [id])
+  grupo          GrupoEquipamento? @relation(fields: [grupoId], references: [id])
 }
 
 model Manutencao {
@@ -211,17 +200,17 @@ model Produto {
   categoria         String?
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @updatedAt
+  empresaId         String
+  fabricanteId      String?
+  grupoId           String?
   movimentacoes     EstoqueMovimentacao[]
   estoques          EstoqueSaldo[]
   itensPedido       ItemPedido[]
-  itensPlanejamento ItemPlanejamento[]
-  empresaId         String
-  empresa           Empresa               @relation(fields: [empresaId], references: [id])
-  grupoId           String?
-  grupo             GrupoProduto?         @relation(fields: [grupoId], references: [id])
-  fabricanteId      String?
-  fabricante        Fabricante?           @relation(fields: [fabricanteId], references: [id])
   itemPedidoVendas  ItemPedidoVenda[]
+  itensPlanejamento ItemPlanejamento[]
+  empresa           Empresa               @relation(fields: [empresaId], references: [id])
+  fabricante        Fabricante?           @relation(fields: [fabricanteId], references: [id])
+  grupo             GrupoProduto?         @relation(fields: [grupoId], references: [id])
 }
 
 model GrupoProduto {
@@ -229,20 +218,20 @@ model GrupoProduto {
   nome      String
   descricao String?
   empresaId String
-  empresa   Empresa   @relation(fields: [empresaId], references: [id])
-  produtos  Produto[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+  produtos  Produto[]
 }
 
 model Fabricante {
   id        String    @id @default(uuid())
   nome      String
   empresaId String
-  empresa   Empresa   @relation(fields: [empresaId], references: [id])
-  produtos  Produto[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+  produtos  Produto[]
 }
 
 model EstoqueSaldo {
@@ -273,35 +262,35 @@ model EstoqueMovimentacao {
 }
 
 model PlanoContas {
-  id              String                 @id @default(uuid())
-  codigo          String?
-  descricao       String
-  tipo            TipoLancamento
-  formaPagamento  String?
-  empresaId       String
-  empresa         Empresa                @relation(fields: [empresaId], references: [id])
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
-  lancamentos     LancamentoFinanceiro[]
+  id             String                 @id @default(uuid())
+  codigo         String?
+  descricao      String
+  tipo           TipoLancamento
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  empresaId      String
+  formaPagamento String?
+  lancamentos    LancamentoFinanceiro[]
+  empresa        Empresa                @relation(fields: [empresaId], references: [id])
 
   @@unique([codigo, empresaId])
 }
 
 model LancamentoFinanceiro {
-  id              String           @id @default(uuid())
-  descricao       String
-  valor           Float
-  dataVencimento  DateTime
-  dataPagamento   DateTime?
-  status          StatusFinanceiro @default(PENDENTE)
-  tipo            TipoLancamento
-  formaPagamento  String?
-  planoContasId   String
-  empresaId       String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  empresa         Empresa          @relation(fields: [empresaId], references: [id])
-  planoContas     PlanoContas      @relation(fields: [planoContasId], references: [id])
+  id             String           @id @default(uuid())
+  descricao      String
+  valor          Float
+  dataVencimento DateTime
+  dataPagamento  DateTime?
+  status         StatusFinanceiro @default(PENDENTE)
+  tipo           TipoLancamento
+  planoContasId  String
+  empresaId      String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  formaPagamento String?
+  empresa        Empresa          @relation(fields: [empresaId], references: [id])
+  planoContas    PlanoContas      @relation(fields: [planoContasId], references: [id])
 }
 
 model Safra {
@@ -318,22 +307,22 @@ model Safra {
 model PlanejamentoAgricola {
   id                   String               @id @default(uuid())
   fazendaId            String
-  talhaoId             String?
   safraId              String
-  culturaId            String?
   areaHectares         Float
-  metaProdutividade    Float?
-  unidadeProdutividade String?
-  custoEstimadoTotal   Float?
-  custoPorHa           Float?
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
+  culturaId            String?
+  custoEstimadoTotal   Float?
+  custoPorHa           Float?
+  metaProdutividade    Float?
+  talhaoId             String?
+  unidadeProdutividade String?
   atividades           AtividadePlanejada[]
   itens                ItemPlanejamento[]
-  fazenda              Fazenda              @relation(fields: [fazendaId], references: [id])
-  talhao               Localizacao?         @relation(fields: [talhaoId], references: [id])
-  safra                Safra                @relation(fields: [safraId], references: [id])
   cultura              Cultura?             @relation(fields: [culturaId], references: [id])
+  fazenda              Fazenda              @relation(fields: [fazendaId], references: [id])
+  safra                Safra                @relation(fields: [safraId], references: [id])
+  talhao               Localizacao?         @relation(fields: [talhaoId], references: [id])
 }
 
 model ItemPlanejamento {
@@ -353,8 +342,8 @@ model AtividadePlanejada {
   descricao      String
   dataPrevista   DateTime
   status         String               @default("PLANEJADO")
-  etapa          EtapaAgricola?
   createdAt      DateTime             @default(now())
+  etapa          EtapaAgricola?
   planejamento   PlanejamentoAgricola @relation(fields: [planejamentoId], references: [id])
 }
 
@@ -397,9 +386,7 @@ model ItemPedido {
 
 model ContratoComercial {
   id              String   @id @default(uuid())
-  cliente         String? // Legacy field, discourage use
-  clienteId       String?
-  clienteRel      Cliente? @relation(fields: [clienteId], references: [id])
+  cliente         String?
   cultura         String
   safra           String
   quantidadeTotal Float
@@ -408,6 +395,8 @@ model ContratoComercial {
   status          String   @default("ATIVO")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  clienteId       String?
+  clienteRel      Cliente? @relation(fields: [clienteId], references: [id])
 }
 
 model Cliente {
@@ -423,11 +412,11 @@ model Cliente {
   estado            String?
   ativo             Boolean             @default(true)
   empresaId         String
-  empresa           Empresa             @relation(fields: [empresaId], references: [id])
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  pedidos           PedidoVenda[]
+  empresa           Empresa             @relation(fields: [empresaId], references: [id])
   contratos         ContratoComercial[]
+  pedidos           PedidoVenda[]
 }
 
 model PedidoVenda {
@@ -439,11 +428,11 @@ model PedidoVenda {
   valorTotal  Float             @default(0)
   observacoes String?
   empresaId   String
-  empresa     Empresa           @relation(fields: [empresaId], references: [id])
-  cliente     Cliente           @relation(fields: [clienteId], references: [id])
-  itens       ItemPedidoVenda[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+  itens       ItemPedidoVenda[]
+  cliente     Cliente           @relation(fields: [clienteId], references: [id])
+  empresa     Empresa           @relation(fields: [empresaId], references: [id])
 }
 
 model ItemPedidoVenda {
@@ -494,6 +483,72 @@ model ExameOcupacional {
   funcionario    Funcionario @relation(fields: [funcionarioId], references: [id])
 }
 
+model UnidadeNegocio {
+  id        String   @id @default(uuid())
+  nome      String
+  codigo    String?
+  empresaId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  empresa   Empresa  @relation(fields: [empresaId], references: [id])
+}
+
+model Localizacao {
+  id            String                 @id @default(uuid())
+  nome          String
+  descricao     String?
+  fazendaId     String
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  fazenda       Fazenda                @relation(fields: [fazendaId], references: [id])
+  planejamentos PlanejamentoAgricola[]
+}
+
+model Municipio {
+  id         String   @id @default(uuid())
+  nome       String
+  estado     String
+  codigoIbge String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Cultura {
+  id                String                 @id @default(uuid())
+  nome              String
+  variedade         String?
+  cicloDias         Int?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  multicultura      Boolean?               @default(false)
+  unidadeCaptacao   String?
+  unidadeSaida      String?
+  controlaPlantio   Boolean?               @default(false)
+  exigirEspacamento Boolean?               @default(false)
+  estado            String?
+  municipio         String?
+  planejamentos     PlanejamentoAgricola[]
+}
+
+model Atividade {
+  id        String   @id @default(uuid())
+  nome      String
+  descricao String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GrupoEquipamento {
+  id        String    @id @default(uuid())
+  nome      String
+  descricao String?
+  empresaId String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+  veiculos  Veiculo[]
+}
+
 enum Role {
   ADMIN
   GERENTE
@@ -536,72 +591,6 @@ enum StatusFinanceiro {
 enum TipoLancamento {
   PAGAR
   RECEBER
-}
-
-model UnidadeNegocio {
-  id        String   @id @default(uuid())
-  nome      String
-  codigo    String?
-  empresaId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  empresa   Empresa  @relation(fields: [empresaId], references: [id])
-}
-
-model Localizacao {
-  id            String                 @id @default(uuid())
-  nome          String
-  descricao     String?
-  fazendaId     String
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
-  fazenda       Fazenda                @relation(fields: [fazendaId], references: [id])
-  planejamentos PlanejamentoAgricola[]
-}
-
-model Municipio {
-  id         String   @id @default(uuid())
-  nome       String
-  estado     String
-  codigoIbge String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model Cultura {
-  id                String                 @id @default(uuid())
-  nome              String
-  variedade         String?
-  cicloDias         Int?
-  multicultura      Boolean                @default(false)
-  unidadeCaptacao   String?
-  unidadeSaida      String?
-  controlaPlantio   Boolean                @default(false)
-  exigirEspacamento Boolean                @default(false)
-  estado            String?
-  municipio         String?
-  createdAt         DateTime               @default(now())
-  updatedAt         DateTime               @updatedAt
-  planejamentos     PlanejamentoAgricola[]
-}
-
-model Atividade {
-  id        String   @id @default(uuid())
-  nome      String
-  descricao String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model GrupoEquipamento {
-  id        String    @id @default(uuid())
-  nome      String
-  descricao String?
-  empresaId String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  veiculos  Veiculo[]
-  empresa   Empresa   @relation(fields: [empresaId], references: [id])
 }
 
 enum EtapaAgricola {
