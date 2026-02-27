@@ -164,6 +164,17 @@ export default function GruposListPage() {
                         '& .MuiDataGrid-columnHeaders': {
                             backgroundColor: '#F9F9F7',
                             borderBottom: '2px solid #e0e0e0'
+                        },
+                        '& .MuiDataGrid-row': {
+                            animation: 'none !important',
+                            transition: 'none !important',
+                        },
+                        '& .MuiDataGrid-virtualScroller': {
+                            animation: 'none !important',
+                        },
+                        '& *': {
+                            animationDuration: '0ms !important',
+                            animationDelay: '0ms !important',
                         }
                     }}
                 />
