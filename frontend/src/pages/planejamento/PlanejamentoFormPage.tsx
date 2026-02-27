@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon, Add as AddIcon, Save as SaveIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { planejamentoService } from '../../services/planejamentoService';
 import { fazendasService } from '../../services/fazendasService';
 import { estoqueService } from '../../services/estoqueService';
@@ -44,7 +44,7 @@ export default function PlanejamentoFormPage() {
     const [fazendas, setFazendas] = useState<Fazenda[]>([]);
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [culturas, setCulturas] = useState<Cultura[]>([]);
-    const [talhoes, setTalhoes] = useState<Localizacao[]>([]); // All talhoes or filtered
+    const [talhoes, setTalhoes] = useState<Localizacao[]>([]);
 
     const { register, control, handleSubmit, watch, formState: { errors } } = useForm<PlanejamentoFormData>({
         defaultValues: {
@@ -83,9 +83,6 @@ export default function PlanejamentoFormPage() {
     // Calculate Estimated Budget
     const custoEstimadoTotal = useMemo(() => {
         return watchItens.reduce((acc, item) => {
-            // Basic calculation: Dose * Area * Unit Cost (mock 0 if undefined)
-            // In real app, unit cost should come from product catalog or user input
-            // For now assume user can input or we default.
             const custo = (item.doseHa || 0) * (watchArea || 0) * (item.custoUnitario || 0);
             return acc + custo;
         }, 0);
@@ -111,11 +108,8 @@ export default function PlanejamentoFormPage() {
             setSafras(sData);
             setFazendas(fData);
             setProdutos(pData);
-
-            // Map types if necessary or use as is if compatible
             setCulturas(cData);
             setTalhoes(tData);
-
         } catch (error) {
             console.error('Erro ao carregar dados iniciais', error);
         }
@@ -155,52 +149,103 @@ export default function PlanejamentoFormPage() {
                             1. Definição da Safra e Local
                         </Typography>
                         <Grid container spacing={3}>
+                            {/* Safra */}
                             <Grid size={{ xs: 12, sm: 3 }}>
-                                <TextField
-                                    select
-                                    fullWidth
-                                    label="Safra Agrícola"
-                                    {...register('safraId', { required: true })}
-                                    error={!!errors.safraId}
-                                >
-                                    {safras.map(s => <MenuItem key={s.id} value={s.id}>{s.nome}</MenuItem>)}
-                                </TextField>
+                                <Controller
+                                    name="safraId"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field }) => (
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Safra Agrícola"
+                                            {...field}
+                                            error={!!errors.safraId}
+                                        >
+                                            {safras.length === 0 && (
+                                                <MenuItem disabled value="">Nenhuma safra cadastrada</MenuItem>
+                                            )}
+                                            {safras.map(s => <MenuItem key={s.id} value={s.id}>{s.nome}</MenuItem>)}
+                                        </TextField>
+                                    )}
+                                />
                             </Grid>
+
+                            {/* Fazenda */}
                             <Grid size={{ xs: 12, sm: 3 }}>
-                                <TextField
-                                    select
-                                    fullWidth
-                                    label="Fazenda / Unidade"
-                                    {...register('fazendaId', { required: true })}
-                                    error={!!errors.fazendaId}
-                                >
-                                    {fazendas.map(f => <MenuItem key={f.id} value={f.id}>{f.nome}</MenuItem>)}
-                                </TextField>
+                                <Controller
+                                    name="fazendaId"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field }) => (
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Fazenda / Unidade"
+                                            {...field}
+                                            error={!!errors.fazendaId}
+                                        >
+                                            {fazendas.length === 0 && (
+                                                <MenuItem disabled value="">Nenhuma fazenda cadastrada</MenuItem>
+                                            )}
+                                            {fazendas.map(f => <MenuItem key={f.id} value={f.id}>{f.nome}</MenuItem>)}
+                                        </TextField>
+                                    )}
+                                />
                             </Grid>
+
+                            {/* Talhão */}
                             <Grid size={{ xs: 12, sm: 3 }}>
-                                <TextField
-                                    select
-                                    fullWidth
-                                    label="Talhão"
-                                    {...register('talhaoId')} // Optional initially if not strict
-                                    disabled={!watchFazendaId}
-                                >
-                                    <MenuItem value=""><em>Selecione o Talhão</em></MenuItem>
-                                    {filteredTalhoes.map(t => <MenuItem key={t.id} value={t.id}>{t.nome}</MenuItem>)}
-                                    {filteredTalhoes.length === 0 && <MenuItem disabled>Nenhum talhão cadastrado</MenuItem>}
-                                </TextField>
+                                <Controller
+                                    name="talhaoId"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Talhão"
+                                            {...field}
+                                            disabled={!watchFazendaId}
+                                        >
+                                            <MenuItem value=""><em>Selecione o Talhão</em></MenuItem>
+                                            {filteredTalhoes.map(t => <MenuItem key={t.id} value={t.id}>{t.nome}</MenuItem>)}
+                                            {filteredTalhoes.length === 0 && watchFazendaId && (
+                                                <MenuItem disabled value="">Nenhum talhão cadastrado</MenuItem>
+                                            )}
+                                        </TextField>
+                                    )}
+                                />
                             </Grid>
+
+                            {/* Cultura */}
                             <Grid size={{ xs: 12, sm: 3 }}>
-                                <TextField
-                                    select
-                                    fullWidth
-                                    label="Cultura"
-                                    {...register('culturaId', { required: true })}
-                                    error={!!errors.culturaId}
-                                >
-                                    {culturas.map(c => <MenuItem key={c.id} value={c.id}>{c.nome} ({c.cicloDias} dias)</MenuItem>)}
-                                </TextField>
+                                <Controller
+                                    name="culturaId"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field }) => (
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Cultura"
+                                            {...field}
+                                            error={!!errors.culturaId}
+                                        >
+                                            {culturas.length === 0 && (
+                                                <MenuItem disabled value="">Nenhuma cultura cadastrada</MenuItem>
+                                            )}
+                                            {culturas.map(c => (
+                                                <MenuItem key={c.id} value={c.id}>
+                                                    {c.nome}{c.cicloDias ? ` (${c.cicloDias} dias)` : ''}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    )}
+                                />
                             </Grid>
+
+                            {/* Área */}
                             <Grid size={{ xs: 12, sm: 3 }}>
                                 <TextField
                                     fullWidth
@@ -233,17 +278,22 @@ export default function PlanejamentoFormPage() {
                                 />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 3 }}>
-                                <TextField
-                                    select
-                                    fullWidth
-                                    label="Unidade"
-                                    defaultValue="sc/ha"
-                                    {...register('unidadeProdutividade')}
-                                >
-                                    <MenuItem value="sc/ha">Sacas / ha</MenuItem>
-                                    <MenuItem value="t/ha">Toneladas / ha</MenuItem>
-                                    <MenuItem value="kg/ha">Kg / ha</MenuItem>
-                                </TextField>
+                                <Controller
+                                    name="unidadeProdutividade"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Unidade"
+                                            {...field}
+                                        >
+                                            <MenuItem value="sc/ha">Sacas / ha</MenuItem>
+                                            <MenuItem value="t/ha">Toneladas / ha</MenuItem>
+                                            <MenuItem value="kg/ha">Kg / ha</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
                             </Grid>
 
                             {/* Budget Display Card */}
@@ -297,19 +347,25 @@ export default function PlanejamentoFormPage() {
                                     return (
                                         <TableRow key={field.id} hover>
                                             <TableCell>
-                                                <TextField
-                                                    select
-                                                    fullWidth
-                                                    size="small"
-                                                    variant="standard"
-                                                    {...register(`itens.${index}.produtoId` as const)}
-                                                >
-                                                    {produtos.map(p => (
-                                                        <MenuItem key={p.id} value={p.id}>
-                                                            {p.nome} ({p.unidadeMedida})
-                                                        </MenuItem>
-                                                    ))}
-                                                </TextField>
+                                                <Controller
+                                                    name={`itens.${index}.produtoId`}
+                                                    control={control}
+                                                    render={({ field: f }) => (
+                                                        <TextField
+                                                            select
+                                                            fullWidth
+                                                            size="small"
+                                                            variant="standard"
+                                                            {...f}
+                                                        >
+                                                            {produtos.map(p => (
+                                                                <MenuItem key={p.id} value={p.id}>
+                                                                    {p.nome} ({p.unidadeMedida})
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    )}
+                                                />
                                             </TableCell>
                                             <TableCell>
                                                 <TextField
@@ -373,17 +429,23 @@ export default function PlanejamentoFormPage() {
                                     <Card variant="outlined" sx={{ p: 1.5, display: 'flex', gap: 2, alignItems: 'flex-start' }}>
                                         <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
                                             <Box sx={{ display: 'flex', gap: 2 }}>
-                                                <TextField
-                                                    select
-                                                    label="Etapa"
-                                                    size="small"
-                                                    sx={{ width: 180 }}
-                                                    {...register(`atividades.${index}.etapa` as const)}
-                                                >
-                                                    {ETAPAS_AGRICOLAS.map(e => (
-                                                        <MenuItem key={e.value} value={e.value}>{e.label}</MenuItem>
-                                                    ))}
-                                                </TextField>
+                                                <Controller
+                                                    name={`atividades.${index}.etapa`}
+                                                    control={control}
+                                                    render={({ field: f }) => (
+                                                        <TextField
+                                                            select
+                                                            label="Etapa"
+                                                            size="small"
+                                                            sx={{ width: 180 }}
+                                                            {...f}
+                                                        >
+                                                            {ETAPAS_AGRICOLAS.map(e => (
+                                                                <MenuItem key={e.value} value={e.value}>{e.label}</MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    )}
+                                                />
                                                 <TextField
                                                     fullWidth
                                                     size="small"
