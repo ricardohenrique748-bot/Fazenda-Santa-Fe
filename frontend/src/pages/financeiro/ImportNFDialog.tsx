@@ -114,23 +114,74 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
         setEnviarParaEstoque(false);
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = event.target.files?.[0];
-        if (selectedFile) {
-            const isXml = selectedFile.type === 'text/xml' || selectedFile.name.endsWith('.xml');
-            const isPdf = selectedFile.type === 'application/pdf' || selectedFile.name.endsWith('.pdf');
+    const parsePDF = async (file: File) => {
+        setLoading(true);
+        setError(null);
 
-            if (!isXml && !isPdf) {
-                setError('Por favor, selecione um arquivo XML ou PDF da NF-e.');
-                return;
+        try {
+            // Dynamically import pdfjs-dist
+            const pdfjs = await import('pdfjs-dist');
+            pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                const strings = content.items.map((item: any) => item.str);
+                fullText += strings.join(' ') + '\n';
             }
 
-            if (isXml) {
-                parseXML(selectedFile);
-            } else if (isPdf) {
-                // PDF Parsing placeholder
-                setError('O suporte para leitura automática de PDF será implementado em breve. Por enquanto escolha o arquivo XML para preenchimento automático.');
+            // Basic regex patterns for DANFE
+            const chaveRegex = /\b(\d{4}\s?){10}\d{4}\b|\b\d{44}\b/;
+            const numeroRegex = /(?:NÚMERO|Nº|Número)[:.\s]+(\d+(?:\.?\d+)*)/i;
+            const valorTotalRegex = /(?:VALOR TOTAL|TOTAL DA NOTA|TOTAL)[:.\s]+R?\$?\s?(\d+(?:\.?\d+)*[.,]\d{2})/i;
+            const cnpjRegex = /\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}/;
+
+            const chaveMatch = fullText.match(chaveRegex);
+            const numeroMatch = fullText.match(numeroRegex);
+            const valorMatch = fullText.match(valorTotalRegex);
+            const cnpjMatches = fullText.match(new RegExp(cnpjRegex, 'g'));
+
+            const chave = chaveMatch ? chaveMatch[0].replace(/\s/g, '') : '';
+            const numero = numeroMatch ? numeroMatch[1].replace(/\./g, '') : '';
+            const valorTotal = valorMatch ? parseFloat(valorMatch[1].replace(/\./g, '').replace(',', '.')) : 0;
+            const emitenteCnpj = cnpjMatches && cnpjMatches.length > 0 ? cnpjMatches[0] : '';
+
+            if (!chave && !numero) {
+                throw new Error('Não foi possível extrair os dados básicos deste PDF. Verifique se é uma NF-e (DANFE) válida.');
             }
+
+            const data: NFData = {
+                chave,
+                numero,
+                serie: '1',
+                dataEmissao: new Date().toISOString().split('T')[0],
+                dataSaidaEntrada: '',
+                horaSaida: '',
+                emitente: {
+                    nome: 'Emitente extraído do PDF',
+                    cnpj: emitenteCnpj,
+                    endereco: 'Endereço no PDF'
+                },
+                destinatario: {
+                    nome: '',
+                    cnpj: ''
+                },
+                itens: [],
+                duplicatas: [],
+                valorTotal
+            };
+
+            setNfData(data);
+            setError('Nota extraída parcialmente do PDF. Verifique os dados e adicione os itens manualmente se necessário (ou use um arquivo XML para preenchimento completo).');
+        } catch (err: any) {
+            console.error('Erro ao processar PDF', err);
+            setError('Erro ao processar o PDF: ' + err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -145,7 +196,6 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(xmlText, "text/xml");
 
-                // Helper to get element text safely
                 const getTxt = (selector: string, parentElement?: Element | Document | null) => {
                     const p = parentElement || xmlDoc;
                     return p?.querySelector(selector)?.textContent || '';
@@ -232,6 +282,22 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
         reader.readAsText(file);
     };
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile) {
+            const isXml = selectedFile.type === 'text/xml' || selectedFile.name.endsWith('.xml');
+            const isPdf = selectedFile.type === 'application/pdf' || selectedFile.name.endsWith('.pdf');
+
+            if (isXml) {
+                parseXML(selectedFile);
+            } else if (isPdf) {
+                parsePDF(selectedFile);
+            } else {
+                setError('Por favor, selecione um arquivo XML ou PDF da NF-e.');
+            }
+        }
+    };
+
     const handleImport = async () => {
         if (!nfData || !selectedEmpresa || !selectedCategoria) return;
 
@@ -257,7 +323,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle sx={{ fontWeight: 800 }}>Importar Nota Fiscal (XML ou PDF)</DialogTitle>
             <DialogContent dividers>
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                {error && <Alert severity={error.includes('extraída parcialmente') ? 'warning' : 'error'} sx={{ mb: 2 }}>{error}</Alert>}
 
                 {!nfData ? (
                     <Box sx={{
@@ -294,28 +360,28 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                         </Typography>
 
                         <Grid container spacing={2} sx={{ mb: 3 }}>
-                            <Grid size={{ xs: 12, sm: 6 }}>
+                            <Grid item xs={12} sm={6}>
                                 <Typography variant="caption" color="text.secondary">Emitente / Fornecedor</Typography>
                                 <Typography variant="body2" fontWeight="600">{nfData.emitente.nome}</Typography>
                                 <Typography variant="caption">{nfData.emitente.cnpj}</Typography>
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6 }}>
+                            <Grid item xs={12} sm={6}>
                                 <Typography variant="caption" color="text.secondary">Endereço do Fornecedor</Typography>
                                 <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>{nfData.emitente.endereco}</Typography>
                             </Grid>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                            <Grid item xs={6} sm={3}>
                                 <Typography variant="caption" color="text.secondary">Data Emissão</Typography>
                                 <Typography variant="body2">{nfData.dataEmissao.split('-').reverse().join('/')}</Typography>
                             </Grid>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                            <Grid item xs={6} sm={3}>
                                 <Typography variant="caption" color="text.secondary">Data Entrada/Saída</Typography>
                                 <Typography variant="body2">{nfData.dataSaidaEntrada ? nfData.dataSaidaEntrada.split('-').reverse().join('/') : '-'}</Typography>
                             </Grid>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                            <Grid item xs={6} sm={3}>
                                 <Typography variant="caption" color="text.secondary">Hora Saída</Typography>
                                 <Typography variant="body2">{nfData.horaSaida || '-'}</Typography>
                             </Grid>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                            <Grid item xs={6} sm={3}>
                                 <Typography variant="caption" color="text.secondary">Valor Total</Typography>
                                 <Typography variant="body2" fontWeight="700">
                                     {nfData.valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -327,7 +393,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
 
                         <Typography variant="subtitle2" fontWeight="700" sx={{ mb: 1 }}>Itens da Nota</Typography>
                         <Box sx={{ maxHeight: 150, overflow: 'auto', mb: 2, bgcolor: '#f5f5f5', p: 1, borderRadius: 1 }}>
-                            {nfData.itens.map((item, idx) => (
+                            {nfData.itens.length > 0 ? nfData.itens.map((item, idx) => (
                                 <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5, borderBottom: '1px solid #ddd', pb: 0.5 }}>
                                     <Box sx={{ maxWidth: '70%' }}>
                                         <Typography variant="caption" sx={{ fontWeight: 600 }}>{item.descricao}</Typography>
@@ -339,7 +405,11 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                                         {item.valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                     </Typography>
                                 </Box>
-                            ))}
+                            )) : (
+                                <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                                    Itens não disponíveis na extração simplificada de PDF.
+                                </Typography>
+                            )}
                         </Box>
 
                         {nfData.duplicatas.length > 0 && (
@@ -362,7 +432,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                         <Typography variant="subtitle2" fontWeight="700" sx={{ mb: 2 }}>Configurações de Importação</Typography>
 
                         <Grid container spacing={2}>
-                            <Grid size={{ xs: 12, sm: 6 }}>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     select
                                     fullWidth
@@ -374,7 +444,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                                     {empresas.map(e => <MenuItem key={e.id} value={e.id}>{e.razaoSocial}</MenuItem>)}
                                 </TextField>
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6 }}>
+                            <Grid item xs={12} sm={6}>
                                 <TextField
                                     select
                                     fullWidth
@@ -386,13 +456,14 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                                     {categorias.map(c => <MenuItem key={c.id} value={c.id}>{c.codigo} - {c.descricao}</MenuItem>)}
                                 </TextField>
                             </Grid>
-                            <Grid size={{ xs: 12 }}>
+                            <Grid item xs={12}>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
                                             checked={enviarParaEstoque}
                                             onChange={(e) => setEnviarParaEstoque(e.target.checked)}
                                             color="primary"
+                                            disabled={nfData.itens.length === 0}
                                         />
                                     }
                                     label="Deseja lançar os itens no estoque?"

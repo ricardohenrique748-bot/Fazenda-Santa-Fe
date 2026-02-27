@@ -16,7 +16,7 @@ export class NotasFiscaisService {
     }) {
         const { nf, empresaId, planoContasId, depositoId, enviarParaEstoque, usuarioId } = data;
 
-        return this.prisma.$transaction(async (tx) => {
+        return this.prisma.$transaction(async (tx: any) => {
             // 1. Criar a Nota Fiscal
             const notaFiscal = await tx.notaFiscal.create({
                 data: {
