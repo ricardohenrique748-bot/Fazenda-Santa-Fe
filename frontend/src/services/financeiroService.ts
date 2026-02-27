@@ -74,5 +74,10 @@ export const financeiroService = {
     getFluxoCaixa: async (startDate: string, endDate: string) => {
         const response = await api.get('/financeiro/fluxo-caixa', { params: { startDate, endDate } });
         return response.data;
+    },
+
+    importarNF: async (data: any) => {
+        const response = await api.post('/notas-fiscais/importar', data);
+        return response.data;
     }
 };

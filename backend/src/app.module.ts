@@ -31,6 +31,7 @@ import { GruposModule } from './grupos/grupos.module';
 import { FabricantesModule } from './fabricantes/fabricantes.module';
 import { ClientesModule } from './comercial/clientes/clientes.module';
 import { PedidosVendaModule } from './comercial/pedidos/pedidos-venda.module';
+import { NotasFiscaisModule } from './notas-fiscais/notas-fiscais.module';
 
 @Module({
   imports: [
@@ -61,8 +62,9 @@ import { PedidosVendaModule } from './comercial/pedidos/pedidos-venda.module';
     FabricantesModule,
     ClientesModule,
     PedidosVendaModule,
+    NotasFiscaisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

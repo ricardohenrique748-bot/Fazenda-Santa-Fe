@@ -31,13 +31,23 @@ interface ImportNFDialogProps {
 interface NFData {
     chave: string;
     numero: string;
+    serie: string;
+    protocolo?: string;
+    naturezaOperacao?: string;
     dataEmissao: string;
     dataSaidaEntrada: string;
     horaSaida: string;
     emitente: {
         nome: string;
         cnpj: string;
+        ie?: string;
         endereco: string;
+        cidade?: string;
+        uf?: string;
+    };
+    destinatario: {
+        nome: string;
+        cnpj: string;
     };
     itens: Array<{
         cod: string;
@@ -177,16 +187,29 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                     valor: parseFloat(getTxt('vDup', dup) || '0')
                 }));
 
+                const infProt = xmlDoc.querySelector('infProt');
+                const dest = xmlDoc.querySelector('dest');
+
                 const data: NFData = {
                     chave: (xmlDoc.querySelector('infNFe')?.id || xmlDoc.querySelector('infNFe')?.getAttribute('Id') || '').replace('NFe', ''),
                     numero: getTxt('nNF', ide),
+                    serie: getTxt('serie', ide),
+                    protocolo: getTxt('nProt', infProt),
+                    naturezaOperacao: getTxt('natOp', ide),
                     dataEmissao,
                     dataSaidaEntrada,
                     horaSaida,
                     emitente: {
                         nome: getTxt('xNome', emit),
                         cnpj: getTxt('CNPJ', emit) || getTxt('CPF', emit),
-                        endereco
+                        ie: getTxt('IE', emit),
+                        endereco,
+                        cidade: getTxt('xMun', enderEmit),
+                        uf: getTxt('UF', enderEmit)
+                    },
+                    destinatario: {
+                        nome: getTxt('xNome', dest),
+                        cnpj: getTxt('CNPJ', dest) || getTxt('CPF', dest)
                     },
                     itens: items,
                     duplicatas,
@@ -214,45 +237,13 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
 
         setLoading(true);
         try {
-            // 1. Criar lançamento financeiro (ou vários se houver duplicatas)
-            if (nfData.duplicatas.length > 0) {
-                for (const dup of nfData.duplicatas) {
-                    await financeiroService.createLancamento({
-                        descricao: `NF ${nfData.numero} - ${nfData.emitente.nome} (Parc. ${dup.numero})`,
-                        valor: dup.valor,
-                        dataVencimento: dup.vencimento,
-                        tipo: TipoLancamento.PAGAR,
-                        planoContasId: selectedCategoria,
-                        empresaId: selectedEmpresa,
-                        status: StatusFinanceiro.PENDENTE
-                    });
-                }
-            } else {
-                await financeiroService.createLancamento({
-                    descricao: `NF ${nfData.numero} - ${nfData.emitente.nome}`,
-                    valor: nfData.valorTotal,
-                    dataVencimento: nfData.dataEmissao, // Fallback
-                    tipo: TipoLancamento.PAGAR,
-                    planoContasId: selectedCategoria,
-                    empresaId: selectedEmpresa,
-                    status: StatusFinanceiro.PENDENTE
-                });
-            }
-
-            // 2. Se marcar estoque, criar entradas no estoque
-            if (enviarParaEstoque) {
-                for (const item of nfData.itens) {
-                    await estoqueService.createMovimentacao({
-                        data: nfData.dataSaidaEntrada || nfData.dataEmissao,
-                        tipo: 'ENTRADA',
-                        quantidade: item.quantidade,
-                        motivo: `Importação NF ${nfData.numero} - ${nfData.emitente.nome}`,
-                        depositoId: selectedDeposito,
-                        produtoNome: item.descricao,
-                        valorUnitario: item.valorUnitario
-                    });
-                }
-            }
+            await financeiroService.importarNF({
+                nf: nfData,
+                empresaId: selectedEmpresa,
+                planoContasId: selectedCategoria,
+                depositoId: enviarParaEstoque ? selectedDeposito : undefined,
+                enviarParaEstoque
+            });
 
             onClose();
         } catch (err: any) {

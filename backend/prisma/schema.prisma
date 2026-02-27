@@ -64,6 +64,7 @@ model Empresa {
   unidades                  UnidadeNegocio[]
   usuarios                  Usuario[]
   veiculos                  Veiculo[]
+  notasFiscais             NotaFiscal[]
 }
 
 model Socio {
@@ -259,6 +260,8 @@ model EstoqueMovimentacao {
   deposito   Deposito         @relation(fields: [depositoId], references: [id])
   produto    Produto          @relation(fields: [produtoId], references: [id])
   usuario    Usuario          @relation(fields: [usuarioId], references: [id])
+  notaFiscalId String?
+  notaFiscal   NotaFiscal?    @relation(fields: [notaFiscalId], references: [id])
 }
 
 model PlanoContas {
@@ -291,6 +294,86 @@ model LancamentoFinanceiro {
   formaPagamento String?
   empresa        Empresa          @relation(fields: [empresaId], references: [id])
   planoContas    PlanoContas      @relation(fields: [planoContasId], references: [id])
+  notaFiscalId   String?
+  notaFiscal     NotaFiscal?      @relation(fields: [notaFiscalId], references: [id])
+}
+
+model NotaFiscal {
+  id                String                @id @default(uuid())
+  chaveAcesso       String                @unique
+  numero            String
+  serie             String
+  dataEmissao       DateTime
+  dataSaidaEntrada  DateTime?
+  valorTotal        Float
+  naturezaOperacao  String
+  protocolo         String?
+
+  // Emitente
+  emitenteNome      String
+  emitenteCnpj      String
+  emitenteIe        String?
+  emitenteEndereco  String?
+  emitenteCidade    String?
+  emitenteUf        String?
+  
+  // Destinatário
+  destinatarioNome  String
+  destinatarioCnpj  String
+  
+  // Impostos e Totais
+  baseIcms         Float?                @default(0)
+  valorIcms        Float?                @default(0)
+  baseIcmsSt       Float?                @default(0)
+  valorIcmsSt      Float?                @default(0)
+  valorFrete       Float?                @default(0)
+  valorSeguro      Float?                @default(0)
+  valorDesconto    Float?                @default(0)
+  valorIpi         Float?                @default(0)
+  valorProdutos    Float
+  
+  // Relacionamentos
+  empresaId         String
+  empresa           Empresa               @relation(fields: [empresaId], references: [id])
+  
+  itens             ItemNotaFiscal[]
+  duplicatas        DuplicataNotaFiscal[]
+  lancamentos       LancamentoFinanceiro[]
+  movimentacoes    EstoqueMovimentacao[]
+  
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+}
+
+model ItemNotaFiscal {
+  id              String     @id @default(uuid())
+  notaFiscalId    String
+  codigo          String
+  descricao       String
+  ncm             String?
+  cst             String?
+  cfop            String?
+  unidade         String
+  quantidade      Float
+  valorUnitario   Float
+  valorTotal      Float
+  baseIcms        Float?     @default(0)
+  valorIcms       Float?     @default(0)
+  valorIpi        Float?     @default(0)
+  aliquotaIcms    Float?     @default(0)
+  aliquotaIpi     Float?     @default(0)
+  
+  notaFiscal      NotaFiscal @relation(fields: [notaFiscalId], references: [id])
+}
+
+model DuplicataNotaFiscal {
+  id              String     @id @default(uuid())
+  notaFiscalId    String
+  numero          String
+  dataVencimento  DateTime
+  valor           Float
+  
+  notaFiscal      NotaFiscal @relation(fields: [notaFiscalId], references: [id])
 }
 
 model Safra {
