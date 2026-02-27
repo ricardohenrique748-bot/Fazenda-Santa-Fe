@@ -139,9 +139,10 @@ export default function UsuarioFormPage() {
                                     InputLabelProps={{ shrink: true }}
                                     error={!!errors.empresaId}
                                     helperText={errors.empresaId?.message}
-                                    value={field.value || ''}
+                                    value={field.value || 'GERAL'}
+                                    onChange={(e) => field.onChange(e.target.value === 'GERAL' ? null : e.target.value)}
                                 >
-                                    <MenuItem value="">
+                                    <MenuItem value="GERAL">
                                         Empresa Geral (Ver Todas)
                                     </MenuItem>
                                     {empresas.map((empresa) => (
