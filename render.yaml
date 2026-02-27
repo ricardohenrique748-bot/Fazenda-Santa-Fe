@@ -1,12 +1,12 @@
-# Render deploy config - usa migrate deploy (mais rápido que db push)
+# Render deploy config
 services:
   - type: web
     name: malut-backend
-    env: node
+    runtime: node
     plan: free
     rootDir: backend
-    buildCommand: npm ci && npm run build
-    startCommand: npx prisma migrate deploy && npm run start:prod
+    buildCommand: npm ci && npx prisma generate && npx nest build
+    startCommand: npx prisma migrate deploy && node dist/main
     envVars:
       - key: DATABASE_URL
         sync: false
