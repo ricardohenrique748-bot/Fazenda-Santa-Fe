@@ -6,7 +6,7 @@ services:
     plan: free
     rootDir: backend
     buildCommand: npm ci && npm run build
-    startCommand: npx prisma migrate deploy && node dist/main
+    startCommand: export DATABASE_URL=$(echo $DATABASE_URL | tr -d '[:space:]') && npx prisma migrate deploy && node dist/main
     envVars:
       - key: DATABASE_URL
         sync: false
