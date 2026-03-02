@@ -20,7 +20,7 @@ import {
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import * as pdfjs from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-import { financeiroService, TipoLancamento, StatusFinanceiro } from '../../services/financeiroService';
+import { financeiroService, TipoLancamento } from '../../services/financeiroService';
 import { empresasService, type Empresa } from '../../services/empresasService';
 import { estoqueService } from '../../services/estoqueService';
 import type { PlanoContas } from '../../services/financeiroService';
@@ -152,6 +152,69 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
             const valorTotal = valorMatch ? parseFloat(valorMatch[1].replace(/\./g, '').replace(',', '.')) : 0;
             const emitenteCnpj = cnpjMatches && cnpjMatches.length > 0 ? cnpjMatches[0] : '';
 
+            // Tentar extrair nome do emitente de forma mais inteligente
+            let emitenteNome = '';
+            const emitenteHeaderRegex = /(?:RAZÃO SOCIAL|NOME|EMITENTE|FORNECEDOR)[:.\s]+([A-Z0-9\s.]{10,})/i;
+            const emitMatch = fullText.match(emitenteHeaderRegex);
+
+            if (emitMatch) {
+                emitenteNome = emitMatch[1].trim().split('\n')[0].trim();
+            }
+
+            if (!emitenteNome) {
+                const lines = fullText.split('\n');
+                for (let i = 0; i < Math.min(lines.length, 25); i++) {
+                    const line = lines[i].trim();
+                    // Filtra linhas que parecem ser o nome (não são números longos, nem palavras curtas, nem DANFE)
+                    if (line.length > 10 &&
+                        !line.includes('DANFE') &&
+                        !line.includes('PÁGINA') &&
+                        !line.includes('CHAVE') &&
+                        !line.match(/^\d+$/) &&
+                        !line.match(/\d{11,}/)) {
+                        emitenteNome = line;
+                        break;
+                    }
+                }
+            }
+
+            // Tentar extrair duplicatas/parcelas
+            const duplicatas: any[] = [];
+            // Padrão de duplicata em DANFE: Data seguido de valor
+            const dupRegex = /(\d{2}\/\d{2}\/\d{4})\s+R?\$?\s?(\d+(?:\.?\d+)*[.,]\d{2})/g;
+            let dupMatch;
+            while ((dupMatch = dupRegex.exec(fullText)) !== null) {
+                const venc = dupMatch[1].split('/').reverse().join('-');
+                const val = parseFloat(dupMatch[2].replace(/\./g, '').replace(',', '.'));
+
+                // Evita duplicatas com valor total (redundante) ou irreais
+                if (val > 0 && val <= valorTotal + 0.1) {
+                    // Verifica se já não adicionamos essa parcela (mesmo vencimento e valor)
+                    const jaExiste = duplicatas.some(d => d.vencimento === venc && Math.abs(d.valor - val) < 0.01);
+                    if (!jaExiste) {
+                        duplicatas.push({
+                            numero: (duplicatas.length + 1).toString().padStart(3, '0'),
+                            vencimento: venc,
+                            valor: val
+                        });
+                    }
+                }
+            }
+
+            // Fallback: se não achou parcelas mas tem valor, sugere vencimento único
+            if (duplicatas.length === 0 && valorTotal > 0) {
+                const possibleDates = fullText.match(/\d{2}\/\d{2}\/\d{4}/g) || [];
+                // Pega a última data encontrada que não seja a de hoje (provavelmente vencimento)
+                const today = new Date().toLocaleDateString('pt-BR');
+                const vencDate = possibleDates.reverse().find(d => d !== today) || today;
+
+                duplicatas.push({
+                    numero: '001',
+                    vencimento: vencDate.split('/').reverse().join('-'),
+                    valor: valorTotal
+                });
+            }
+
             if (!chave && !numero) {
                 throw new Error('Não foi possível extrair os dados básicos deste PDF. Verifique se é uma NF-e (DANFE) válida.');
             }
@@ -164,7 +227,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                 dataSaidaEntrada: '',
                 horaSaida: '',
                 emitente: {
-                    nome: 'Emitente extraído do PDF',
+                    nome: emitenteNome || 'Emitente extraído do PDF',
                     cnpj: emitenteCnpj,
                     endereco: 'Endereço no PDF'
                 },
@@ -173,12 +236,12 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                     cnpj: ''
                 },
                 itens: [],
-                duplicatas: [],
+                duplicatas: duplicatas,
                 valorTotal
             };
 
             setNfData(data);
-            setError('Nota extraída parcialmente do PDF. Verifique os dados e adicione os itens manualmente se necessário (ou use um arquivo XML para preenchimento completo).');
+            setError('Nota extraída parcialmente do PDF. Verifique os dados e as duplicatas/vencimentos sugeridos.');
         } catch (err: any) {
             console.error('Erro ao processar PDF', err);
             setError('Erro ao processar o PDF: ' + err.message);
