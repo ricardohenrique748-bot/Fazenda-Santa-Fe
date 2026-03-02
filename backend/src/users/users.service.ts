@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findOne(email: string): Promise<Usuario | null> {
     try {
@@ -16,9 +16,14 @@ export class UsersService {
         include: { empresa: true },
       });
     } catch (error) {
-      console.error('Prisma findUnique failed, attempting PG driver fallback:', error);
+      console.error(
+        'Prisma findUnique failed, attempting PG driver fallback:',
+        error,
+      );
 
-      const isLocal = process.env.DATABASE_URL?.includes('localhost') || process.env.DATABASE_URL?.includes('127.0.0.1');
+      const isLocal =
+        process.env.DATABASE_URL?.includes('localhost') ||
+        process.env.DATABASE_URL?.includes('127.0.0.1');
       const sslConfig = isLocal ? false : { rejectUnauthorized: false };
 
       const client = new Client({
@@ -46,7 +51,7 @@ export class UsersService {
         console.error('PG driver fallback also failed:', pgError);
         throw pgError;
       } finally {
-        await client.end().catch(() => { }); // Ensure closed
+        await client.end().catch(() => {}); // Ensure closed
       }
     }
   }

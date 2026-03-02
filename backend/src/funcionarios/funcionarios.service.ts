@@ -4,13 +4,22 @@ import { Funcionario, Prisma } from '@prisma/client';
 
 @Injectable()
 export class FuncionariosService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(empresaId: string, data: any): Promise<Funcionario> {
     try {
       // Limpar campos que não pertencem ao modelo
       const cleanData: any = {};
-      const allowedFields = ['nome', 'cpf', 'email', 'telefone', 'cargo', 'dataAdmissao', 'salario', 'ativo'];
+      const allowedFields = [
+        'nome',
+        'cpf',
+        'email',
+        'telefone',
+        'cargo',
+        'dataAdmissao',
+        'salario',
+        'ativo',
+      ];
       for (const field of allowedFields) {
         if (data[field] !== undefined) {
           cleanData[field] = data[field];
@@ -19,15 +28,27 @@ export class FuncionariosService {
 
       // empresaId: prioridade para o do token, fallback para o do body
       const finalEmpresaId = empresaId || data.empresaId;
-      console.log('FuncionariosService.create - empresaId do token:', empresaId, '| finalEmpresaId:', finalEmpresaId, '| cpf:', cleanData.cpf);
+      console.log(
+        'FuncionariosService.create - empresaId do token:',
+        empresaId,
+        '| finalEmpresaId:',
+        finalEmpresaId,
+        '| cpf:',
+        cleanData.cpf,
+      );
 
       if (!finalEmpresaId) {
-        throw new BadRequestException('Empresa não informada. Faça logout e login novamente.');
+        throw new BadRequestException(
+          'Empresa não informada. Faça logout e login novamente.',
+        );
       }
 
       // Converter strings vazias para null
       for (const key of Object.keys(cleanData)) {
-        if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '') {
+        if (
+          typeof cleanData[key] === 'string' &&
+          cleanData[key].trim() === ''
+        ) {
           cleanData[key] = null;
         }
       }
@@ -48,7 +69,9 @@ export class FuncionariosService {
           where: { cpf: cleanData.cpf },
         });
         if (existing) {
-          throw new BadRequestException('CPF já cadastrado para outro funcionário.');
+          throw new BadRequestException(
+            'CPF já cadastrado para outro funcionário.',
+          );
         }
       }
 
@@ -59,7 +82,10 @@ export class FuncionariosService {
         },
       });
     } catch (error: any) {
-      console.error('ERRO AO CRIAR FUNCIONARIO:', error?.message || JSON.stringify(error));
+      console.error(
+        'ERRO AO CRIAR FUNCIONARIO:',
+        error?.message || JSON.stringify(error),
+      );
       throw error;
     }
   }
@@ -105,8 +131,12 @@ export class FuncionariosService {
       where: { id },
       data: {
         ...cleanData,
-        dataAdmissao: cleanData.dataAdmissao ? new Date(cleanData.dataAdmissao) : undefined,
-        ...(_frontendEmpresaId ? { empresa: { connect: { id: _frontendEmpresaId } } } : {}),
+        dataAdmissao: cleanData.dataAdmissao
+          ? new Date(cleanData.dataAdmissao)
+          : undefined,
+        ...(_frontendEmpresaId
+          ? { empresa: { connect: { id: _frontendEmpresaId } } }
+          : {}),
       },
     });
   }

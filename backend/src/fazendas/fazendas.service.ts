@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class FazendasService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(data: any) {
     try {
@@ -19,12 +19,18 @@ export class FazendasService {
         cleanData.areaTotal = parseFloat(String(cleanData.areaTotal)) || 0;
       }
       if (cleanData.areaProdutiva !== undefined) {
-        cleanData.areaProdutiva = parseFloat(String(cleanData.areaProdutiva)) || 0;
+        cleanData.areaProdutiva =
+          parseFloat(String(cleanData.areaProdutiva)) || 0;
       }
 
       // Converter strings vazias para null
       Object.keys(cleanData).forEach((key) => {
-        if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '' && key !== 'empresaId' && key !== 'nome') {
+        if (
+          typeof cleanData[key] === 'string' &&
+          cleanData[key].trim() === '' &&
+          key !== 'empresaId' &&
+          key !== 'nome'
+        ) {
           cleanData[key] = null;
         }
       });
@@ -65,12 +71,18 @@ export class FazendasService {
       cleanData.areaTotal = parseFloat(String(cleanData.areaTotal)) || 0;
     }
     if (cleanData.areaProdutiva !== undefined) {
-      cleanData.areaProdutiva = parseFloat(String(cleanData.areaProdutiva)) || 0;
+      cleanData.areaProdutiva =
+        parseFloat(String(cleanData.areaProdutiva)) || 0;
     }
 
     // Converter strings vazias para null
     Object.keys(cleanData).forEach((key) => {
-      if (typeof cleanData[key] === 'string' && cleanData[key].trim() === '' && key !== 'empresaId' && key !== 'nome') {
+      if (
+        typeof cleanData[key] === 'string' &&
+        cleanData[key].trim() === '' &&
+        key !== 'empresaId' &&
+        key !== 'nome'
+      ) {
         cleanData[key] = null;
       }
     });

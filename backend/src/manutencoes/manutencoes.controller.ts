@@ -17,7 +17,7 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('manutencoes')
 export class ManutencoesController {
-  constructor(private readonly manutencoesService: ManutencoesService) { }
+  constructor(private readonly manutencoesService: ManutencoesService) {}
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.ManutencaoCreateInput) {

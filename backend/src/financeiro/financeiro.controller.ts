@@ -18,14 +18,15 @@ import { Prisma } from '@prisma/client';
 @UseGuards(JwtAuthGuard)
 @Controller('financeiro')
 export class FinanceiroController {
-  constructor(private readonly financeiroService: FinanceiroService) { }
+  constructor(private readonly financeiroService: FinanceiroService) {}
 
   @Post('plano-contas')
   createPlanoContas(
     @Request() req: any,
     @Body() data: Prisma.PlanoContasCreateInput,
   ) {
-    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
+    if (!req.user?.empresaId)
+      throw new BadRequestException('Usuário sem empresa vinculada.');
     return this.financeiroService.createPlanoContas({
       ...data,
       empresa: { connect: { id: req.user.empresaId } },
@@ -34,7 +35,8 @@ export class FinanceiroController {
 
   @Get('plano-contas')
   findAllPlanoContas(@Request() req: any) {
-    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
+    if (!req.user?.empresaId)
+      throw new BadRequestException('Usuário sem empresa vinculada.');
     return this.financeiroService.findAllPlanoContas(req.user.empresaId);
   }
 
@@ -44,7 +46,8 @@ export class FinanceiroController {
     @Param('id') id: string,
     @Body() data: Prisma.PlanoContasUpdateInput,
   ) {
-    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
+    if (!req.user?.empresaId)
+      throw new BadRequestException('Usuário sem empresa vinculada.');
     return this.financeiroService.updatePlanoContas(
       id,
       req.user.empresaId,
@@ -54,20 +57,29 @@ export class FinanceiroController {
 
   @Delete('plano-contas/:id')
   removePlanoContas(@Request() req: any, @Param('id') id: string) {
-    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
+    if (!req.user?.empresaId)
+      throw new BadRequestException('Usuário sem empresa vinculada.');
     return this.financeiroService.removePlanoContas(id, req.user.empresaId);
   }
 
   @Post('lancamentos')
   createLancamento(@Request() req: any, @Body() data: any) {
-    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
-    return this.financeiroService.createLancamento({ ...data, empresaId: req.user.empresaId });
+    if (!req.user?.empresaId)
+      throw new BadRequestException('Usuário sem empresa vinculada.');
+    return this.financeiroService.createLancamento({
+      ...data,
+      empresaId: req.user.empresaId,
+    });
   }
 
   @Get('lancamentos')
   findAllLancamentos(@Request() req: any, @Query() filters: any) {
-    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
-    return this.financeiroService.findAllLancamentos({ ...filters, empresaId: req.user.empresaId });
+    if (!req.user?.empresaId)
+      throw new BadRequestException('Usuário sem empresa vinculada.');
+    return this.financeiroService.findAllLancamentos({
+      ...filters,
+      empresaId: req.user.empresaId,
+    });
   }
 
   @Patch('lancamentos/:id/baixar')
@@ -84,7 +96,8 @@ export class FinanceiroController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    if (!req.user?.empresaId) throw new BadRequestException('Usuário sem empresa vinculada.');
+    if (!req.user?.empresaId)
+      throw new BadRequestException('Usuário sem empresa vinculada.');
     return this.financeiroService.getFluxoCaixa(
       req.user.empresaId,
       startDate,

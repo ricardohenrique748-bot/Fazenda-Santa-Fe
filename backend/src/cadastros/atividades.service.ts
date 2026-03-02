@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AtividadesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   create(data: any) {
     const cleanData = { ...data };

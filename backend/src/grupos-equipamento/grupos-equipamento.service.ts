@@ -4,7 +4,7 @@ import { GrupoEquipamento, Prisma } from '@prisma/client';
 
 @Injectable()
 export class GruposEquipamentoService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(
     data: Prisma.GrupoEquipamentoCreateInput,

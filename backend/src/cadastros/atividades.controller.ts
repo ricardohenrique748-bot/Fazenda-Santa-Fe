@@ -14,7 +14,7 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('atividades')
 export class AtividadesController {
-  constructor(private readonly service: AtividadesService) { }
+  constructor(private readonly service: AtividadesService) {}
 
   @Post()
   create(@Body() data: any) {

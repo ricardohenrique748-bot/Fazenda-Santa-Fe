@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class FinanceiroService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   // Plano de Contas
   async createPlanoContas(

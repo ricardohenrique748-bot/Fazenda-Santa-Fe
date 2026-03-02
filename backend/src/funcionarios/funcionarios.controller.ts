@@ -17,7 +17,7 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('funcionarios')
 export class FuncionariosController {
-  constructor(private readonly funcionariosService: FuncionariosService) { }
+  constructor(private readonly funcionariosService: FuncionariosService) {}
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.FuncionarioCreateInput) {
@@ -28,7 +28,12 @@ export class FuncionariosController {
   @Get()
   findAll(@Req() req: any) {
     const empresaId = req.user?.empresaId;
-    console.log('FuncionariosController.findAll - User:', req.user?.email, 'EmpresaId:', empresaId);
+    console.log(
+      'FuncionariosController.findAll - User:',
+      req.user?.email,
+      'EmpresaId:',
+      empresaId,
+    );
     return this.funcionariosService.findAll(empresaId);
   }
 

@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../../auth_new/jwt-auth.guard';
 @Controller('comercial/clientes')
 @UseGuards(JwtAuthGuard)
 export class ClientesController {
-  constructor(private readonly clientesService: ClientesService) { }
+  constructor(private readonly clientesService: ClientesService) {}
 
   @Post()
   create(@Body() data: Prisma.ClienteCreateInput, @Request() req: any) {

@@ -17,7 +17,7 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('apontamentos')
 export class ApontamentosController {
-  constructor(private readonly apontamentosService: ApontamentosService) { }
+  constructor(private readonly apontamentosService: ApontamentosService) {}
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.ApontamentoCreateInput) {

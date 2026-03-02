@@ -19,7 +19,7 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 export class GruposEquipamentoController {
   constructor(
     private readonly gruposEquipamentoService: GruposEquipamentoService,
-  ) { }
+  ) {}
 
   @Post()
   create(@Req() req: any, @Body() data: Prisma.GrupoEquipamentoCreateInput) {

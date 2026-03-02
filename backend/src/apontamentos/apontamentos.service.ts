@@ -4,7 +4,7 @@ import { Apontamento, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ApontamentosService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(
     empresaId: string,
@@ -31,10 +31,10 @@ export class ApontamentosService {
     return this.prisma.apontamento.findMany({
       where: empresaId
         ? {
-          funcionario: {
-            empresaId: empresaId,
-          },
-        }
+            funcionario: {
+              empresaId: empresaId,
+            },
+          }
         : {},
       include: {
         funcionario: { select: { nome: true } },
@@ -50,10 +50,10 @@ export class ApontamentosService {
         id,
         ...(empresaId
           ? {
-            funcionario: {
-              empresaId: empresaId,
-            },
-          }
+              funcionario: {
+                empresaId: empresaId,
+              },
+            }
           : {}),
       },
       include: {

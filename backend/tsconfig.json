@@ -15,12 +15,12 @@
     "strict": false
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "prisma"
+    "prisma",
+    "test"
   ]
 }

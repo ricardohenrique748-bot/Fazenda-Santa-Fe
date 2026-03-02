@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EmpresasService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(data: any) {
     console.log('DEBUG: Creating empresa with data:', JSON.stringify(data));
@@ -47,20 +47,23 @@ export class EmpresasService {
           ...rest,
           // Handle boolean conversion explicitly if coming as string or undefined/null
           ativo: rest.ativo !== false && rest.ativo !== 'false', // Default true
-          ignorarCaixaFinanceiro: rest.ignorarCaixaFinanceiro === 'true' || rest.ignorarCaixaFinanceiro === true,
-          ignorarEstoque: rest.ignorarEstoque === 'true' || rest.ignorarEstoque === true,
+          ignorarCaixaFinanceiro:
+            rest.ignorarCaixaFinanceiro === 'true' ||
+            rest.ignorarCaixaFinanceiro === true,
+          ignorarEstoque:
+            rest.ignorarEstoque === 'true' || rest.ignorarEstoque === true,
 
           socios:
             socios && socios.length > 0
               ? {
-                create: socios.map((s: any) => ({
-                  nome: s.nome,
-                  cpf: s.cpf || null,
-                  cnpj: s.cnpj || null,
-                  percentual: s.percentual ? Number(s.percentual) : null,
-                  principal: Boolean(s.principal),
-                })),
-              }
+                  create: socios.map((s: any) => ({
+                    nome: s.nome,
+                    cpf: s.cpf || null,
+                    cnpj: s.cnpj || null,
+                    percentual: s.percentual ? Number(s.percentual) : null,
+                    principal: Boolean(s.principal),
+                  })),
+                }
               : undefined,
         },
       });
@@ -101,8 +104,12 @@ export class EmpresasService {
     } catch (error: any) {
       console.error('Erro ao buscar empresa:', error);
       throw new HttpException(
-        error instanceof HttpException ? error.message : `Erro ao buscar empresa: ${error.message}`,
-        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+        error instanceof HttpException
+          ? error.message
+          : `Erro ao buscar empresa: ${error.message}`,
+        error instanceof HttpException
+          ? error.getStatus()
+          : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -135,23 +142,26 @@ export class EmpresasService {
         ...rest,
         // Handle boolean conversion explicitly if coming as string or undefined/null
         ativo: rest.ativo !== false && rest.ativo !== 'false', // Default true
-        ignorarCaixaFinanceiro: rest.ignorarCaixaFinanceiro === 'true' || rest.ignorarCaixaFinanceiro === true,
-        ignorarEstoque: rest.ignorarEstoque === 'true' || rest.ignorarEstoque === true,
+        ignorarCaixaFinanceiro:
+          rest.ignorarCaixaFinanceiro === 'true' ||
+          rest.ignorarCaixaFinanceiro === true,
+        ignorarEstoque:
+          rest.ignorarEstoque === 'true' || rest.ignorarEstoque === true,
 
         socios: socios
           ? {
-            deleteMany: {},
-            create: socios.map((s: any) => ({
-              nome: s.nome,
-              cpf: s.cpf || null,
-              cnpj: s.cnpj || null,
-              percentual:
-                typeof s.percentual === 'string'
-                  ? parseFloat(s.percentual)
-                  : s.percentual,
-              principal: Boolean(s.principal),
-            })),
-          }
+              deleteMany: {},
+              create: socios.map((s: any) => ({
+                nome: s.nome,
+                cpf: s.cpf || null,
+                cnpj: s.cnpj || null,
+                percentual:
+                  typeof s.percentual === 'string'
+                    ? parseFloat(s.percentual)
+                    : s.percentual,
+                principal: Boolean(s.principal),
+              })),
+            }
           : undefined,
       },
     });

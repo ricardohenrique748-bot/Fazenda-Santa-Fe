@@ -13,7 +13,7 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 export class RelatoriosMecanizacaoController {
   constructor(
     private readonly relatoriosService: RelatoriosMecanizacaoService,
-  ) { }
+  ) {}
 
   @Get('dashboard')
   async getDashboard(@Req() req: any) {

@@ -4,7 +4,7 @@ import { startOfMonth, endOfMonth, subMonths } from 'date-fns';
 
 @Injectable()
 export class RelatoriosMecanizacaoService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getDashboardData(empresaId?: string) {
     const now = new Date();

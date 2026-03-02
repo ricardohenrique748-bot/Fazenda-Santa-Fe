@@ -4,7 +4,7 @@ import { Veiculo, Prisma } from '@prisma/client';
 
 @Injectable()
 export class VeiculosService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(
     data: Prisma.VeiculoCreateInput,
@@ -23,17 +23,17 @@ export class VeiculosService {
       const existingPlaca = await this.prisma.veiculo.findFirst({
         where: { placa: cleanData.placa, ...(empresaId ? { empresaId } : {}) },
       });
-      if (existingPlaca)
-        throw new BadRequestException('Placa já cadastrada');
+      if (existingPlaca) throw new BadRequestException('Placa já cadastrada');
     }
     if (cleanData.numeroFrota) {
       const existingFrota = await this.prisma.veiculo.findFirst({
-        where: { numeroFrota: cleanData.numeroFrota, ...(empresaId ? { empresaId } : {}) },
+        where: {
+          numeroFrota: cleanData.numeroFrota,
+          ...(empresaId ? { empresaId } : {}),
+        },
       });
       if (existingFrota)
-        throw new BadRequestException(
-          'Número de frota já cadastrado',
-        );
+        throw new BadRequestException('Número de frota já cadastrado');
     }
 
     return this.prisma.veiculo.create({

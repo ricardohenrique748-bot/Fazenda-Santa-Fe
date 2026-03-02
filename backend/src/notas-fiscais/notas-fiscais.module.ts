@@ -4,9 +4,9 @@ import { NotasFiscaisController } from './notas-fiscais.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [NotasFiscaisController],
-    providers: [NotasFiscaisService],
-    exports: [NotasFiscaisService],
+  imports: [PrismaModule],
+  controllers: [NotasFiscaisController],
+  providers: [NotasFiscaisService],
+  exports: [NotasFiscaisService],
 })
-export class NotasFiscaisModule { }
+export class NotasFiscaisModule {}

@@ -10,7 +10,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-  ) { }
+  ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
     console.log(`DEBUG: Validating user email="${email}" pass="${pass}"`);

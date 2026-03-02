@@ -16,12 +16,14 @@ import { JwtAuthGuard } from '../auth_new/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('culturas')
 export class CulturasController {
-  constructor(private readonly service: CulturasService) { }
+  constructor(private readonly service: CulturasService) {}
 
   @Post()
   create(@Request() req: any, @Body() data: any) {
     if (!req.user?.empresaId) {
-      console.error('ERRO: Usuário sem empresaId no token ao tentar criar cultura');
+      console.error(
+        'ERRO: Usuário sem empresaId no token ao tentar criar cultura',
+      );
       throw new BadRequestException('Usuário sem empresa vinculada.');
     }
     return this.service.create(data);

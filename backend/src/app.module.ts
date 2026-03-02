@@ -67,4 +67,4 @@ import { NotasFiscaisModule } from './notas-fiscais/notas-fiscais.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

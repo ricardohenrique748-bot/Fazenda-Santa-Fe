@@ -4,7 +4,7 @@ import { Manutencao, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ManutencoesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(
     data: Prisma.ManutencaoCreateInput,
@@ -48,8 +48,8 @@ export class ManutencoesService {
     return this.prisma.manutencao.findMany({
       where: empresaId
         ? {
-          veiculo: { empresaId },
-        }
+            veiculo: { empresaId },
+          }
         : {},
       include: {
         veiculo: { select: { nome: true, placa: true, numeroFrota: true } },
@@ -64,8 +64,8 @@ export class ManutencoesService {
         id,
         ...(empresaId
           ? {
-            veiculo: { empresaId },
-          }
+              veiculo: { empresaId },
+            }
           : {}),
       },
       include: { veiculo: true },
