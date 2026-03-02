@@ -119,9 +119,17 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
         setError(null);
 
         try {
-            // Dynamically import pdfjs-dist
+            // Import pdfjs-dist
             const pdfjs = await import('pdfjs-dist');
-            pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
+            // Local worker using Vite's URL feature (more reliable than CDN)
+            pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+                'pdfjs-dist/build/pdf.worker.min.mjs',
+                import.meta.url
+            ).toString();
+
+            console.log('PDF.js Version:', pdfjs.version);
+            console.log('Worker Path:', pdfjs.GlobalWorkerOptions.workerSrc);
 
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
