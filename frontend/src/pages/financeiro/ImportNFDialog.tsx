@@ -18,6 +18,8 @@ import {
     Paper
 } from '@mui/material';
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
+import * as pdfjs from 'pdfjs-dist';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { financeiroService, TipoLancamento, StatusFinanceiro } from '../../services/financeiroService';
 import { empresasService, type Empresa } from '../../services/empresasService';
 import { estoqueService } from '../../services/estoqueService';
@@ -119,17 +121,9 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
         setError(null);
 
         try {
-            // Import pdfjs-dist
-            const pdfjs = await import('pdfjs-dist');
-
-            // Local worker using Vite's URL feature (more reliable than CDN)
-            pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-                'pdfjs-dist/build/pdf.worker.min.mjs',
-                import.meta.url
-            ).toString();
-
-            console.log('PDF.js Version:', pdfjs.version);
-            console.log('Worker Path:', pdfjs.GlobalWorkerOptions.workerSrc);
+            // Setup worker from the pre-imported URL
+            pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+            console.log('Worker configurado com:', pdfWorker);
 
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
@@ -368,28 +362,28 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                         </Typography>
 
                         <Grid container spacing={2} sx={{ mb: 3 }}>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Emitente / Fornecedor</Typography>
                                 <Typography variant="body2" fontWeight="600">{nfData.emitente.nome}</Typography>
                                 <Typography variant="caption">{nfData.emitente.cnpj}</Typography>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Endereço do Fornecedor</Typography>
                                 <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>{nfData.emitente.endereco}</Typography>
                             </Grid>
-                            <Grid item xs={6} sm={3}>
+                            <Grid size={{ xs: 6, sm: 3 }}>
                                 <Typography variant="caption" color="text.secondary">Data Emissão</Typography>
                                 <Typography variant="body2">{nfData.dataEmissao.split('-').reverse().join('/')}</Typography>
                             </Grid>
-                            <Grid item xs={6} sm={3}>
+                            <Grid size={{ xs: 6, sm: 3 }}>
                                 <Typography variant="caption" color="text.secondary">Data Entrada/Saída</Typography>
                                 <Typography variant="body2">{nfData.dataSaidaEntrada ? nfData.dataSaidaEntrada.split('-').reverse().join('/') : '-'}</Typography>
                             </Grid>
-                            <Grid item xs={6} sm={3}>
+                            <Grid size={{ xs: 6, sm: 3 }}>
                                 <Typography variant="caption" color="text.secondary">Hora Saída</Typography>
                                 <Typography variant="body2">{nfData.horaSaida || '-'}</Typography>
                             </Grid>
-                            <Grid item xs={6} sm={3}>
+                            <Grid size={{ xs: 6, sm: 3 }}>
                                 <Typography variant="caption" color="text.secondary">Valor Total</Typography>
                                 <Typography variant="body2" fontWeight="700">
                                     {nfData.valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -440,7 +434,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                         <Typography variant="subtitle2" fontWeight="700" sx={{ mb: 2 }}>Configurações de Importação</Typography>
 
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     select
                                     fullWidth
@@ -452,7 +446,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                                     {empresas.map(e => <MenuItem key={e.id} value={e.id}>{e.razaoSocial}</MenuItem>)}
                                 </TextField>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     select
                                     fullWidth
@@ -464,7 +458,7 @@ export default function ImportNFDialog({ open, onClose }: ImportNFDialogProps) {
                                     {categorias.map(c => <MenuItem key={c.id} value={c.id}>{c.codigo} - {c.descricao}</MenuItem>)}
                                 </TextField>
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid size={{ xs: 12 }}>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
