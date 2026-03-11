@@ -1,0 +1,1 @@
+async function run() { try { const res = await fetch('http://localhost:3000/grupos-equipamento', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nome: 'Teste', descricao: 'xx' }) }); const text = await res.text(); console.log(res.status, text); } catch(e) { console.error('ERROR_FETCH:', e.message); } } run();
