@@ -1,0 +1,200 @@
+﻿[7m  [0m [91m                           ~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m56[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'pedidoVenda' does not exist on type 'PrismaService'.
+
+[7m56[0m         return this.prisma.pedidoVenda.update({
+[7m  [0m [91m                           ~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m67[0m:[93m41[0m - [91merror[0m[90m TS2551: [0mProperty 'itemPedidoVenda' does not exist on type 'PrismaService'. Did you mean 'itemPedido'?
+
+[7m67[0m         const deleteItems = this.prisma.itemPedidoVenda.deleteMany({
+[7m  [0m [91m                                        ~~~~~~~~~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m625[0m:[93m7[0m
+    [7m625[0m   get itemPedido(): Prisma.ItemPedidoDelegate<ExtArgs, ClientOptions>;
+    [7m   [0m [96m      ~~~~~~~~~~[0m
+    'itemPedido' is declared here.
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m70[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'pedidoVenda' does not exist on type 'PrismaService'.
+
+[7m70[0m         const deletePedido = this.prisma.pedidoVenda.delete({
+[7m  [0m [91m                                         ~~~~~~~~~~~[0m
+
+[[90m17:01:43[0m] Found 19 errors. Watching for file changes.
+
+[2J[3J[H[[90m17:02:06[0m] File change detected. Starting incremental compilation...
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m12[0m:[93m33[0m - [91merror[0m[90m TS2694: [0mNamespace '"C:/Users/luckh/Desktop/Malut Solu\u00E7\u00F5es/backend/node_modules/.prisma/client/index".Prisma' has no exported member 'ClienteCreateInput'.
+
+[7m12[0m     create(@Body() data: Prisma.ClienteCreateInput, @Request() req) {
+[7m  [0m [91m                                ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m12[0m:[93m53[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m12[0m     create(@Body() data: Prisma.ClienteCreateInput, @Request() req) {
+[7m  [0m [91m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m21[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m21[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m31[0m:[93m58[0m - [91merror[0m[90m TS2694: [0mNamespace '"C:/Users/luckh/Desktop/Malut Solu\u00E7\u00F5es/backend/node_modules/.prisma/client/index".Prisma' has no exported member 'ClienteUpdateInput'.
+
+[7m31[0m     update(@Param('id') id: string, @Body() data: Prisma.ClienteUpdateInput) {
+[7m  [0m [91m                                                         ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.service.ts[0m:[93m9[0m:[93m31[0m - [91merror[0m[90m TS2694: [0mNamespace '"C:/Users/luckh/Desktop/Malut Solu\u00E7\u00F5es/backend/node_modules/.prisma/client/index".Prisma' has no exported member 'ClienteCreateInput'.
+
+[7m9[0m     async create(data: Prisma.ClienteCreateInput) {
+[7m [0m [91m                              ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.service.ts[0m:[93m10[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'cliente' does not exist on type 'PrismaService'.
+
+[7m10[0m         return this.prisma.cliente.create({ data });
+[7m  [0m [91m                           ~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.service.ts[0m:[93m14[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'cliente' does not exist on type 'PrismaService'.
+
+[7m14[0m         return this.prisma.cliente.findMany({
+[7m  [0m [91m                           ~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.service.ts[0m:[93m21[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'cliente' does not exist on type 'PrismaService'.
+
+[7m21[0m         return this.prisma.cliente.findUnique({ where: { id } });
+[7m  [0m [91m                           ~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.service.ts[0m:[93m24[0m:[93m43[0m - [91merror[0m[90m TS2694: [0mNamespace '"C:/Users/luckh/Desktop/Malut Solu\u00E7\u00F5es/backend/node_modules/.prisma/client/index".Prisma' has no exported member 'ClienteUpdateInput'.
+
+[7m24[0m     async update(id: string, data: Prisma.ClienteUpdateInput) {
+[7m  [0m [91m                                          ~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.service.ts[0m:[93m25[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'cliente' does not exist on type 'PrismaService'.
+
+[7m25[0m         return this.prisma.cliente.update({
+[7m  [0m [91m                           ~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.service.ts[0m:[93m32[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'cliente' does not exist on type 'PrismaService'.
+
+[7m32[0m         return this.prisma.cliente.delete({ where: { id } });
+[7m  [0m [91m                           ~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m11[0m:[93m31[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m11[0m     create(@Body() data: any, @Request() req) {
+[7m  [0m [91m                              ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m20[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m20[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m15[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'pedidoVenda' does not exist on type 'PrismaService'.
+
+[7m15[0m         return this.prisma.pedidoVenda.create({
+[7m  [0m [91m                           ~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m30[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'pedidoVenda' does not exist on type 'PrismaService'.
+
+[7m30[0m         return this.prisma.pedidoVenda.findMany({
+[7m  [0m [91m                           ~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m41[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'pedidoVenda' does not exist on type 'PrismaService'.
+
+[7m41[0m         return this.prisma.pedidoVenda.findUnique({
+[7m  [0m [91m                           ~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m56[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'pedidoVenda' does not exist on type 'PrismaService'.
+
+[7m56[0m         return this.prisma.pedidoVenda.update({
+[7m  [0m [91m                           ~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m67[0m:[93m41[0m - [91merror[0m[90m TS2551: [0mProperty 'itemPedidoVenda' does not exist on type 'PrismaService'. Did you mean 'itemPedido'?
+
+[7m67[0m         const deleteItems = this.prisma.itemPedidoVenda.deleteMany({
+[7m  [0m [91m                                        ~~~~~~~~~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m625[0m:[93m7[0m
+    [7m625[0m   get itemPedido(): Prisma.ItemPedidoDelegate<ExtArgs, ClientOptions>;
+    [7m   [0m [96m      ~~~~~~~~~~[0m
+    'itemPedido' is declared here.
+
+[96msrc/comercial/pedidos/pedidos-venda.service.ts[0m:[93m70[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'pedidoVenda' does not exist on type 'PrismaService'.
+
+[7m70[0m         const deletePedido = this.prisma.pedidoVenda.delete({
+[7m  [0m [91m                                         ~~~~~~~~~~~[0m
+
+[[90m17:02:06[0m] Found 19 errors. Watching for file changes.
+
+[2J[3J[H[[90m17:03:10[0m] File change detected. Starting incremental compilation...
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m12[0m:[93m53[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m12[0m     create(@Body() data: Prisma.ClienteCreateInput, @Request() req) {
+[7m  [0m [91m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m21[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m21[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m11[0m:[93m31[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m11[0m     create(@Body() data: any, @Request() req) {
+[7m  [0m [91m                              ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m20[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m20[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[[90m17:03:16[0m] Found 4 errors. Watching for file changes.
+
+[2J[3J[H[[90m17:17:22[0m] File change detected. Starting incremental compilation...
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m12[0m:[93m53[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m12[0m     create(@Body() data: Prisma.ClienteCreateInput, @Request() req) {
+[7m  [0m [91m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m21[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m21[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m11[0m:[93m31[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m11[0m     create(@Body() data: any, @Request() req) {
+[7m  [0m [91m                              ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m20[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m20[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[[90m17:17:24[0m] Found 4 errors. Watching for file changes.
+
+[2J[3J[H[[90m17:17:24[0m] File change detected. Starting incremental compilation...
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m12[0m:[93m53[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m12[0m     create(@Body() data: Prisma.ClienteCreateInput, @Request() req) {
+[7m  [0m [91m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/clientes/clientes.controller.ts[0m:[93m21[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m21[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m11[0m:[93m31[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m11[0m     create(@Body() data: any, @Request() req) {
+[7m  [0m [91m                              ~~~~~~~~~~~~~~[0m
+
+[96msrc/comercial/pedidos/pedidos-venda.controller.ts[0m:[93m20[0m:[93m13[0m - [91merror[0m[90m TS7006: [0mParameter 'req' implicitly has an 'any' type.
+
+[7m20[0m     findAll(@Request() req) {
+[7m  [0m [91m            ~~~~~~~~~~~~~~[0m
+
+[[90m17:17:26[0m] Found 4 errors. Watching for file changes.
+
